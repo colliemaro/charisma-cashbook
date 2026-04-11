@@ -3,191 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charisma Financial Nebula • CEO</title>
+    <title>Charisma Nebula • Diagnostics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #facc15; }
-        body {
-            font-family: 'Ubuntu', sans-serif;
-            background: #0a0a0a;
-            overflow-x: hidden;
-            color: white;
-            margin: 0;
-        }
-
-        /* GEMINI-STYLE MORPHING BACKGROUND */
-        .nebula {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: radial-gradient(circle at 50% 50%, #0d0d0d, #000);
-        }
-        .orb {
-            position: absolute; width: 550px; height: 550px;
-            border-radius: 50%; filter: blur(90px); opacity: 0.35;
-            animation: move 25s infinite alternate ease-in-out;
-        }
-        .orb-1 { background: #facc15; top: -15%; left: -5%; }
-        .orb-2 { background: #6366f1; bottom: -10%; right: -5%; animation-delay: -7s; }
-        @keyframes move {
-            from { transform: translate(0,0) scale(1); }
-            to { transform: translate(120px, 80px) scale(1.15); }
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(250, 204, 21, 0.12);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-        }
-
-        /* LOGIN SHAKE & ERROR */
-        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: #ef4444 !important; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-
-        .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar.closed { transform: translateX(-105%); }
-        
+        body { font-family: 'Ubuntu', sans-serif; background: #0a0a0a; color: white; margin: 0; }
+        .nebula { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #0d0d0d, #000); }
+        .orb { position: absolute; width: 500px; height: 500px; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: move 20s infinite alternate; }
+        .orb-1 { background: #facc15; top: -10%; left: -5%; }
+        .orb-2 { background: #6366f1; bottom: -10%; right: -5%; }
+        @keyframes move { from { transform: translate(0,0); } to { transform: translate(50px, 50px); } }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); border: 1px solid rgba(250, 204, 21, 0.15); }
+        .shake { animation: shake 0.4s both; border-color: #ef4444 !important; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } }
         .hidden { display: none !important; }
-        .btn-glow:hover { box-shadow: 0 0 20px rgba(250, 204, 21, 0.4); }
     </style>
 </head>
 <body>
     <div class="nebula"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
 
     <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6">
-        <div id="login-card" class="glass p-12 rounded-[2.5rem] w-full max-w-md text-center">
-            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-24 mx-auto mb-8 drop-shadow-2xl">
-            <h2 class="text-3xl font-bold mb-2 tracking-tighter" data-en="Charisma Access" data-sw="Kuingia Charisma">Kuingia Charisma</h2>
-            <p class="text-zinc-500 mb-8 text-sm uppercase tracking-widest" data-en="Digital Ledger System" data-sw="Mfumo wa Mahesabu">Mfumo wa Mahesabu</p>
+        <div id="login-card" class="glass p-10 rounded-[2.5rem] w-full max-w-md text-center">
+            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-20 mx-auto mb-6">
+            <h2 class="text-2xl font-bold mb-6">System Diagnostics Mode</h2>
             
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="text" id="username" placeholder="Username / Jina" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:border-amber-400 outline-none transition-all text-white">
-                <input type="password" id="password" placeholder="Password / Nywila" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:border-amber-400 outline-none transition-all text-white">
-                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl btn-glow transition-all active:scale-95 mt-4">Sign In</button>
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                <label class="text-[10px] uppercase ml-2 text-zinc-500 font-bold">Username</label>
+                <input type="text" id="username" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400">
+                
+                <label class="text-[10px] uppercase ml-2 text-zinc-500 font-bold">Password</label>
+                <input type="password" id="password" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400">
+                
+                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-4 rounded-2xl mt-4">Run Login Test</button>
             </form>
-            <button onclick="toggleLang()" class="mt-8 text-[10px] text-zinc-500 border border-white/10 px-4 py-2 rounded-full hover:bg-white/5 transition-all">EN / SW TOGGLE</button>
         </div>
     </div>
 
-    <div id="main-app" class="hidden min-h-screen">
-        <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-6">
-            <button onclick="toggleMenu()" class="p-4 glass rounded-2xl hover:bg-white/5 transition-all">
-                <div class="w-6 h-0.5 bg-amber-400 mb-1.5 rounded-full"></div>
-                <div class="w-4 h-0.5 bg-amber-400 mb-1.5 rounded-full"></div>
-                <div class="w-6 h-0.5 bg-amber-400 rounded-full"></div>
-            </button>
-            <div class="text-right">
-                <p id="user-display" class="font-bold text-amber-400 text-lg tracking-tight"></p>
-                <p id="role-display" class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold"></p>
-            </div>
-        </header>
-
-        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass z-[150] p-10 flex flex-col shadow-2xl">
-            <div class="flex justify-between items-center mb-12">
-                <span class="text-xs font-bold text-amber-500 uppercase tracking-widest">Navigation</span>
-                <button onclick="toggleMenu()" class="text-3xl text-zinc-500">&times;</button>
-            </div>
-            <nav class="space-y-3 flex-1">
-                <button onclick="showPage('entry')" class="w-full text-left p-5 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 group">
-                    <span class="text-xl">✍️</span>
-                    <span class="font-medium" data-en="New Entry" data-sw="Ingizo Jipya">Ingizo Jipya</span>
-                </button>
-                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-5 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 hidden">
-                    <span class="text-xl">🏆</span>
-                    <span class="font-medium" data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
-                </button>
-            </nav>
-            <button onclick="location.reload()" class="p-5 bg-red-500/10 text-red-400 rounded-2xl font-bold text-sm hover:bg-red-500/20 transition-all">Sign Out</button>
-        </aside>
-
-        <main class="max-w-4xl mx-auto p-6 pb-20">
-            <div id="page-entry">
-                <h2 class="text-5xl font-bold mb-10 tracking-tighter" data-en="Daily Record" data-sw="Rekodi ya Leo">Rekodi ya Leo</h2>
-                <div class="glass p-10 rounded-[3rem] space-y-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase tracking-widest text-amber-500 ml-4 font-bold" data-en="Description" data-sw="Maelezo ya Muamala">Maelezo ya Muamala</label>
-                        <input type="text" id="entry-desc" placeholder="..." class="w-full bg-black/40 border border-white/10 rounded-3xl px-8 py-5 outline-none focus:border-amber-400 text-lg">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase tracking-widest text-emerald-500 ml-4 font-bold">Money In / Mapokezi (+)</label>
-                            <input type="number" id="entry-in" placeholder="0.00" class="w-full bg-black/40 border border-emerald-500/20 rounded-3xl px-8 py-5 text-emerald-400 text-xl font-bold outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase tracking-widest text-red-500 ml-4 font-bold">Money Out / Matumizi (-)</label>
-                            <input type="number" id="entry-out" placeholder="0.00" class="w-full bg-black/40 border border-red-500/20 rounded-3xl px-8 py-5 text-red-400 text-xl font-bold outline-none">
-                        </div>
-                    </div>
-                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-6 rounded-3xl text-xl hover:scale-[1.01] active:scale-95 transition-all shadow-xl shadow-white/5">Push to Cloud</button>
-                </div>
-            </div>
-
-            <div id="page-manager" class="hidden">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-                    <div>
-                        <h2 class="text-5xl font-bold tracking-tighter mb-2">CEO Vault</h2>
-                        <p class="text-zinc-500 text-sm">Real-time Financial Ledger Retrieval</p>
-                    </div>
-                    <button onclick="fetchData()" class="bg-amber-400 text-black px-10 py-5 rounded-3xl font-bold text-lg btn-glow transition-all active:scale-95 flex items-center gap-3">
-                        <span id="sync-icon">🔄</span> Retrieve System Data
-                    </button>
-                </div>
-                <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
-                <div class="glass rounded-[3rem] overflow-hidden">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-white/5">
-                            <tr class="text-zinc-500 text-[10px] uppercase tracking-[0.2em] font-bold">
-                                <th class="p-8">Staff Member</th>
-                                <th class="p-8">Transaction Details</th>
-                                <th class="p-8 text-right">Net Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manager-tbody" class="divide-y divide-white/5">
-                            <tr><td colspan='3' class='p-20 text-center text-zinc-500 italic'>Vault is locked. Hit "Retrieve" to sync.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
+    <div id="main-app" class="hidden p-10 text-center">
+        <h1 class="text-4xl font-bold text-amber-400">LOGIN SUCCESSFUL!</h1>
+        <p class="mt-4 text-zinc-400">Welcome to the Nebula Interface.</p>
+        <button onclick="location.reload()" class="mt-8 px-6 py-2 bg-white/10 rounded-xl">Logout</button>
     </div>
 
     <script>
-        // CORE INFRASTRUCTURE
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
-
+        // The core database of users
         const users = {
-            "charisma_ceo": { pass: "Tunaweza,2026", role: "ceo", name: "Collins", lang: "en" },
-            "OdriaToto": { pass: "Tunaweza,2026", role: "worker", name: "Odria", lang: "sw" },
-            "BerthaToto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" }
+            "charisma_ceo": { pass: "Tunaweza,2026", name: "Collins" },
+            "OdriaToto": { pass: "Tunaweza,2026", name: "Odria" },
+            "BerthaToto": { pass: "Tunaweza,2026", name: "Bertha" }
         };
 
-        let currentLang = 'sw';
-        let currentUser = null;
-
-        // ROBUST LOGIN LOGIC
         function handleLogin(e) {
             e.preventDefault();
             const uInput = document.getElementById('username').value.trim();
             const pInput = document.getElementById('password').value.trim();
             const card = document.getElementById('login-card');
 
-            // Find user (case-insensitive)
+            console.log("Attempting login for:", uInput);
+
+            // 1. Check if the user exists
             const foundUserKey = Object.keys(users).find(
                 key => key.toLowerCase() === uInput.toLowerCase()
             );
 
-            if (foundUserKey && users[foundUserKey].pass === pInput) {
-                currentUser = users[foundUserKey];
-                currentLang = currentUser.lang;
-                startApp();
-            } else {
-                card.classList.add('shake');
-                setTimeout(() => card.classList.remove('shake'), 400);
-                document.getElementById('password').value = '';
+            if (!foundUserKey) {
+                alert("❌ ERROR: Username '" + uInput + "' not found in the system.");
+                fail(card);
+                return;
             }
+
+            // 2. Check if password matches
+            if (users[foundUserKey].pass !== pInput) {
+                alert("❌ ERROR: Password incorrect for " + foundUserKey + ".\n\nYou typed: " + pInput + "\nExpected: " + users[foundUserKey].pass);
+                fail(card);
+                return;
+            }
+
+            // 3. Success
+            alert("✅ SUCCESS: Hello " + users[foundUserKey].name + "! Accessing Nebula...");
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
         }
+
+        function fail(card) {
+            card.classList.add('shake');
+            setTimeout(() => card.classList.remove('shake'), 400);
+            document.getElementById('password').value = '';
+        }
+    </script>
+</body>
+</html>
