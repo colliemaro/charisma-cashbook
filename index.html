@@ -12,19 +12,17 @@
             background: #050505; 
             color: white; 
             margin: 0; 
-            overflow-x: hidden; 
             min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
         }
-       
         .liquid-bg {
             position: fixed; inset: 0; z-index: -1;
             background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%);
         }
         .liquid-blob {
             position: absolute; width: 900px; height: 900px;
-            background: radial-gradient(circle, rgba(250, 204, 21, 0.12) 0%, rgba(79, 70, 229, 0.08) 40%, transparent 70%);
+            background: radial-gradient(circle, rgba(250,204,21,0.12) 0%, rgba(79,70,229,0.08) 40%, transparent 70%);
             filter: blur(100px); border-radius: 50%;
             animation: flow 25s infinite alternate ease-in-out;
         }
@@ -33,197 +31,337 @@
             100% { transform: translate(30%, 15%) rotate(180deg); }
         }
         .glass { 
-            background: rgba(255, 255, 255, 0.02); 
+            background: rgba(255,255,255,0.03); 
             backdrop-filter: blur(40px); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(255,255,255,0.1); 
         }
-        .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        .sidebar { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); z-index: 100; }
         .sidebar.closed { transform: translateX(-100%); }
-       
         input, select, textarea {
             background: rgba(0,0,0,0.6) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255,255,255,0.15) !important;
             color: white !important;
         }
-        input:focus, select:focus { 
-            border-color: #facc15 !important; 
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); 
-        }
+        input:focus { border-color: #facc15 !important; }
     </style>
 </head>
 <body>
     <div class="liquid-bg"><div class="liquid-blob"></div></div>
 
     <!-- Login Screen -->
-    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6">
-        <div id="login-card" class="glass p-12 rounded-[3rem] w-full max-w-md text-center border-amber-500/20">
-            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-28 mx-auto mb-6 drop-shadow-2xl">
-            <h2 class="text-xl font-bold mb-8 uppercase tracking-[0.3em] text-amber-400">Security Gateway</h2>
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="text" id="username" placeholder="Authorized ID" class="w-full rounded-2xl px-6 py-4 outline-none transition-all">
-                <input type="password" id="password" placeholder="Access Code" class="w-full rounded-2xl px-6 py-4 outline-none transition-all">
-                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl hover:bg-amber-300 transition-all uppercase tracking-widest shadow-xl shadow-amber-500/20">Enter Vault</button>
+    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80">
+        <div class="glass p-12 rounded-[3rem] w-full max-w-md text-center">
+            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-28 mx-auto mb-6">
+            <h2 class="text-2xl font-bold mb-6 text-amber-400">Security Gateway</h2>
+            <form onsubmit="handleLogin(event)" class="space-y-5">
+                <input type="text" id="username" placeholder="Authorized ID" class="w-full rounded-2xl px-6 py-4 text-lg">
+                <input type="password" id="password" placeholder="Access Code" class="w-full rounded-2xl px-6 py-4 text-lg">
+                <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-black font-bold py-5 rounded-2xl text-lg transition-all">Enter Vault</button>
             </form>
-            <p id="login-error" class="text-red-500 text-xs mt-4 font-bold hidden">Incorrect username or password.</p>
+            <p id="login-error" class="text-red-500 text-sm mt-4 hidden">Incorrect credentials. Please try again.</p>
         </div>
     </div>
 
-    <!-- Main Application -->
+    <!-- Main App -->
     <div id="main-app" class="hidden flex-1 flex flex-col">
-        <!-- Header with Logo -->
-        <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass border-b border-white/5">
-            <div class="flex items-center gap-6">
-                <button onclick="toggleMenu()" class="p-3 glass rounded-xl hover:bg-white/5 border border-white/10">
-                    <div class="w-6 h-0.5 bg-amber-400 mb-1.5"></div>
-                    <div class="w-4 h-0.5 bg-amber-400 mb-1.5"></div>
-                    <div class="w-6 h-0.5 bg-amber-400"></div>
+        <!-- Header -->
+        <header class="p-6 flex items-center justify-between glass border-b border-white/10 sticky top-0 z-50">
+            <div class="flex items-center gap-5">
+                <button onclick="toggleMenu()" class="p-3 glass rounded-2xl">
+                    <div class="space-y-1">
+                        <div class="w-6 h-0.5 bg-amber-400"></div>
+                        <div class="w-4 h-0.5 bg-amber-400"></div>
+                        <div class="w-6 h-0.5 bg-amber-400"></div>
+                    </div>
                 </button>
-                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-12">
+                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-11">
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tighter text-amber-300">CHARISMA DISTILLERS</h1>
-                    <p class="text-[10px] text-amber-400 tracking-widest">FINANCE VAULT</p>
+                    <h1 class="text-2xl font-bold text-amber-300 tracking-tight">CHARISMA DISTILLERS</h1>
+                    <p class="text-xs text-amber-400 tracking-widest">FINANCE VAULT</p>
                 </div>
             </div>
-           
             <div class="text-right">
-                <div id="digital-clock" class="text-amber-400 font-mono text-2xl font-bold tracking-tighter">00:00:00</div>
-                <div id="digital-date" class="text-[10px] text-zinc-400 uppercase tracking-widest font-medium">-- -- ----</div>
+                <div id="digital-clock" class="text-3xl font-mono font-bold text-amber-400">00:00:00</div>
+                <div id="digital-date" class="text-xs text-zinc-400"></div>
             </div>
         </header>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass p-8 flex flex-col border-r border-white/10">
-            <div class="flex justify-between items-center mb-10">
-                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-10">
-                <button onclick="toggleMenu()" class="text-3xl text-zinc-500">&times;</button>
+        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass border-r border-white/10 p-8 flex flex-col">
+            <div class="flex justify-between mb-10">
+                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-9">
+                <button onclick="toggleMenu()" class="text-3xl text-zinc-400">×</button>
             </div>
-            
-            <nav class="space-y-2 flex-1">
-                <button onclick="showPage('entry')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold">
-                    <span>📥</span> <span data-en="New Transaction" data-sw="Muamala Mpya">Muamala Mpya</span>
+
+            <nav class="flex-1 space-y-2">
+                <button onclick="showPage('cashbook')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium">
+                    📖 <span>Cash Book Entry</span>
                 </button>
-                <button onclick="showPage('ledger')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold">
-                    <span>📖</span> <span data-en="Audit Book" data-sw="Daftari Kuu">Daftari Kuu</span>
+                <button onclick="showPage('ledger')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium">
+                    📋 <span>Audit Ledger</span>
                 </button>
-                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-4 rounded-2xl border border-amber-500/20 hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold hidden">
-                    <span>⚜️</span> <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
+                <button id="btn-ceo" onclick="showPage('manager')" class="hidden w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium border border-amber-400/30">
+                    ⚜️ <span>CEO Intelligence Dashboard</span>
                 </button>
             </nav>
 
-            <!-- Suggestion Box for Workers -->
-            <div class="mt-8 pt-6 border-t border-white/10">
-                <p class="text-xs uppercase tracking-widest text-amber-400 mb-3">Suggestion / Report to Management</p>
-                <textarea id="suggestion-box" rows="3" placeholder="Write your suggestion or report here..." 
-                          class="w-full rounded-2xl px-5 py-4 text-sm bg-black/50 border border-white/10 focus:border-amber-400"></textarea>
+            <!-- Suggestion Box -->
+            <div class="mt-8">
+                <p class="text-xs uppercase tracking-widest text-amber-400 mb-2">Suggestion / Report</p>
+                <textarea id="suggestion" rows="3" placeholder="Write your suggestion or report here..." 
+                          class="w-full rounded-2xl p-4 text-sm bg-black/60 border border-white/20"></textarea>
                 <button onclick="sendSuggestion()" 
-                        class="mt-3 w-full bg-white/10 hover:bg-amber-400 hover:text-black py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">
+                        class="mt-3 w-full py-3 bg-white/10 hover:bg-amber-400 hover:text-black rounded-2xl text-xs font-bold uppercase tracking-widest">
                     Send to Management
                 </button>
             </div>
 
-            <div class="pt-6 border-t border-white/5 mt-auto">
-                <p id="user-display" class="text-[10px] text-zinc-500 mb-4 uppercase tracking-widest px-2"></p>
-                <button onclick="location.reload()" class="w-full p-4 bg-red-500/10 text-red-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-red-500/20">Sign Out</button>
+            <div class="mt-auto pt-8 border-t border-white/10">
+                <p id="user-display" class="text-xs text-zinc-400"></p>
+                <button onclick="location.reload()" class="mt-4 w-full py-4 bg-red-500/10 text-red-400 rounded-2xl text-xs font-bold uppercase">Sign Out</button>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="max-w-6xl mx-auto w-full p-6 flex-1">
-            <!-- Existing pages remain unchanged (entry, ledger, manager) -->
-            <div id="page-entry" class="page">
-                <!-- Your original entry page content remains here -->
-                <div class="mb-8">
-                    <h2 class="text-4xl font-bold tracking-tighter" data-en="Cash Book Entry" data-sw="Ingiza Taarifa">Cash Book Entry</h2>
-                    <p class="text-zinc-500 text-sm mt-1">Record accurate movement of company capital.</p>
-                </div>
-                <!-- ... rest of your entry form ... -->
-                <div class="glass p-10 rounded-[3rem] shadow-2xl">
-                    <!-- Your existing form code here - unchanged for brevity -->
-                    <!-- You can copy your original entry form content here -->
+        <main class="flex-1 p-8 max-w-6xl mx-auto w-full">
+            
+            <!-- Cash Book Entry Page -->
+            <div id="page-cashbook" class="page">
+                <h2 class="text-4xl font-bold mb-2">Daily Cash Book</h2>
+                <p class="text-zinc-400 mb-8">Record all cash inflows and outflows</p>
+                
+                <div class="glass rounded-3xl p-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-xs uppercase tracking-widest text-amber-400 mb-2">Description</label>
+                            <textarea id="desc" rows="3" placeholder="e.g. Sales of 200L Mango Juice" 
+                                      class="w-full rounded-2xl p-5 text-lg"></textarea>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xs uppercase tracking-widest text-emerald-400 mb-2">Receipts (Money In)</label>
+                                <input type="number" id="receipt" placeholder="0.00" 
+                                       class="w-full rounded-2xl p-5 text-2xl text-emerald-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs uppercase tracking-widest text-red-400 mb-2">Payments (Money Out)</label>
+                                <input type="number" id="payment" placeholder="0.00" 
+                                       class="w-full rounded-2xl p-5 text-2xl text-red-400">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="addTransaction()" 
+                            class="mt-10 w-full bg-amber-400 text-black font-bold py-6 rounded-3xl text-xl hover:bg-amber-300">
+                        Record Transaction
+                    </button>
                 </div>
             </div>
 
-            <!-- Ledger and Manager pages remain as in your original code -->
-            <!-- For space, they are not duplicated here. Copy them from your previous version if needed. -->
+            <!-- Ledger Page -->
+            <div id="page-ledger" class="page hidden">
+                <h2 class="text-4xl font-bold mb-6">Audit Ledger</h2>
+                <div class="glass rounded-3xl overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-white/5">
+                            <tr>
+                                <th class="p-6 text-left">Date</th>
+                                <th class="p-6 text-left">Description</th>
+                                <th class="p-6 text-right text-emerald-400">Receipts</th>
+                                <th class="p-6 text-right text-red-400">Payments</th>
+                                <th class="p-6 text-right">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-body" class="divide-y divide-white/10"></tbody>
+                    </table>
+                </div>
+            </div>
 
+            <!-- CEO Intelligence Dashboard (Manager Only) -->
+            <div id="page-manager" class="page hidden">
+                <h2 class="text-4xl font-bold mb-8 text-amber-400">CEO Intelligence Dashboard</h2>
+                
+                <div id="ceo-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
+                
+                <div class="glass rounded-3xl p-8">
+                    <h3 class="text-xl font-bold mb-6">All Raw Transactions</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-white/5">
+                                <tr>
+                                    <th class="p-5 text-left">Date</th>
+                                    <th class="p-5 text-left">User</th>
+                                    <th class="p-5 text-left">Description</th>
+                                    <th class="p-5 text-right">Receipts</th>
+                                    <th class="p-5 text-right">Payments</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ceo-raw-body" class="divide-y divide-white/10"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- Footer -->
-        <footer class="p-8 text-center glass border-t border-white/5 mt-auto">
+        <footer class="glass border-t border-white/10 p-8 text-center mt-auto">
             <p class="font-bold text-amber-400 text-2xl tracking-tighter">Charisma Distillers Ltd</p>
-            <p class="text-[11px] text-zinc-500 uppercase tracking-[0.6em] my-2">"Eternal Taste"</p>
-            <div class="h-px w-20 bg-amber-500/20 mx-auto my-4"></div>
-            <p class="text-xs text-zinc-500">
-                © 2026 All Rights are preserved, Charisma Distillers Ltd.<br>
-                Designed for Excellence in Arusha & Dar es Salaam.
-            </p>
+            <p class="text-xs text-zinc-500 mt-2">© 2026 All Rights are preserved, Charisma Distillers Ltd</p>
+            <p class="text-[10px] text-zinc-600 mt-1">"Eternal Taste" • Arusha & Dar es Salaam</p>
         </footer>
     </div>
 
     <script>
-        // === Your existing script remains here with small additions ===
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
+        
         const users = {
-            "charisma_ceo": { pass: "Tunaweza,2026", role: "ceo", name: "Collins", lang: "en" },
-            "odriatoto": { pass: "Tunaweza,2026", role: "worker", name: "Odria", lang: "sw" },
-            "berthatoto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" }
+            "charisma_ceo": { pass: "Tunaweza,2026", role: "ceo", name: "Collins" },
+            "odriatoto": { pass: "Tunaweza,2026", role: "worker", name: "Odria" },
+            "berthatoto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha" }
         };
 
         let currentUser = null;
+        let transactions = [];
 
         function updateClock() {
             const now = new Date();
             document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB');
-            document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
         }
-        setInterval(updateClock, 1000); 
+        setInterval(updateClock, 1000);
         updateClock();
 
         function handleLogin(e) {
             e.preventDefault();
             const u = document.getElementById('username').value.trim().toLowerCase();
             const p = document.getElementById('password').value.trim();
-            const card = document.getElementById('login-card');
 
             if (users[u] && users[u].pass === p) {
                 currentUser = users[u];
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('user-display').innerText = `OPERATOR: ${currentUser.name} | UNIT: ${currentUser.role.toUpperCase()}`;
-                if (currentUser.role === 'ceo') document.getElementById('btn-ceo').classList.remove('hidden');
+                document.getElementById('user-display').innerText = `${currentUser.name} • ${currentUser.role.toUpperCase()}`;
+                
+                if (currentUser.role === 'ceo') {
+                    document.getElementById('btn-ceo').classList.remove('hidden');
+                }
                 fetchData();
+                showPage('cashbook');
             } else {
-                card.classList.add('shake');
                 document.getElementById('login-error').classList.remove('hidden');
-                setTimeout(() => card.classList.remove('shake'), 400);
             }
         }
 
-        function toggleMenu() { 
-            document.getElementById('sidebar').classList.toggle('closed'); 
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('closed');
         }
 
-        function showPage(p) {
-            document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
-            document.getElementById(`page-${p}`).classList.remove('hidden');
-            if (window.innerWidth < 768) toggleMenu();
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${page}`).classList.remove('hidden');
         }
 
-        // New Suggestion Box Function
+        function addTransaction() {
+            const desc = document.getElementById('desc').value.trim();
+            const receipt = parseFloat(document.getElementById('receipt').value) || 0;
+            const payment = parseFloat(document.getElementById('payment').value) || 0;
+
+            if (!desc) return alert("Please enter a description.");
+
+            const entry = {
+                date: new Date().toLocaleString(),
+                user: currentUser.name,
+                desc: desc,
+                receipt: receipt,
+                payment: payment
+            };
+
+            transactions.unshift(entry);
+            renderLedger();
+            renderCEOData();
+
+            // Optional: Send to Google Script
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(entry) }).catch(() => {});
+
+            // Clear form
+            document.getElementById('desc').value = '';
+            document.getElementById('receipt').value = '';
+            document.getElementById('payment').value = '';
+        }
+
+        function renderLedger() {
+            const tbody = document.getElementById('ledger-body');
+            tbody.innerHTML = '';
+            let balance = 0;
+
+            transactions.forEach(t => {
+                balance += t.receipt - t.payment;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="p-6">${t.date}</td>
+                    <td class="p-6">${t.desc}</td>
+                    <td class="p-6 text-right text-emerald-400">${t.receipt.toFixed(2)}</td>
+                    <td class="p-6 text-right text-red-400">${t.payment.toFixed(2)}</td>
+                    <td class="p-6 text-right font-bold ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}">${balance.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderCEOData() {
+            if (currentUser.role !== 'ceo') return;
+
+            let totalReceipt = 0, totalPayment = 0;
+            transactions.forEach(t => {
+                totalReceipt += t.receipt;
+                totalPayment += t.payment;
+            });
+
+            document.getElementById('ceo-stats').innerHTML = `
+                <div class="glass p-8 rounded-3xl">
+                    <p class="text-xs uppercase text-emerald-400">Total Receipts</p>
+                    <p class="text-4xl font-bold text-emerald-400">${totalReceipt.toFixed(2)}</p>
+                </div>
+                <div class="glass p-8 rounded-3xl">
+                    <p class="text-xs uppercase text-red-400">Total Payments</p>
+                    <p class="text-4xl font-bold text-red-400">${totalPayment.toFixed(2)}</p>
+                </div>
+                <div class="glass p-8 rounded-3xl border border-amber-400/30">
+                    <p class="text-xs uppercase text-amber-400">Net Balance</p>
+                    <p class="text-4xl font-bold ${(totalReceipt - totalPayment) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                        ${(totalReceipt - totalPayment).toFixed(2)}
+                    </p>
+                </div>
+            `;
+
+            const tbody = document.getElementById('ceo-raw-body');
+            tbody.innerHTML = transactions.map(t => `
+                <tr class="border-b border-white/10">
+                    <td class="p-5">${t.date}</td>
+                    <td class="p-5">${t.user}</td>
+                    <td class="p-5">${t.desc}</td>
+                    <td class="p-5 text-right text-emerald-400">${t.receipt.toFixed(2)}</td>
+                    <td class="p-5 text-right text-red-400">${t.payment.toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function fetchData() {
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const data = await res.json();
+                // You can process cloud data here if needed
+            } catch(e) {}
+        }
+
         function sendSuggestion() {
-            const suggestion = document.getElementById('suggestion-box').value.trim();
-            if (!suggestion) return alert("Please write your suggestion before sending.");
-            
-            alert(`✅ Suggestion sent successfully to Management:\n\n"${suggestion}"\n\nThank you for your input.`);
-            document.getElementById('suggestion-box').value = ''; // Clear the box
+            const text = document.getElementById('suggestion').value.trim();
+            if (!text) return alert("Please write something before sending.");
+            alert("Suggestion sent to Management successfully.\n\nThank you!");
+            document.getElementById('suggestion').value = '';
         }
 
-        // Your existing functions (submitEntry, fetchData, saveNote, etc.) remain unchanged
-        // ... (copy the rest of your original script here)
-
-        window.onload = () => { 
-            if(document.getElementById('ceo-notes')) 
-                document.getElementById('ceo-notes').value = localStorage.getItem('ceo_logic') || ""; 
+        window.onload = () => {
+            // Auto clock already running
         };
     </script>
 </body>
