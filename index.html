@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charisma Distillers Mauzo</title>
+    <title>Charisma Distillers • Finance Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -12,39 +12,43 @@
         /* LIQUID CLASSIC BACKGROUND */
         .liquid-bg {
             position: fixed; inset: 0; z-index: -1;
-            background: linear-gradient(45deg, #050505, #0a0a0a, #000814);
+            background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%);
         }
-        .blob {
-            position: absolute; width: 800px; height: 800px;
-            background: radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, rgba(79, 70, 229, 0.05) 50%, transparent 100%);
-            filter: blur(80px); border-radius: 50%; animation: liquid 20s infinite alternate ease-in-out;
+        .liquid-blob {
+            position: absolute; width: 900px; height: 900px;
+            background: radial-gradient(circle, rgba(250, 204, 21, 0.12) 0%, rgba(79, 70, 229, 0.08) 40%, transparent 70%);
+            filter: blur(100px); border-radius: 50%;
+            animation: flow 25s infinite alternate ease-in-out;
         }
-        @keyframes liquid {
-            0% { transform: translate(-10%, -10%) scale(1); }
-            100% { transform: translate(20%, 10%) scale(1.2); }
+        @keyframes flow {
+            0% { transform: translate(-20%, -20%) rotate(0deg); }
+            100% { transform: translate(30%, 15%) rotate(180deg); }
         }
 
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
         .sidebar.closed { transform: translateX(-100%); }
-        .hidden { display: none !important; }
         
-        /* SHAKE EFFECT */
-        .shake { animation: shake 0.4s both; border: 1px solid #ef4444 !important; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } }
+        input, select, textarea { 
+            background: rgba(0,0,0,0.6) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+        input:focus, select:focus { border-color: #facc15 !important; box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="liquid-bg"><div class="blob"></div></div>
+    <div class="liquid-bg"><div class="liquid-blob"></div></div>
 
     <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6">
-        <div id="login-card" class="glass p-12 rounded-[3rem] w-full max-w-md text-center">
-            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-24 mx-auto mb-6 drop-shadow-2xl">
-            <h2 class="text-2xl font-bold mb-8 tracking-tighter">Charisma Systems Login</h2>
+        <div id="login-card" class="glass p-12 rounded-[3rem] w-full max-w-md text-center border-amber-500/20">
+            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-28 mx-auto mb-6 drop-shadow-2xl">
+            <h2 class="text-xl font-bold mb-8 uppercase tracking-[0.3em] text-amber-400">Security Gateway</h2>
             <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="text" id="username" placeholder="Username" class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400 transition-all">
-                <input type="password" id="password" placeholder="Password" class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400 transition-all">
-                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl hover:brightness-110 active:scale-95 transition-all">Authorize Access</button>
+                <input type="text" id="username" placeholder="Authorized ID" class="w-full rounded-2xl px-6 py-4 outline-none transition-all">
+                <input type="password" id="password" placeholder="Access Code" class="w-full rounded-2xl px-6 py-4 outline-none transition-all">
+                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl hover:bg-amber-300 transition-all uppercase tracking-widest shadow-xl shadow-amber-500/20">Enter Vault</button>
             </form>
             <p id="login-error" class="text-red-500 text-xs mt-4 font-bold hidden">Incorrect username or password.</p>
         </div>
@@ -52,106 +56,143 @@
 
     <div id="main-app" class="hidden flex-1 flex flex-col">
         <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass border-b border-white/5">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleMenu()" class="p-3 hover:bg-white/5 rounded-xl transition-all">
+            <div class="flex items-center gap-6">
+                <button onclick="toggleMenu()" class="p-3 glass rounded-xl hover:bg-white/5 border border-white/10">
                     <div class="w-6 h-0.5 bg-amber-400 mb-1.5"></div>
                     <div class="w-4 h-0.5 bg-amber-400 mb-1.5"></div>
                     <div class="w-6 h-0.5 bg-amber-400"></div>
                 </button>
-                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-10 hidden md:block">
+                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-12">
             </div>
             
             <div class="text-right">
-                <div id="digital-clock" class="text-amber-400 font-mono text-lg font-bold">00:00:00</div>
-                <div id="digital-date" class="text-[9px] text-zinc-500 uppercase tracking-widest">Loading Date...</div>
+                <div id="digital-clock" class="text-amber-400 font-mono text-2xl font-bold tracking-tighter">00:00:00</div>
+                <div id="digital-date" class="text-[10px] text-zinc-400 uppercase tracking-widest font-medium">-- -- ----</div>
             </div>
         </header>
 
-        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-72 glass p-8 flex flex-col border-r border-white/10">
-            <div class="flex justify-between items-center mb-12">
-                <span class="text-xs font-bold text-amber-500 uppercase tracking-widest">Enterprise Menu</span>
+        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass p-8 flex flex-col border-r border-white/10">
+            <div class="flex justify-between items-center mb-10">
+                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-10">
                 <button onclick="toggleMenu()" class="text-3xl text-zinc-500">&times;</button>
             </div>
-            <nav class="space-y-3 flex-1">
-                <button onclick="showPage('entry')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-3 group">
-                    <span>📝</span> <span data-en="New Entry" data-sw="Ingizo Jipya">Ingizo Jipya</span>
+            <nav class="space-y-2 flex-1">
+                <button onclick="showPage('entry')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold">
+                    <span>📥</span> <span data-en="New Transaction" data-sw="Muamala Mpya">Muamala Mpya</span>
                 </button>
-                <button onclick="showPage('ledger')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-3 group">
-                    <span>📑</span> <span data-en="Public Ledger" data-sw="Daftari Kuu">Daftari Kuu</span>
+                <button onclick="showPage('ledger')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold">
+                    <span>📖</span> <span data-en="Audit Book" data-sw="Daftari Kuu">Daftari Kuu</span>
                 </button>
-                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-3 hidden">
-                    <span>💎</span> <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
+                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-4 rounded-2xl border border-amber-500/20 hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold hidden">
+                    <span>⚜️</span> <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
                 </button>
             </nav>
             <div class="pt-6 border-t border-white/5">
-                <p id="user-display" class="text-xs text-zinc-400 mb-4 px-2 italic"></p>
-                <button onclick="location.reload()" class="w-full p-4 bg-red-500/10 text-red-400 rounded-2xl font-bold text-sm hover:bg-red-500/20 transition-all">Terminate Session</button>
+                <p id="user-display" class="text-[10px] text-zinc-500 mb-4 uppercase tracking-widest px-2"></p>
+                <button onclick="location.reload()" class="w-full p-4 bg-red-500/10 text-red-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-red-500/20">Sign Out</button>
             </div>
         </aside>
 
-        <main class="max-w-5xl mx-auto w-full p-6 flex-1">
+        <main class="max-w-6xl mx-auto w-full p-6 flex-1">
             
             <div id="page-entry" class="page">
-                <h2 class="text-4xl font-bold mb-8 tracking-tighter" data-en="Record Transaction" data-sw="Rekodi Muamala">Rekodi Muamala</h2>
-                <div class="glass p-10 rounded-[3rem] space-y-8">
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase tracking-widest text-zinc-500 ml-4">Details / Maelezo</label>
-                        <input type="text" id="entry-desc" placeholder="..." class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400 text-lg">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase tracking-widest text-emerald-500 ml-4">Income (+)</label>
-                            <input type="number" id="entry-in" placeholder="0" class="w-full bg-black/40 border border-emerald-500/20 rounded-2xl px-6 py-4 text-emerald-400 text-xl font-bold outline-none">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-bold tracking-tighter" data-en="Cash Book Entry" data-sw="Ingiza Taarifa">Cash Book Entry</h2>
+                    <p class="text-zinc-500 text-sm mt-1">Record accurate movement of company capital.</p>
+                </div>
+                
+                <div class="glass p-10 rounded-[3rem] shadow-2xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest text-amber-500 font-bold ml-2">Transaction Details</label>
+                                <textarea id="entry-desc" rows="3" placeholder="e.g., Purchased 50kg Sugar, Sales from Arusha Route..." class="w-full rounded-2xl px-6 py-4 outline-none text-lg"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold ml-2">Category (Risk Management)</label>
+                                <select id="entry-cat" class="w-full rounded-2xl px-6 py-4 outline-none appearance-none">
+                                    <option value="Sales">Sales (Income)</option>
+                                    <option value="Raw Materials">Raw Materials (Fruits/Sugar)</option>
+                                    <option value="Logistics">Logistics / Fuel</option>
+                                    <option value="Packaging">Packaging (Bottles/Labels)</option>
+                                    <option value="Staff/Wages">Staff / Wages</option>
+                                    <option value="Office/Admin">Office / Administration</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase tracking-widest text-red-500 ml-4">Expense (-)</label>
-                            <input type="number" id="entry-out" placeholder="0" class="w-full bg-black/40 border border-red-500/20 rounded-2xl px-6 py-4 text-red-400 text-xl font-bold outline-none">
+
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] uppercase tracking-widest text-emerald-500 font-bold ml-2">Money In (+)</label>
+                                    <input type="number" id="entry-in" placeholder="0" class="w-full rounded-2xl px-6 py-4 text-emerald-400 text-xl font-bold outline-none">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] uppercase tracking-widest text-red-500 font-bold ml-2">Money Out (-)</label>
+                                    <input type="number" id="entry-out" placeholder="0" class="w-full rounded-2xl px-6 py-4 text-red-400 text-xl font-bold outline-none">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold ml-2">Payment Method</label>
+                                <select id="entry-method" class="w-full rounded-2xl px-6 py-4 outline-none">
+                                    <option value="Cash">Physical Cash</option>
+                                    <option value="M-Pesa">M-Pesa / Mobile Money</option>
+                                    <option value="Bank">Bank Transfer (CRDB/NMB)</option>
+                                    <option value="Cheque">Company Cheque</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-6 rounded-3xl text-xl hover:bg-amber-400 transition-all">Push to Cloud</button>
+                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-6 rounded-3xl text-xl hover:bg-amber-400 transition-all uppercase tracking-[0.2em]">Authorize & Push to Cloud</button>
                 </div>
             </div>
 
             <div id="page-ledger" class="page hidden">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-4xl font-bold tracking-tighter" data-en="History" data-sw="Kumbukumbu">Kumbukumbu</h2>
-                    <button onclick="fetchData()" class="bg-white/5 px-6 py-3 rounded-xl hover:bg-white/10">🔄 Refresh</button>
+                    <h2 class="text-4xl font-bold tracking-tighter">Enterprise Ledger</h2>
+                    <button onclick="fetchData()" class="bg-amber-400 text-black px-6 py-3 rounded-xl font-bold text-xs uppercase">🔄 Sync Audit</button>
                 </div>
-                <div class="glass rounded-[2rem] overflow-x-auto">
+                <div class="glass rounded-[2.5rem] overflow-x-auto border border-white/5">
                     <table class="w-full text-left">
-                        <thead class="bg-white/5">
-                            <tr class="text-[10px] uppercase text-zinc-500 tracking-widest font-bold">
-                                <th class="p-6">Staff</th><th class="p-6">Time</th><th class="p-6">Description</th><th class="p-6 text-right">Amount</th>
+                        <thead class="bg-white/5 text-[10px] uppercase text-zinc-500 tracking-widest">
+                            <tr>
+                                <th class="p-6">Auth User</th><th class="p-6">Timestamp</th><th class="p-6">Category</th><th class="p-6">Description</th><th class="p-6">Method</th><th class="p-6 text-right">Net</th>
                             </tr>
                         </thead>
-                        <tbody id="ledger-tbody" class="divide-y divide-white/5"></tbody>
+                        <tbody id="ledger-tbody" class="divide-y divide-white/5 text-sm"></tbody>
                     </table>
                 </div>
             </div>
 
             <div id="page-manager" class="page hidden">
-                <h2 class="text-4xl font-bold mb-8 tracking-tighter">CEO Strategy Desk</h2>
+                <h2 class="text-4xl font-bold mb-8 tracking-tighter text-amber-400">Strategy Command</h2>
                 <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 glass p-8 rounded-[2.5rem]">
-                        <h3 class="font-bold mb-4 text-amber-400 uppercase text-xs tracking-widest">Global Audit Trail</h3>
-                        <div id="manager-audit" class="space-y-4"></div>
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="glass p-8 rounded-[2.5rem]">
+                            <h3 class="font-bold mb-6 text-zinc-400 uppercase text-xs tracking-[0.3em]">Critical Transaction Flow</h3>
+                            <div id="manager-audit" class="space-y-4"></div>
+                        </div>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="font-bold mb-4 text-emerald-400 uppercase text-xs tracking-widest">Manager's Suggestion Box</h3>
-                        <textarea placeholder="Note down future juice flavors or staff tasks..." class="w-full h-48 bg-black/40 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-emerald-400"></textarea>
-                        <button class="w-full mt-4 bg-emerald-500/20 text-emerald-400 py-3 rounded-xl font-bold text-xs">SAVE STRATEGY</button>
+                    <div class="space-y-8">
+                        <div class="glass p-8 rounded-[2.5rem] border-emerald-500/20">
+                            <h3 class="font-bold mb-4 text-emerald-400 uppercase text-xs tracking-widest">Risk Management Box</h3>
+                            <p class="text-[10px] text-zinc-500 mb-4">Internal notes for production scaling and risk mitigation.</p>
+                            <textarea id="ceo-notes" placeholder="e.g., Reserve 1M TZS for next month's bottle import..." class="w-full h-40 rounded-2xl p-4 text-sm outline-none"></textarea>
+                            <button onclick="saveNote()" class="w-full mt-4 bg-emerald-500/10 text-emerald-400 py-4 rounded-xl font-bold text-xs uppercase tracking-widest border border-emerald-500/20">Store Logic</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </main>
 
-        <footer class="p-8 text-center glass border-t border-white/5 mt-auto">
-            <p class="font-bold text-amber-400 text-lg">Charisma Distillers Ltd</p>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.4em] mb-4 italic">"Eternal Taste"</p>
-            <p class="text-[9px] text-zinc-600">@2026 All rights are preserved. Secured by Nebula Systems.</p>
+        <footer class="p-10 text-center glass border-t border-white/5 mt-auto">
+            <p class="font-bold text-amber-400 text-2xl tracking-tighter">Charisma Distillers Ltd</p>
+            <p class="text-[11px] text-zinc-500 uppercase tracking-[0.6em] my-3">"Eternal Taste"</p>
+            <div class="h-px w-20 bg-amber-500/20 mx-auto my-4"></div>
+            <p class="text-[9px] text-zinc-600 font-medium">@2026 Charisma Distillers. All rights are preserved. <br>Designed for Excellence in Arusha & Dar es Salaam.</p>
         </footer>
     </div>
 
@@ -164,7 +205,6 @@
             "berthatoto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" }
         };
 
-        let currentLang = 'sw';
         let currentUser = null;
 
         // CLOCK SYSTEM
@@ -173,121 +213,4 @@
             document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB');
             document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('username').value.trim().toLowerCase();
-            const p = document.getElementById('password').value.trim();
-            const card = document.getElementById('login-card');
-            const err = document.getElementById('login-error');
-
-            if (users[u] && users[u].pass === p) {
-                currentUser = users[u];
-                currentLang = currentUser.lang;
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('user-display').innerText = `Active Session: ${currentUser.name} (${currentUser.role})`;
-                if (currentUser.role === 'ceo') document.getElementById('btn-ceo').classList.remove('hidden');
-                updateTranslations();
-                fetchData(); // Pre-load data
-            } else {
-                card.classList.add('shake');
-                err.classList.remove('hidden');
-                setTimeout(() => card.classList.remove('shake'), 400);
-            }
-        }
-
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('closed'); }
-        function showPage(p) {
-            document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
-            document.getElementById(`page-${p}`).classList.remove('hidden');
-            if (window.innerWidth < 768) toggleMenu();
-        }
-
-        function updateTranslations() {
-            document.querySelectorAll('[data-en]').forEach(el => {
-                el.innerText = el.getAttribute(`data-${currentLang}`);
-            });
-        }
-
-        async function submitEntry() {
-            const btn = document.getElementById('submit-btn');
-            const desc = document.getElementById('entry-desc').value;
-            const rin = document.getElementById('entry-in').value || 0;
-            const rout = document.getElementById('entry-out').value || 0;
-
-            if (!desc) return alert("Please add details!");
-
-            const data = {
-                user: currentUser.name,
-                date: new Date().toLocaleString(),
-                desc: desc,
-                receipt: rin,
-                payment: rout
-            };
-
-            btn.innerText = "Encrypting & Syncing...";
-            btn.disabled = true;
-
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-                alert("Cloud Sync Successful.");
-                location.reload();
-            } catch (e) {
-                alert("Network failure.");
-                btn.innerText = "Push to Cloud";
-                btn.disabled = false;
-            }
-        }
-
-        async function fetchData() {
-            try {
-                const res = await fetch(SCRIPT_URL);
-                const data = await res.json();
-                const rows = data.slice(1).reverse();
-                
-                const ledgerBody = document.getElementById('ledger-tbody');
-                const auditDiv = document.getElementById('manager-audit');
-                const statsDiv = document.getElementById('stats');
-
-                let totalIn = 0, totalOut = 0;
-
-                const tableHTML = rows.map(r => {
-                    const tin = parseFloat(r[4]) || 0;
-                    const tout = parseFloat(r[5]) || 0;
-                    totalIn += tin; totalOut += tout;
-                    return `
-                        <tr>
-                            <td class="p-6 font-bold text-amber-400 text-xs">${r[1]}</td>
-                            <td class="p-6 text-zinc-500 text-[10px]">${r[2]}</td>
-                            <td class="p-6 text-sm font-medium">${r[3]}</td>
-                            <td class="p-6 text-right font-mono font-bold ${tin > 0 ? 'text-emerald-400' : 'text-red-400'}">
-                                ${tin > 0 ? '+'+tin.toLocaleString() : '-'+tout.toLocaleString()}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-
-                ledgerBody.innerHTML = tableHTML;
-                
-                if (currentUser.role === 'ceo') {
-                    auditDiv.innerHTML = rows.slice(0, 5).map(r => `
-                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <div><p class="text-xs font-bold text-amber-400">${r[1]}</p><p class="text-[10px] text-zinc-500">${r[3]}</p></div>
-                            <div class="text-right"><p class="font-bold text-sm">${(parseFloat(r[4])||parseFloat(r[5])).toLocaleString()}</p></div>
-                        </div>
-                    `).join('');
-
-                    statsDiv.innerHTML = `
-                        <div class="glass p-8 rounded-3xl"><p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Total Collections</p><p class="text-3xl font-bold text-emerald-400">${totalIn.toLocaleString()}</p></div>
-                        <div class="glass p-8 rounded-3xl"><p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Total Payouts</p><p class="text-3xl font-bold text-red-400">${totalOut.toLocaleString()}</p></div>
-                        <div class="glass p-8 rounded-3xl border-amber-400/20"><p class="text-[10px] text-amber-500 uppercase font-bold mb-1">Net Reserve</p><p class="text-3xl font-bold text-white">${(totalIn - totalOut).toLocaleString()}</p></div>
-                    `;
-                }
-            } catch (e) { console.log("Data fetch pending or failed."); }
-        }
-    </script>
-</body>
-</html>
+        setInterval
