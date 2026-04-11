@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashBook • CHARISMA DISTILLERS LIMITED</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', system-ui, sans-serif;
+            background: radial-gradient(circle at center, #0a0a0a, #000000);
+        }
+        
+        .logo-font {
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        
+        .glass { 
+            background: rgba(10,10,10,0.88); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(250,204,21,0.25); 
+        }
+        
+        .neon-gold { 
+            box-shadow: 0 0 30px -8px #facc15, 0 0 15px -5px #facc15; 
+        }
+        
+        .header-glow { 
+            animation: headerPulse 5s infinite alternate ease-in-out; 
+        }
+        
+        @keyframes headerPulse {
+            from { box-shadow: 0 0 20px -5px #facc15; }
+            to { box-shadow: 0 0 45px 8px #facc15; }
+        }
+        
+        .transaction-row { 
+            animation: fadeIn 0.4s ease forwards; 
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1, h2, h3, h4, button {
+            font-family: 'Ubuntu', sans-serif;
+        }
+    </style>
+</head>
+<body class="text-zinc-200 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-amber-500/30 bg-black/90 sticky top-0 z-50 header-glow">
+        <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" 
+                     alt="CHARISMA DISTILLERS LIMITED" 
+                     class="h-16 w-auto object-contain">
+                <div>
+                    <h1 class="logo-font text-4xl tracking-tighter text-amber-300">CHARISMA</h1>
+                    <p class="text-[10px] tracking-[4px] text-amber-400 -mt-1">DISTILLERS LIMITED</p>
+                </div>
+            </div>
+            <div id="user-info" class="flex items-center gap-4 text-sm"></div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto flex">
+        <!-- Sidebar -->
+        <div class="w-72 border-r border-amber-500/20 min-h-screen py-10 px-6 hidden lg:flex flex-col bg-black/60">
+            <nav class="space-y-2">
+                <button onclick="showSection('cashbook')" id="btn-cashbook" class="nav-btn active w-full text-left px-6 py-4 rounded-2xl flex items-center gap-3 text-lg neon-gold">📖 Daily Cash Book</button>
+                <button onclick="showSection('reports')" id="btn-reports" class="nav-btn w-full text-left px-6 py-4 rounded-2xl flex items-center gap-3 text-lg" style="display:none;">📊 Reports & Analytics</button>
+                <button onclick="showSection('vault')" id="btn-vault" class="nav-btn w-full text-left px-6 py-4 rounded-2xl flex items-center gap-3 text-lg" style="display:none;">🔐 Data Vault (Manager)</button>
+            </nav>
+            <button onclick="logout()" class="mt-auto w-full py-4 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-2xl">Sign Out</button>
+        </div>
+
+        <div class="flex-1 p-10">
+            <!-- Cash Book Section -->
+            <div id="cashbook-section">
+                <h2 class="text-4xl font-semibold mb-2">Daily Cash Book</h2>
+                <p class="text-amber-300 mb-8">Record transactions and track live balance</p>
+
+                <!-- Add Transaction -->
+                <div class="glass rounded-3xl p-8 mb-10">
+                    <h3 class="text-xl font-medium mb-6">New Transaction</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                        <div><label class="block text-amber-300 text-sm mb-2">Date</label><input type="date" id="trans-date" class="w-full bg-zinc-900 border border-amber-500/30 rounded-2xl px-5 py-4"></div>
+                        <div><label class="block text-amber-300 text-sm mb-2">Voucher</label><input type="text" id="trans-voucher" placeholder="VC-001" class="w-full bg-zinc-900 border border-amber-500/30 rounded-2xl px-5 py-4"></div>
+                        <div class="md:col-span-2"><label class="block text-amber-300 text-sm mb-2">Particulars</label><input type="text" id="trans-desc" placeholder="Sales of Orange Juice" class="w-full bg-zinc-900 border border-amber-500/30 rounded-2xl px-5 py-4"></div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div><label class="block text-emerald-400 text-sm mb-2">Receipts (+)</label><input type="number" id="trans-receipt" value="0" step="0.01" class="w-full bg-zinc-900 border border-emerald-500/30 rounded-2xl px-5 py-4 text-emerald-400"></div>
+                            <div><label class="block text-red-400 text-sm mb-2">Payments (-)</label><input type="number" id="trans-payment" value="0" step="0.01" class="w-full bg-zinc-900 border border-red-500/30 rounded-2xl px-5 py-4 text-red-400"></div>
+                        </div>
+                    </div>
+                    <button onclick="addTransaction()" class="mt-8 w-full bg-gradient-to-r from-amber-400 to-yellow-400 text-black font-medium py-5 rounded-2xl">Record Transaction</button>
+                </div>
+
+                <!-- Ledger -->
+                <div class="glass rounded-3xl overflow-hidden">
+                    <div class="px-8 py-6 border-b border-amber-500/30 flex justify-between">
+                        <h3 class="text-xl font-medium">Transaction Ledger</h3>
+                        <input id="search-input" onkeyup="filterLedger()" placeholder="Search transactions..." class="bg-zinc-900 border border-amber-500/30 rounded-2xl px-5 py-2 w-64">
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-black/50"><tr><th class="px-8 py-5 text-left">Date</th><th class="px-8 py-5 text-left">Voucher</th><th class="px-8 py-5 text-left">Particulars</th><th class="px-8 py-5 text-right text-emerald-400">Receipts</th><th class="px-8 py-5 text-right text-red-400">Payments</th><th class="px-8 py-5 text-right">Balance</th></tr></thead>
+                            <tbody id="ledger-tbody" class="divide-y divide-amber-500/10"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section (Manager) -->
+            <div id="reports-section" class="hidden">
+                <h2 class="text-4xl font-semibold mb-8">Financial Reports</h2>
+                <div id="summary-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"></div>
+                <div class="glass rounded-3xl p-8">
+                    <h3 class="text-xl mb-6">Cash Flow Trend</h3>
+                    <canvas id="cash-chart" height="120"></canvas>
+                </div>
+            </div>
+
+            <!-- Data Vault (Manager) -->
+            <div id="vault-section" class="hidden">
+                <h2 class="text-4xl font-semibold mb-6">Data Vault - Manager Only</h2>
+                <div class="glass rounded-3xl p-8">
+                    <div class="flex justify-between mb-6">
+                        <h3 class="text-xl font-medium">All Transactions</h3>
+                        <button onclick="clearAllData()" class="px-6 py-2 bg-red-600/20 text-red-400 rounded-2xl text-sm">Clear All Data</button>
+                    </div>
+                    <table class="w-full">
+                        <thead><tr class="border-b"><th class="px-6 py-4 text-left">Date</th><th class="px-6 py-4 text-left">Voucher</th><th class="px-6 py-4 text-left">Description</th><th class="px-6 py-4 text-right">Receipts</th><th class="px-6 py-4 text-right">Payments</th><th class="px-6 py-4">Action</th></tr></thead>
+                        <tbody id="vault-tbody" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const users = {
+            "manager@charismajuice.com": { password: "Charisma2026!", role: "manager" },
+            "worker1@charismajuice.com": { password: "WorkerPass1!", role: "worker" },
+            "worker2@charismajuice.com": { password: "WorkerPass2!", role: "worker" }
+        };
+
+        let currentUser = null;
+        let transactions = JSON.parse(localStorage.getItem('charisma_cashbook')) || [];
+
+        function renderUserInfo() {
+            document.getElementById('user-info').innerHTML = `
+                <span class="px-5 py-2 bg-amber-500/10 border border-amber-400/30 rounded-3xl text-amber-300">${currentUser.email} • ${currentUser.role.toUpperCase()}</span>
+            `;
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('#cashbook-section, #reports-section, #vault-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(section + '-section').classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + section).classList.add('active');
+            if (section === 'reports') renderReports();
+            if (section === 'vault') renderVault();
+        }
+
+        function addTransaction() {
+            const date = document.getElementById('trans-date').value;
+            const voucher = document.getElementById('trans-voucher').value || 'VC-' + Date.now().toString().slice(-6);
+            const desc = document.getElementById('trans-desc').value.trim();
+            const receipt = parseFloat(document.getElementById('trans-receipt').value) || 0;
+            const payment = parseFloat(document.getElementById('trans-payment').value) || 0;
+
+            if (!date || !desc) return alert('Date and Particulars are required.');
+
+            transactions.unshift({id: Date.now(), date, voucher, description: desc, receipt, payment});
+            localStorage.setItem('charisma_cashbook', JSON.stringify(transactions));
+            renderLedger();
+            document.getElementById('trans-voucher').value = '';
+            document.getElementById('trans-desc').value = '';
+            document.getElementById('trans-receipt').value = '0';
+            document.getElementById('trans-payment').value = '0';
+        }
+
+        function renderLedger(filtered = transactions) {
+            const tbody = document.getElementById('ledger-tbody');
+            tbody.innerHTML = '';
+            let balance = 0;
+            filtered.forEach(t => {
+                balance += t.receipt - t.payment;
+                const row = document.createElement('tr');
+                row.className = 'transaction-row';
+                row.innerHTML = `
+                    <td class="px-8 py-6">${t.date}</td>
+                    <td class="px-8 py-6">${t.voucher}</td>
+                    <td class="px-8 py-6">${t.description}</td>
+                    <td class="px-8 py-6 text-right text-emerald-400">${t.receipt.toFixed(2)}</td>
+                    <td class="px-8 py-6 text-right text-red-400">${t.payment.toFixed(2)}</td>
+                    <td class="px-8 py-6 text-right font-medium ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}">${balance.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            if (filtered.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-amber-300">No transactions found.</td></tr>';
+        }
+
+        function filterLedger() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = transactions.filter(t => t.description.toLowerCase().includes(term) || t.voucher.toLowerCase().includes(term));
+            renderLedger(filtered);
+        }
+
+        function renderReports() {
+            let totalRec = 0, totalPay = 0;
+            transactions.forEach(t => { totalRec += t.receipt; totalPay += t.payment; });
+            const net = totalRec - totalPay;
+
+            document.getElementById('summary-cards').innerHTML = `
+                <div class="glass rounded-3xl p-8 text-center"><div class="text-emerald-400 text-sm">TOTAL RECEIPTS</div><div class="text-5xl font-medium mt-3">${totalRec.toFixed(2)}</div></div>
+                <div class="glass rounded-3xl p-8 text-center"><div class="text-red-400 text-sm">TOTAL PAYMENTS</div><div class="text-5xl font-medium mt-3">${totalPay.toFixed(2)}</div></div>
+                <div class="glass rounded-3xl p-8 text-center neon-gold"><div class="text-amber-300 text-sm">NET BALANCE</div><div class="text-5xl font-medium mt-3 ${net >= 0 ? 'text-emerald-400' : 'text-red-400'}">${net.toFixed(2)}</div></div>
+            `;
+
+            const ctx = document.getElementById('cash-chart');
+            if (window.myChart) window.myChart.destroy();
+            const dates = [...new Set(transactions.map(t => t.date))].sort();
+            const recData = dates.map(d => transactions.filter(t => t.date === d).reduce((sum, t) => sum + t.receipt, 0));
+            const payData = dates.map(d => transactions.filter(t => t.date === d).reduce((sum, t) => sum + t.payment, 0));
+
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: dates, datasets: [
+                    { label: 'Receipts', data: recData, borderColor: '#10b981', tension: 0.4 },
+                    { label: 'Payments', data: payData, borderColor: '#ef4444', tension: 0.4 }
+                ]},
+                options: { plugins: { legend: { position: 'top' } } }
+            });
+        }
+
+        function renderVault() {
+            const tbody = document.getElementById('vault-tbody');
+            tbody.innerHTML = '';
+            transactions.forEach((t, i) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-5">${t.date}</td>
+                    <td class="px-6 py-5">${t.voucher}</td>
+                    <td class="px-6 py-5">${t.description}</td>
+                    <td class="px-6 py-5 text-right text-emerald-400">${t.receipt.toFixed(2)}</td>
+                    <td class="px-6 py-5 text-right text-red-400">${t.payment.toFixed(2)}</td>
+                    <td class="px-6 py-5"><button onclick="deleteTransaction(${i})" class="text-red-400 hover:text-red-300">Delete</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function deleteTransaction(index) {
+            if (confirm('Delete this transaction permanently?')) {
+                transactions.splice(index, 1);
+                localStorage.setItem('charisma_cashbook', JSON.stringify(transactions));
+                renderLedger();
+                renderVault();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('WARNING: Erase ALL data?')) {
+                transactions = [];
+                localStorage.removeItem('charisma_cashbook');
+                renderLedger();
+                renderVault();
+            }
+        }
+
+        function logout() { location.reload(); }
+
+        // Initialize as Manager (since login was successful)
+        window.onload = () => {
+            currentUser = { email: "manager@charismajuice.com", role: "manager" };
+            renderUserInfo();
+            document.getElementById('btn-reports').style.display = 'flex';
+            document.getElementById('btn-vault').style.display = 'flex';
+            document.getElementById('trans-date').value = new Date().toISOString().split('T')[0];
+            renderLedger();
+            showSection('cashbook');
+        };
+    </script>
+</body>
+</html>
