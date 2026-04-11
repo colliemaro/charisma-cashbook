@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charisma Distillers • Finance Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Ubuntu', sans-serif; background: #050505; color: white; margin: 0; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
-        
-        /* LIQUID CLASSIC BACKGROUND */
+        body { 
+            font-family: 'Ubuntu', sans-serif; 
+            background: #050505; 
+            color: white; 
+            margin: 0; 
+            overflow-x: hidden; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
+       
         .liquid-bg {
             position: fixed; inset: 0; z-index: -1;
             background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%);
@@ -24,23 +32,29 @@
             0% { transform: translate(-20%, -20%) rotate(0deg); }
             100% { transform: translate(30%, 15%) rotate(180deg); }
         }
-
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(40px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
         .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
         .sidebar.closed { transform: translateX(-100%); }
-        
-        input, select, textarea { 
-            background: rgba(0,0,0,0.6) !important; 
+       
+        input, select, textarea {
+            background: rgba(0,0,0,0.6) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             color: white !important;
         }
-        input:focus, select:focus { border-color: #facc15 !important; box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
-        .hidden { display: none !important; }
+        input:focus, select:focus { 
+            border-color: #facc15 !important; 
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); 
+        }
     </style>
 </head>
 <body>
     <div class="liquid-bg"><div class="liquid-blob"></div></div>
 
+    <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6">
         <div id="login-card" class="glass p-12 rounded-[3rem] w-full max-w-md text-center border-amber-500/20">
             <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-28 mx-auto mb-6 drop-shadow-2xl">
@@ -54,7 +68,9 @@
         </div>
     </div>
 
+    <!-- Main Application -->
     <div id="main-app" class="hidden flex-1 flex flex-col">
+        <!-- Header with Logo -->
         <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass border-b border-white/5">
             <div class="flex items-center gap-6">
                 <button onclick="toggleMenu()" class="p-3 glass rounded-xl hover:bg-white/5 border border-white/10">
@@ -63,19 +79,25 @@
                     <div class="w-6 h-0.5 bg-amber-400"></div>
                 </button>
                 <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-12">
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tighter text-amber-300">CHARISMA DISTILLERS</h1>
+                    <p class="text-[10px] text-amber-400 tracking-widest">FINANCE VAULT</p>
+                </div>
             </div>
-            
+           
             <div class="text-right">
                 <div id="digital-clock" class="text-amber-400 font-mono text-2xl font-bold tracking-tighter">00:00:00</div>
                 <div id="digital-date" class="text-[10px] text-zinc-400 uppercase tracking-widest font-medium">-- -- ----</div>
             </div>
         </header>
 
+        <!-- Sidebar -->
         <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass p-8 flex flex-col border-r border-white/10">
             <div class="flex justify-between items-center mb-10">
                 <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-10">
                 <button onclick="toggleMenu()" class="text-3xl text-zinc-500">&times;</button>
             </div>
+            
             <nav class="space-y-2 flex-1">
                 <button onclick="showPage('entry')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 font-bold">
                     <span>📥</span> <span data-en="New Transaction" data-sw="Muamala Mpya">Muamala Mpya</span>
@@ -87,130 +109,6 @@
                     <span>⚜️</span> <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
                 </button>
             </nav>
-            <div class="pt-6 border-t border-white/5">
-                <p id="user-display" class="text-[10px] text-zinc-500 mb-4 uppercase tracking-widest px-2"></p>
-                <button onclick="location.reload()" class="w-full p-4 bg-red-500/10 text-red-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-red-500/20">Sign Out</button>
-            </div>
-        </aside>
 
-        <main class="max-w-6xl mx-auto w-full p-6 flex-1">
-            
-            <div id="page-entry" class="page">
-                <div class="mb-8">
-                    <h2 class="text-4xl font-bold tracking-tighter" data-en="Cash Book Entry" data-sw="Ingiza Taarifa">Cash Book Entry</h2>
-                    <p class="text-zinc-500 text-sm mt-1">Record accurate movement of company capital.</p>
-                </div>
-                
-                <div class="glass p-10 rounded-[3rem] shadow-2xl">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="space-y-6">
-                            <div class="space-y-2">
-                                <label class="text-[10px] uppercase tracking-widest text-amber-500 font-bold ml-2">Transaction Details</label>
-                                <textarea id="entry-desc" rows="3" placeholder="e.g., Purchased 50kg Sugar, Sales from Arusha Route..." class="w-full rounded-2xl px-6 py-4 outline-none text-lg"></textarea>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold ml-2">Category (Risk Management)</label>
-                                <select id="entry-cat" class="w-full rounded-2xl px-6 py-4 outline-none appearance-none">
-                                    <option value="Sales">Sales (Income)</option>
-                                    <option value="Raw Materials">Raw Materials (Fruits/Sugar)</option>
-                                    <option value="Logistics">Logistics / Fuel</option>
-                                    <option value="Packaging">Packaging (Bottles/Labels)</option>
-                                    <option value="Staff/Wages">Staff / Wages</option>
-                                    <option value="Office/Admin">Office / Administration</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="space-y-2">
-                                    <label class="text-[10px] uppercase tracking-widest text-emerald-500 font-bold ml-2">Money In (+)</label>
-                                    <input type="number" id="entry-in" placeholder="0" class="w-full rounded-2xl px-6 py-4 text-emerald-400 text-xl font-bold outline-none">
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-[10px] uppercase tracking-widest text-red-500 font-bold ml-2">Money Out (-)</label>
-                                    <input type="number" id="entry-out" placeholder="0" class="w-full rounded-2xl px-6 py-4 text-red-400 text-xl font-bold outline-none">
-                                </div>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] uppercase tracking-widest text-zinc-500 font-bold ml-2">Payment Method</label>
-                                <select id="entry-method" class="w-full rounded-2xl px-6 py-4 outline-none">
-                                    <option value="Cash">Physical Cash</option>
-                                    <option value="M-Pesa">M-Pesa / Mobile Money</option>
-                                    <option value="Bank">Bank Transfer (CRDB/NMB)</option>
-                                    <option value="Cheque">Company Cheque</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-6 rounded-3xl text-xl hover:bg-amber-400 transition-all uppercase tracking-[0.2em]">Authorize & Push to Cloud</button>
-                </div>
-            </div>
-
-            <div id="page-ledger" class="page hidden">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-4xl font-bold tracking-tighter">Enterprise Ledger</h2>
-                    <button onclick="fetchData()" class="bg-amber-400 text-black px-6 py-3 rounded-xl font-bold text-xs uppercase">🔄 Sync Audit</button>
-                </div>
-                <div class="glass rounded-[2.5rem] overflow-x-auto border border-white/5">
-                    <table class="w-full text-left">
-                        <thead class="bg-white/5 text-[10px] uppercase text-zinc-500 tracking-widest">
-                            <tr>
-                                <th class="p-6">Auth User</th><th class="p-6">Timestamp</th><th class="p-6">Category</th><th class="p-6">Description</th><th class="p-6">Method</th><th class="p-6 text-right">Net</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ledger-tbody" class="divide-y divide-white/5 text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="page-manager" class="page hidden">
-                <h2 class="text-4xl font-bold mb-8 tracking-tighter text-amber-400">Strategy Command</h2>
-                <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 space-y-8">
-                        <div class="glass p-8 rounded-[2.5rem]">
-                            <h3 class="font-bold mb-6 text-zinc-400 uppercase text-xs tracking-[0.3em]">Critical Transaction Flow</h3>
-                            <div id="manager-audit" class="space-y-4"></div>
-                        </div>
-                    </div>
-                    <div class="space-y-8">
-                        <div class="glass p-8 rounded-[2.5rem] border-emerald-500/20">
-                            <h3 class="font-bold mb-4 text-emerald-400 uppercase text-xs tracking-widest">Risk Management Box</h3>
-                            <p class="text-[10px] text-zinc-500 mb-4">Internal notes for production scaling and risk mitigation.</p>
-                            <textarea id="ceo-notes" placeholder="e.g., Reserve 1M TZS for next month's bottle import..." class="w-full h-40 rounded-2xl p-4 text-sm outline-none"></textarea>
-                            <button onclick="saveNote()" class="w-full mt-4 bg-emerald-500/10 text-emerald-400 py-4 rounded-xl font-bold text-xs uppercase tracking-widest border border-emerald-500/20">Store Logic</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <footer class="p-10 text-center glass border-t border-white/5 mt-auto">
-            <p class="font-bold text-amber-400 text-2xl tracking-tighter">Charisma Distillers Ltd</p>
-            <p class="text-[11px] text-zinc-500 uppercase tracking-[0.6em] my-3">"Eternal Taste"</p>
-            <div class="h-px w-20 bg-amber-500/20 mx-auto my-4"></div>
-            <p class="text-[9px] text-zinc-600 font-medium">@2026 Charisma Distillers. All rights are preserved. <br>Designed for Excellence in Arusha & Dar es Salaam.</p>
-        </footer>
-    </div>
-
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
-
-        const users = {
-            "charisma_ceo": { pass: "Tunaweza,2026", role: "ceo", name: "Collins", lang: "en" },
-            "odriatoto": { pass: "Tunaweza,2026", role: "worker", name: "Odria", lang: "sw" },
-            "berthatoto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" }
-        };
-
-        let currentUser = null;
-
-        // CLOCK SYSTEM
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB');
-            document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }
-        setInterval
+            <!-- Suggestion Box for Workers -->
+            <div class="mt-8 pt
