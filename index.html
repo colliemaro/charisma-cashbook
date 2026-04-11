@@ -7,67 +7,41 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Ubuntu', sans-serif; 
-            background: #050505; 
-            color: white; 
-            margin: 0; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-        }
-        .liquid-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%);
-        }
+        body { font-family: 'Ubuntu', sans-serif; background: #050505; color: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        .liquid-bg { position: fixed; inset: 0; z-index: -1; background: linear-gradient(135deg, #050505 0%, #0a0a1a 100%); }
         .liquid-blob {
             position: absolute; width: 900px; height: 900px;
             background: radial-gradient(circle, rgba(250,204,21,0.12) 0%, rgba(79,70,229,0.08) 40%, transparent 70%);
-            filter: blur(100px); border-radius: 50%;
-            animation: flow 25s infinite alternate ease-in-out;
+            filter: blur(100px); border-radius: 50%; animation: flow 25s infinite alternate ease-in-out;
         }
-        @keyframes flow {
-            0% { transform: translate(-20%, -20%) rotate(0deg); }
-            100% { transform: translate(30%, 15%) rotate(180deg); }
-        }
-        .glass { 
-            background: rgba(255,255,255,0.03); 
-            backdrop-filter: blur(40px); 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
+        @keyframes flow { 0% { transform: translate(-20%, -20%) rotate(0deg); } 100% { transform: translate(30%, 15%) rotate(180deg); } }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.1); }
         .sidebar { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); z-index: 100; }
         .sidebar.closed { transform: translateX(-100%); }
-        input, select, textarea {
-            background: rgba(0,0,0,0.6) !important;
-            border: 1px solid rgba(255,255,255,0.15) !important;
-            color: white !important;
-        }
-        input:focus { border-color: #facc15 !important; }
+        input, select, textarea { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.15) !important; color: white !important; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="liquid-bg"><div class="liquid-blob"></div></div>
 
-    <!-- Login Screen -->
-    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80">
-        <div class="glass p-12 rounded-[3rem] w-full max-w-md text-center">
+    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/90">
+        <div class="glass p-12 rounded-[3rem] w-full max-w-md text-center border-amber-500/20">
             <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-28 mx-auto mb-6">
             <h2 class="text-2xl font-bold mb-6 text-amber-400">Security Gateway</h2>
             <form onsubmit="handleLogin(event)" class="space-y-5">
-                <input type="text" id="username" placeholder="Authorized ID" class="w-full rounded-2xl px-6 py-4 text-lg">
-                <input type="password" id="password" placeholder="Access Code" class="w-full rounded-2xl px-6 py-4 text-lg">
+                <input type="text" id="username" placeholder="Authorized ID" class="w-full rounded-2xl px-6 py-4 text-lg outline-none">
+                <input type="password" id="password" placeholder="Access Code" class="w-full rounded-2xl px-6 py-4 text-lg outline-none">
                 <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-black font-bold py-5 rounded-2xl text-lg transition-all">Enter Vault</button>
             </form>
-            <p id="login-error" class="text-red-500 text-sm mt-4 hidden">Incorrect credentials. Please try again.</p>
+            <p id="login-error" class="text-red-500 text-sm mt-4 hidden">Access Denied: Check Credentials.</p>
         </div>
     </div>
 
-    <!-- Main App -->
     <div id="main-app" class="hidden flex-1 flex flex-col">
-        <!-- Header -->
         <header class="p-6 flex items-center justify-between glass border-b border-white/10 sticky top-0 z-50">
             <div class="flex items-center gap-5">
-                <button onclick="toggleMenu()" class="p-3 glass rounded-2xl">
+                <button onclick="toggleMenu()" class="p-3 glass rounded-2xl border border-white/10">
                     <div class="space-y-1">
                         <div class="w-6 h-0.5 bg-amber-400"></div>
                         <div class="w-4 h-0.5 bg-amber-400"></div>
@@ -75,18 +49,23 @@
                     </div>
                 </button>
                 <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-11">
-                <div>
-                    <h1 class="text-2xl font-bold text-amber-300 tracking-tight">CHARISMA DISTILLERS</h1>
-                    <p class="text-xs text-amber-400 tracking-widest">FINANCE VAULT</p>
+                <div class="hidden sm:block">
+                    <h1 class="text-xl font-bold text-amber-300 tracking-tight leading-none">CHARISMA DISTILLERS</h1>
+                    <p class="text-[9px] text-amber-400 tracking-[0.3em] uppercase">Enterprise Finance</p>
                 </div>
             </div>
-            <div class="text-right">
-                <div id="digital-clock" class="text-3xl font-mono font-bold text-amber-400">00:00:00</div>
-                <div id="digital-date" class="text-xs text-zinc-400"></div>
+            
+            <div class="flex items-center gap-6">
+                <button onclick="toggleLanguage()" class="bg-white/10 px-4 py-2 rounded-xl text-xs font-bold border border-white/10 hover:bg-amber-400 hover:text-black transition-all">
+                    <span id="lang-label">SW / EN</span>
+                </button>
+                <div class="text-right">
+                    <div id="digital-clock" class="text-2xl font-mono font-bold text-amber-400 leading-none">00:00:00</div>
+                    <div id="digital-date" class="text-[10px] text-zinc-400 uppercase tracking-tighter mt-1"></div>
+                </div>
             </div>
         </header>
 
-        <!-- Sidebar -->
         <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass border-r border-white/10 p-8 flex flex-col">
             <div class="flex justify-between mb-10">
                 <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-9">
@@ -94,119 +73,106 @@
             </div>
 
             <nav class="flex-1 space-y-2">
-                <button onclick="showPage('cashbook')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium">
-                    📖 <span>Cash Book Entry</span>
+                <button onclick="showPage('cashbook')" class="nav-link w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium transition-all">
+                    📖 <span data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</span>
                 </button>
-                <button onclick="showPage('ledger')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium">
-                    📋 <span>Audit Ledger</span>
+                <button onclick="showPage('ledger')" class="nav-link w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium transition-all">
+                    📋 <span data-en="Audit Ledger" data-sw="Daftari la Ukaguzi">Audit Ledger</span>
                 </button>
-                <button id="btn-ceo" onclick="showPage('manager')" class="hidden w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium border border-amber-400/30">
-                    ⚜️ <span>CEO Intelligence Dashboard</span>
+                <button id="btn-ceo" onclick="showPage('manager')" class="hidden w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black flex items-center gap-4 font-medium border border-amber-400/30 transition-all">
+                    ⚜️ <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">CEO Intelligence</span>
                 </button>
             </nav>
 
-            <!-- Suggestion Box -->
-            <div class="mt-8">
-                <p class="text-xs uppercase tracking-widest text-amber-400 mb-2">Suggestion / Report</p>
-                <textarea id="suggestion" rows="3" placeholder="Write your suggestion or report here..." 
-                          class="w-full rounded-2xl p-4 text-sm bg-black/60 border border-white/20"></textarea>
-                <button onclick="sendSuggestion()" 
-                        class="mt-3 w-full py-3 bg-white/10 hover:bg-amber-400 hover:text-black rounded-2xl text-xs font-bold uppercase tracking-widest">
-                    Send to Management
+            <div id="worker-feedback" class="mt-8 border-t border-white/10 pt-6">
+                <p class="text-xs uppercase tracking-widest text-amber-400 mb-2" data-en="Report to Manager" data-sw="Ripoti kwa Meneja">Report to Manager</p>
+                <textarea id="suggestion-input" rows="3" class="w-full rounded-2xl p-4 text-sm outline-none" placeholder="..."></textarea>
+                <button onclick="sendSuggestion()" class="mt-3 w-full py-3 bg-white/10 hover:bg-amber-400 hover:text-black rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all">
+                    <span data-en="Submit Report" data-sw="Tuma Ripoti">Submit Report</span>
                 </button>
             </div>
 
             <div class="mt-auto pt-8 border-t border-white/10">
-                <p id="user-display" class="text-xs text-zinc-400"></p>
-                <button onclick="location.reload()" class="mt-4 w-full py-4 bg-red-500/10 text-red-400 rounded-2xl text-xs font-bold uppercase">Sign Out</button>
+                <p id="user-display" class="text-[10px] text-zinc-500 uppercase tracking-widest"></p>
+                <button onclick="location.reload()" class="mt-4 w-full py-4 bg-red-500/10 text-red-400 rounded-2xl text-[10px] font-bold uppercase tracking-widest">Sign Out</button>
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 p-8 max-w-6xl mx-auto w-full">
             
-            <!-- Cash Book Entry Page -->
             <div id="page-cashbook" class="page">
-                <h2 class="text-4xl font-bold mb-2">Daily Cash Book</h2>
-                <p class="text-zinc-400 mb-8">Record all cash inflows and outflows</p>
+                <h2 class="text-4xl font-bold mb-2 tracking-tighter" data-en="Operations Log" data-sw="Kumbukumbu ya Kazi">Operations Log</h2>
+                <p class="text-zinc-400 mb-8 text-sm" data-en="Ensure all figures match physical receipts." data-sw="Hakikisha namba zinalingana na risiti.">Ensure all figures match physical receipts.</p>
                 
-                <div class="glass rounded-3xl p-10">
+                <div class="glass rounded-[2.5rem] p-10">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <label class="block text-xs uppercase tracking-widest text-amber-400 mb-2">Description</label>
-                            <textarea id="desc" rows="3" placeholder="e.g. Sales of 200L Mango Juice" 
-                                      class="w-full rounded-2xl p-5 text-lg"></textarea>
+                            <label class="block text-[10px] uppercase tracking-widest text-amber-400 mb-2 font-bold" data-en="Transaction Description" data-sw="Maelezo ya Muamala">Transaction Description</label>
+                            <textarea id="desc" rows="4" class="w-full rounded-2xl p-5 text-lg outline-none" placeholder="Details..."></textarea>
                         </div>
                         <div class="space-y-6">
                             <div>
-                                <label class="block text-xs uppercase tracking-widest text-emerald-400 mb-2">Receipts (Money In)</label>
-                                <input type="number" id="receipt" placeholder="0.00" 
-                                       class="w-full rounded-2xl p-5 text-2xl text-emerald-400">
+                                <label class="block text-[10px] uppercase tracking-widest text-emerald-400 mb-2 font-bold" data-en="Cash In" data-sw="Pesa Inayoingia">Cash In</label>
+                                <input type="number" id="receipt" class="w-full rounded-2xl p-5 text-2xl text-emerald-400 outline-none" placeholder="0.00">
                             </div>
                             <div>
-                                <label class="block text-xs uppercase tracking-widest text-red-400 mb-2">Payments (Money Out)</label>
-                                <input type="number" id="payment" placeholder="0.00" 
-                                       class="w-full rounded-2xl p-5 text-2xl text-red-400">
+                                <label class="block text-[10px] uppercase tracking-widest text-red-400 mb-2 font-bold" data-en="Cash Out" data-sw="Pesa Inayotoka">Cash Out</label>
+                                <input type="number" id="payment" class="w-full rounded-2xl p-5 text-2xl text-red-400 outline-none" placeholder="0.00">
                             </div>
                         </div>
                     </div>
-                    <button onclick="addTransaction()" 
-                            class="mt-10 w-full bg-amber-400 text-black font-bold py-6 rounded-3xl text-xl hover:bg-amber-300">
-                        Record Transaction
+                    <button onclick="addTransaction()" class="mt-10 w-full bg-amber-400 text-black font-bold py-6 rounded-3xl text-xl hover:shadow-[0_0_30px_rgba(250,204,21,0.3)] transition-all uppercase tracking-widest">
+                        <span data-en="Commit to Ledger" data-sw="Hifadhi Kwenye Daftari">Commit to Ledger</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Ledger Page -->
-            <div id="page-ledger" class="page hidden">
-                <h2 class="text-4xl font-bold mb-6">Audit Ledger</h2>
-                <div class="glass rounded-3xl overflow-hidden">
-                    <table class="w-full">
-                        <thead class="bg-white/5">
-                            <tr>
-                                <th class="p-6 text-left">Date</th>
-                                <th class="p-6 text-left">Description</th>
-                                <th class="p-6 text-right text-emerald-400">Receipts</th>
-                                <th class="p-6 text-right text-red-400">Payments</th>
-                                <th class="p-6 text-right">Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ledger-body" class="divide-y divide-white/10"></tbody>
-                    </table>
+            <div id="page-manager" class="page hidden">
+                <h2 class="text-4xl font-bold mb-8 text-amber-400 tracking-tighter">Strategic Intelligence</h2>
+                <div id="ceo-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1 glass p-8 rounded-[2rem] border-emerald-500/20">
+                        <h3 class="text-xs font-bold uppercase text-emerald-400 tracking-widest mb-6">Staff Intelligence / Reports</h3>
+                        <div id="feedback-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                            </div>
+                    </div>
+                    
+                    <div class="lg:col-span-2 glass rounded-[2rem] p-8 overflow-hidden">
+                        <h3 class="text-xs font-bold uppercase text-zinc-400 tracking-widest mb-6">Master Audit Trail</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs">
+                                <thead class="text-zinc-500 uppercase tracking-widest">
+                                    <tr class="border-b border-white/5">
+                                        <th class="p-4 text-left">Staff</th><th class="p-4 text-left">Desc</th><th class="p-4 text-right">In</th><th class="p-4 text-right">Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ceo-raw-body" class="divide-y divide-white/5"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- CEO Intelligence Dashboard (Manager Only) -->
-            <div id="page-manager" class="page hidden">
-                <h2 class="text-4xl font-bold mb-8 text-amber-400">CEO Intelligence Dashboard</h2>
-                
-                <div id="ceo-stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
-                
-                <div class="glass rounded-3xl p-8">
-                    <h3 class="text-xl font-bold mb-6">All Raw Transactions</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-white/5">
-                                <tr>
-                                    <th class="p-5 text-left">Date</th>
-                                    <th class="p-5 text-left">User</th>
-                                    <th class="p-5 text-left">Description</th>
-                                    <th class="p-5 text-right">Receipts</th>
-                                    <th class="p-5 text-right">Payments</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ceo-raw-body" class="divide-y divide-white/10"></tbody>
-                        </table>
-                    </div>
+            <div id="page-ledger" class="page hidden">
+                <h2 class="text-4xl font-bold mb-6 tracking-tighter" data-en="Audit Ledger" data-sw="Daftari Kuu">Audit Ledger</h2>
+                <div class="glass rounded-[2.5rem] overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-white/5 text-[10px] uppercase tracking-widest text-zinc-500">
+                            <tr>
+                                <th class="p-6 text-left">Timestamp</th><th class="p-6 text-left">Desc</th><th class="p-6 text-right">In</th><th class="p-6 text-right">Out</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-body" class="divide-y divide-white/5"></tbody>
+                    </table>
                 </div>
             </div>
         </main>
 
-        <!-- Footer -->
-        <footer class="glass border-t border-white/10 p-8 text-center mt-auto">
+        <footer class="p-10 text-center glass border-t border-white/10 mt-auto">
             <p class="font-bold text-amber-400 text-2xl tracking-tighter">Charisma Distillers Ltd</p>
-            <p class="text-xs text-zinc-500 mt-2">© 2026 All Rights are preserved, Charisma Distillers Ltd</p>
-            <p class="text-[10px] text-zinc-600 mt-1">"Eternal Taste" • Arusha & Dar es Salaam</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.6em] my-3">"Eternal Taste"</p>
+            <p class="text-[9px] text-zinc-600">@2026 All rights are preserved. Secured by Iron-Vault Systems.</p>
         </footer>
     </div>
 
@@ -220,15 +186,19 @@
         };
 
         let currentUser = null;
+        let currentLang = 'en';
         let transactions = [];
+        let feedbacks = [
+            { user: "System", text: "Welcome to the 2026 Fiscal Year.", time: "Jan 1, 2026" }
+        ];
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB');
-            document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'sw' : 'en';
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLang}`);
+            });
+            document.getElementById('lang-label').innerText = currentLang === 'en' ? 'SW / EN' : 'EN / SW';
         }
-        setInterval(updateClock, 1000);
-        updateClock();
 
         function handleLogin(e) {
             e.preventDefault();
@@ -239,130 +209,115 @@
                 currentUser = users[u];
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('user-display').innerText = `${currentUser.name} • ${currentUser.role.toUpperCase()}`;
+                document.getElementById('user-display').innerText = `Auth: ${currentUser.name} | Unit: ${currentUser.role.toUpperCase()}`;
                 
                 if (currentUser.role === 'ceo') {
                     document.getElementById('btn-ceo').classList.remove('hidden');
+                    document.getElementById('worker-feedback').classList.add('hidden');
+                    renderFeedback();
                 }
-                fetchData();
                 showPage('cashbook');
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
         }
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('closed');
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB');
+            document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
         }
+        setInterval(updateClock, 1000); updateClock();
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('closed'); }
 
         function showPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             document.getElementById(`page-${page}`).classList.remove('hidden');
+            if(window.innerWidth < 768) toggleMenu();
         }
 
         function addTransaction() {
             const desc = document.getElementById('desc').value.trim();
-            const receipt = parseFloat(document.getElementById('receipt').value) || 0;
-            const payment = parseFloat(document.getElementById('payment').value) || 0;
+            const rin = parseFloat(document.getElementById('receipt').value) || 0;
+            const rout = parseFloat(document.getElementById('payment').value) || 0;
 
-            if (!desc) return alert("Please enter a description.");
+            if (!desc) return alert("Error: Maelezo yanahitajika.");
 
             const entry = {
                 date: new Date().toLocaleString(),
                 user: currentUser.name,
                 desc: desc,
-                receipt: receipt,
-                payment: payment
+                receipt: rin,
+                payment: rout
             };
 
             transactions.unshift(entry);
             renderLedger();
             renderCEOData();
-
-            // Optional: Send to Google Script
+            
+            // Post to Cloud
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(entry) }).catch(() => {});
 
-            // Clear form
             document.getElementById('desc').value = '';
             document.getElementById('receipt').value = '';
             document.getElementById('payment').value = '';
+            alert("Success: Saved to Cloud.");
         }
 
         function renderLedger() {
             const tbody = document.getElementById('ledger-body');
-            tbody.innerHTML = '';
-            let balance = 0;
-
-            transactions.forEach(t => {
-                balance += t.receipt - t.payment;
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="p-6">${t.date}</td>
-                    <td class="p-6">${t.desc}</td>
-                    <td class="p-6 text-right text-emerald-400">${t.receipt.toFixed(2)}</td>
-                    <td class="p-6 text-right text-red-400">${t.payment.toFixed(2)}</td>
-                    <td class="p-6 text-right font-bold ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}">${balance.toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function renderCEOData() {
-            if (currentUser.role !== 'ceo') return;
-
-            let totalReceipt = 0, totalPayment = 0;
-            transactions.forEach(t => {
-                totalReceipt += t.receipt;
-                totalPayment += t.payment;
-            });
-
-            document.getElementById('ceo-stats').innerHTML = `
-                <div class="glass p-8 rounded-3xl">
-                    <p class="text-xs uppercase text-emerald-400">Total Receipts</p>
-                    <p class="text-4xl font-bold text-emerald-400">${totalReceipt.toFixed(2)}</p>
-                </div>
-                <div class="glass p-8 rounded-3xl">
-                    <p class="text-xs uppercase text-red-400">Total Payments</p>
-                    <p class="text-4xl font-bold text-red-400">${totalPayment.toFixed(2)}</p>
-                </div>
-                <div class="glass p-8 rounded-3xl border border-amber-400/30">
-                    <p class="text-xs uppercase text-amber-400">Net Balance</p>
-                    <p class="text-4xl font-bold ${(totalReceipt - totalPayment) >= 0 ? 'text-emerald-400' : 'text-red-400'}">
-                        ${(totalReceipt - totalPayment).toFixed(2)}
-                    </p>
-                </div>
-            `;
-
-            const tbody = document.getElementById('ceo-raw-body');
             tbody.innerHTML = transactions.map(t => `
-                <tr class="border-b border-white/10">
-                    <td class="p-5">${t.date}</td>
-                    <td class="p-5">${t.user}</td>
-                    <td class="p-5">${t.desc}</td>
-                    <td class="p-5 text-right text-emerald-400">${t.receipt.toFixed(2)}</td>
-                    <td class="p-5 text-right text-red-400">${t.payment.toFixed(2)}</td>
+                <tr class="hover:bg-white/5">
+                    <td class="p-6 text-[10px] text-zinc-500 font-mono">${t.date}</td>
+                    <td class="p-6 font-medium">${t.desc}</td>
+                    <td class="p-6 text-right text-emerald-400 font-bold">${t.receipt.toLocaleString()}</td>
+                    <td class="p-6 text-right text-red-400 font-bold">${t.payment.toLocaleString()}</td>
                 </tr>
             `).join('');
         }
 
-        async function fetchData() {
-            try {
-                const res = await fetch(SCRIPT_URL);
-                const data = await res.json();
-                // You can process cloud data here if needed
-            } catch(e) {}
+        function renderCEOData() {
+            if (currentUser.role !== 'ceo') return;
+            let totalR = 0, totalP = 0;
+            transactions.forEach(t => { totalR += t.receipt; totalP += t.payment; });
+
+            document.getElementById('ceo-stats').innerHTML = `
+                <div class="glass p-8 rounded-3xl"><p class="text-[10px] uppercase text-zinc-500 mb-1 font-bold">Total Inflows</p><p class="text-3xl font-bold text-emerald-400">${totalR.toLocaleString()}</p></div>
+                <div class="glass p-8 rounded-3xl"><p class="text-[10px] uppercase text-zinc-500 mb-1 font-bold">Total Expenses</p><p class="text-3xl font-bold text-red-400">${totalP.toLocaleString()}</p></div>
+                <div class="glass p-8 rounded-3xl border-amber-400/20"><p class="text-[10px] uppercase text-amber-500 mb-1 font-bold">Net Reserve</p><p class="text-3xl font-bold text-white">${(totalR - totalP).toLocaleString()}</p></div>
+            `;
+
+            document.getElementById('ceo-raw-body').innerHTML = transactions.map(t => `
+                <tr>
+                    <td class="p-4 font-bold text-amber-500">${t.user}</td>
+                    <td class="p-4 text-zinc-300">${t.desc}</td>
+                    <td class="p-4 text-right text-emerald-400">${t.receipt}</td>
+                    <td class="p-4 text-right text-red-400">${t.payment}</td>
+                </tr>
+            `).join('');
         }
 
         function sendSuggestion() {
-            const text = document.getElementById('suggestion').value.trim();
-            if (!text) return alert("Please write something before sending.");
-            alert("Suggestion sent to Management successfully.\n\nThank you!");
-            document.getElementById('suggestion').value = '';
+            const text = document.getElementById('suggestion-input').value.trim();
+            if (!text) return;
+            feedbacks.unshift({ user: currentUser.name, text: text, time: new Date().toLocaleTimeString() });
+            document.getElementById('suggestion-input').value = '';
+            alert("Report transmitted to Management.");
         }
 
-        window.onload = () => {
-            // Auto clock already running
-        };
+        function renderFeedback() {
+            const list = document.getElementById('feedback-list');
+            list.innerHTML = feedbacks.map(f => `
+                <div class="p-4 bg-white/5 rounded-2xl border border-white/5">
+                    <div class="flex justify-between text-[9px] uppercase tracking-widest mb-1">
+                        <span class="text-amber-500 font-bold">${f.user}</span>
+                        <span class="text-zinc-600">${f.time}</span>
+                    </div>
+                    <p class="text-sm text-zinc-300 leading-relaxed">${f.text}</p>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>
