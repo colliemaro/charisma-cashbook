@@ -1,208 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CashBook • CHARISMA DISTILLERS LIMITED</title>
+    <title>Charisma Financial Nebula • CEO</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+        :root { --accent: #facc15; }
         body {
-            font-family: 'Ubuntu', system-ui, sans-serif;
-            background: radial-gradient(circle at center, #0a0a0a, #000000);
-            color: #e4e4e7;
+            font-family: 'Ubuntu', sans-serif;
+            background: #0a0a0a;
+            overflow-x: hidden;
+            color: white;
             margin: 0;
-            min-height: 100vh;
         }
-        .glass { 
-            background: rgba(10,10,10,0.88); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(250,204,21,0.25); 
+
+        /* GEMINI-STYLE MORPHING BACKGROUND */
+        .nebula {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background: radial-gradient(circle at 50% 50%, #0d0d0d, #000);
         }
-        /* Direct CSS for hiding/showing to ensure it works */
-        .section-hidden { display: none !important; }
-        .nav-btn.active { background: #facc15; color: black; font-weight: 600; }
+        .orb {
+            position: absolute; width: 550px; height: 550px;
+            border-radius: 50%; filter: blur(90px); opacity: 0.35;
+            animation: move 25s infinite alternate ease-in-out;
+        }
+        .orb-1 { background: #facc15; top: -15%; left: -5%; }
+        .orb-2 { background: #6366f1; bottom: -10%; right: -5%; animation-delay: -7s; }
+        @keyframes move {
+            from { transform: translate(0,0) scale(1); }
+            to { transform: translate(120px, 80px) scale(1.15); }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(250, 204, 21, 0.12);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        }
+
+        /* LOGIN SHAKE & ERROR */
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: #ef4444 !important; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar.closed { transform: translateX(-105%); }
+        
+        .hidden { display: none !important; }
+        .btn-glow:hover { box-shadow: 0 0 20px rgba(250, 204, 21, 0.4); }
     </style>
 </head>
 <body>
+    <div class="nebula"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
 
-    <div id="login-overlay" class="fixed inset-0 z-[100] bg-black flex items-center justify-center p-6">
-        <div class="glass p-10 rounded-3xl w-full max-w-md text-center">
-            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" alt="Logo" class="h-20 mx-auto mb-6">
-            <h2 class="text-2xl font-bold text-amber-300 mb-6">Staff Login</h2>
-            <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
-                <input type="email" id="login-email" placeholder="Email Address" class="w-full bg-zinc-900 border border-amber-500/30 rounded-2xl px-5 py-4 focus:border-amber-400 outline-none text-white" required>
-                <input type="password" id="login-pass" placeholder="Password" class="w-full bg-zinc-900 border border-amber-500/30 rounded-2xl px-5 py-4 focus:border-amber-400 outline-none text-white" required>
-                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-4 rounded-2xl hover:bg-amber-300 transition-all">Sign In</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="main-app" class="section-hidden">
-        <header class="border-b border-amber-500/30 bg-black/90 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
-                <div class="flex items-center gap-6">
-                    <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-12 w-auto">
-                    <h1 class="font-bold text-2xl text-amber-300 uppercase tracking-tighter">Charisma</h1>
-                </div>
-                <div id="user-info" class="text-xs px-4 py-2 bg-amber-500/10 rounded-full border border-amber-500/20"></div>
-            </div>
-        </header>
-
-        <div class="max-w-7xl mx-auto flex">
-            <div class="w-72 border-r border-amber-500/20 min-h-screen py-10 px-6 hidden lg:flex flex-col">
-                <nav class="space-y-2">
-                    <button onclick="showSection('cashbook')" id="btn-cashbook" class="nav-btn w-full text-left px-6 py-4 rounded-2xl flex items-center gap-3">📖 Daily Cash Book</button>
-                    <button onclick="showSection('reports')" id="btn-reports" class="nav-btn w-full text-left px-6 py-4 rounded-2xl flex items-center gap-3 section-hidden">📊 Reports</button>
-                    <button onclick="showSection('vault')" id="btn-vault" class="nav-btn w-full text-left px-6 py-4 rounded-2xl flex items-center gap-3 section-hidden">🔐 Data Vault</button>
-                </nav>
-                <button onclick="logout()" class="mt-auto w-full py-4 text-red-400 hover:bg-red-400/10 rounded-2xl">Sign Out</button>
-            </div>
-
-            <div class="flex-1 p-10">
-                <div id="cashbook-section">
-                    <h2 class="text-3xl font-bold mb-6">Entry Form</h2>
-                    <div class="glass p-8 rounded-3xl mb-10">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <input type="date" id="trans-date" class="bg-zinc-900 border border-amber-500/30 rounded-xl px-4 py-3 text-white">
-                            <input type="text" id="trans-desc" placeholder="Transaction Particulars" class="bg-zinc-900 border border-amber-500/30 rounded-xl px-4 py-3 text-white">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <input type="number" id="trans-receipt" placeholder="Receipt (+)" class="bg-zinc-900 border border-emerald-500/30 rounded-xl px-4 py-3 text-emerald-400">
-                            <input type="number" id="trans-payment" placeholder="Payment (-)" class="bg-zinc-900 border border-red-500/30 rounded-xl px-4 py-3 text-red-400">
-                        </div>
-                        <button onclick="addTransaction()" class="w-full bg-amber-400 text-black font-bold py-4 rounded-xl">Record Entry</button>
-                    </div>
-                    <div class="glass rounded-3xl overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 font-bold">
-                                <tr><th class="p-4">Date</th><th class="p-4">Description</th><th class="p-4 text-right">In</th><th class="p-4 text-right">Out</th></tr>
-                            </thead>
-                            <tbody id="ledger-tbody" class="divide-y divide-white/5"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div id="reports-section" class="section-hidden">
-                    <h2 class="text-3xl font-bold mb-6">Management Reports</h2>
-                    <div id="summary-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"></div>
-                </div>
-
-                <div id="vault-section" class="section-hidden">
-                    <h2 class="text-3xl font-bold mb-6">Admin Controls</h2>
-                    <button onclick="exportCSV()" class="bg-emerald-600 px-8 py-3 rounded-xl font-bold mr-4">Download Excel (CSV)</button>
-                    <button onclick="clearAllData()" class="bg-red-600 px-8 py-3 rounded-xl font-bold">Reset All Data</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const users = {
-            "manager@charismajuice.com": { password: "Charisma2026!", role: "manager" },
-            "worker1@charismajuice.com": { password: "WorkerPass1!", role: "worker" }
-        };
-
-        let currentUser = null;
-        let transactions = JSON.parse(localStorage.getItem('charisma_cashbook')) || [];
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-
-            if (users[email] && users[email].password === pass) {
-                currentUser = { email, role: users[email].role };
-                sessionStorage.setItem('charisma_user', JSON.stringify(currentUser));
-                launchApp();
-            } else { alert("Error: Wrong login details."); }
-        }
-
-        function launchApp() {
-            document.getElementById('login-overlay').classList.add('section-hidden');
-            document.getElementById('main-app').classList.remove('section-hidden');
-            document.getElementById('user-info').innerText = `${currentUser.email} | ${currentUser.role.toUpperCase()}`;
+    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6">
+        <div id="login-card" class="glass p-12 rounded-[2.5rem] w-full max-w-md text-center">
+            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-24 mx-auto mb-8 drop-shadow-2xl">
+            <h2 class="text-3xl font-bold mb-2 tracking-tighter" data-en="Charisma Access" data-sw="Kuingia Charisma">Kuingia Charisma</h2>
+            <p class="text-zinc-500 mb-8 text-sm uppercase tracking-widest" data-en="Digital Ledger System" data-sw="Mfumo wa Mahesabu">Mfumo wa Mahesabu</p>
             
-            if (currentUser.role === 'manager') {
-                document.getElementById('btn-reports').classList.remove('section-hidden');
-                document.getElementById('btn-vault').classList.remove('section-hidden');
-            }
-            renderLedger();
-            showSection('cashbook');
-        }
-
-        function showSection(name) {
-            ['cashbook', 'reports', 'vault'].forEach(s => {
-                const el = document.getElementById(s + '-section');
-                if(el) el.classList.add('section-hidden');
-            });
-            document.getElementById(name + '-section').classList.remove('section-hidden');
-            if (name === 'reports') renderReports();
-        }
-
-        function addTransaction() {
-            const date = document.getElementById('trans-date').value;
-            const desc = document.getElementById('trans-desc').value;
-            const rec = parseFloat(document.getElementById('trans-receipt').value) || 0;
-            const pay = parseFloat(document.getElementById('trans-payment').value) || 0;
-
-            if (!date || !desc) return alert("Please enter Date and Particulars");
-
-            transactions.unshift({ date, description: desc, receipt: rec, payment: pay });
-            localStorage.setItem('charisma_cashbook', JSON.stringify(transactions));
-            renderLedger();
-            document.getElementById('trans-desc').value = '';
-            document.getElementById('trans-receipt').value = '';
-            document.getElementById('trans-payment').value = '';
-        }
-
-        function renderLedger() {
-            const tbody = document.getElementById('ledger-tbody');
-            tbody.innerHTML = transactions.map(t => `
-                <tr>
-                    <td class="p-4 text-sm">${t.date}</td>
-                    <td class="p-4">${t.description}</td>
-                    <td class="p-4 text-right text-emerald-400">+${t.receipt}</td>
-                    <td class="p-4 text-right text-red-400">-${t.payment}</td>
-                </tr>
-            `).join('');
-        }
-
-        function renderReports() {
-            let totalIn = 0, totalOut = 0;
-            transactions.forEach(t => { totalIn += t.receipt; totalOut += t.payment; });
-            document.getElementById('summary-cards').innerHTML = `
-                <div class="glass p-8 rounded-3xl text-center"><p class="text-emerald-400 mb-2">TOTAL INCOME</p><p class="text-4xl font-bold">${totalIn.toFixed(2)}</p></div>
-                <div class="glass p-8 rounded-3xl text-center"><p class="text-red-400 mb-2">TOTAL EXPENSE</p><p class="text-4xl font-bold">${totalOut.toFixed(2)}</p></div>
-                <div class="glass p-8 rounded-3xl text-center border-amber-500"><p class="text-amber-400 mb-2">CASH ON HAND</p><p class="text-4xl font-bold">${(totalIn - totalOut).toFixed(2)}</p></div>
-            `;
-        }
-
-        function exportCSV() {
-            let csv = "Date,Description,In,Out\n" + transactions.map(t => `${t.date},${t.description},${t.receipt},${t.payment}`).join("\n");
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'Cashbook_Export.csv'; a.click();
-        }
-
-        function clearAllData() {
-            if(confirm("DANGER: This will delete ALL history. Proceed?")) {
-                localStorage.removeItem('charisma_cashbook');
-                location.reload();
-            }
-        }
-
-        function logout() { sessionStorage.removeItem('charisma_user'); location.reload(); }
-
-        window.onload = () => {
-            const saved = sessionStorage.getItem('charisma_user');
-            if (saved) { 
-                currentUser = JSON.parse(saved); 
-                launchApp(); 
-            }
-            document.getElementById('trans-date').value = new Date().toISOString().split('T')[0];
-        };
-    </script>
-</body>
-</html>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <input type="text" id="username" placeholder="Username / Jina" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:border-amber-400 outline-none transition-all text-white">
+                <input type="password" id="password" placeholder="Password / Nywila" class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 focus:border-amber-400 outline-none transition-all text-white">
+                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl btn-glow transition-all active:scale-95 mt-4">Sign In</button>
+            </form>
+            <button onclick="toggleLang()" class="mt-8 text-[10px] text-zinc-500 border border-white/10 px-4 py-2 rounded-full hover:bg-white/5 transition-all">EN / SW TOGGLE</button>
+        </div>
