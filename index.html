@@ -72,3 +72,122 @@
             </form>
             <button onclick="toggleLang()" class="mt-8 text-[10px] text-zinc-500 border border-white/10 px-4 py-2 rounded-full hover:bg-white/5 transition-all">EN / SW TOGGLE</button>
         </div>
+    </div>
+
+    <div id="main-app" class="hidden min-h-screen">
+        <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass mb-6">
+            <button onclick="toggleMenu()" class="p-4 glass rounded-2xl hover:bg-white/5 transition-all">
+                <div class="w-6 h-0.5 bg-amber-400 mb-1.5 rounded-full"></div>
+                <div class="w-4 h-0.5 bg-amber-400 mb-1.5 rounded-full"></div>
+                <div class="w-6 h-0.5 bg-amber-400 rounded-full"></div>
+            </button>
+            <div class="text-right">
+                <p id="user-display" class="font-bold text-amber-400 text-lg tracking-tight"></p>
+                <p id="role-display" class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold"></p>
+            </div>
+        </header>
+
+        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-80 glass z-[150] p-10 flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center mb-12">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-widest">Navigation</span>
+                <button onclick="toggleMenu()" class="text-3xl text-zinc-500">&times;</button>
+            </div>
+            <nav class="space-y-3 flex-1">
+                <button onclick="showPage('entry')" class="w-full text-left p-5 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 group">
+                    <span class="text-xl">✍️</span>
+                    <span class="font-medium" data-en="New Entry" data-sw="Ingizo Jipya">Ingizo Jipya</span>
+                </button>
+                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-5 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-4 hidden">
+                    <span class="text-xl">🏆</span>
+                    <span class="font-medium" data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
+                </button>
+            </nav>
+            <button onclick="location.reload()" class="p-5 bg-red-500/10 text-red-400 rounded-2xl font-bold text-sm hover:bg-red-500/20 transition-all">Sign Out</button>
+        </aside>
+
+        <main class="max-w-4xl mx-auto p-6 pb-20">
+            <div id="page-entry">
+                <h2 class="text-5xl font-bold mb-10 tracking-tighter" data-en="Daily Record" data-sw="Rekodi ya Leo">Rekodi ya Leo</h2>
+                <div class="glass p-10 rounded-[3rem] space-y-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest text-amber-500 ml-4 font-bold" data-en="Description" data-sw="Maelezo ya Muamala">Maelezo ya Muamala</label>
+                        <input type="text" id="entry-desc" placeholder="..." class="w-full bg-black/40 border border-white/10 rounded-3xl px-8 py-5 outline-none focus:border-amber-400 text-lg">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest text-emerald-500 ml-4 font-bold">Money In / Mapokezi (+)</label>
+                            <input type="number" id="entry-in" placeholder="0.00" class="w-full bg-black/40 border border-emerald-500/20 rounded-3xl px-8 py-5 text-emerald-400 text-xl font-bold outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest text-red-500 ml-4 font-bold">Money Out / Matumizi (-)</label>
+                            <input type="number" id="entry-out" placeholder="0.00" class="w-full bg-black/40 border border-red-500/20 rounded-3xl px-8 py-5 text-red-400 text-xl font-bold outline-none">
+                        </div>
+                    </div>
+                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-6 rounded-3xl text-xl hover:scale-[1.01] active:scale-95 transition-all shadow-xl shadow-white/5">Push to Cloud</button>
+                </div>
+            </div>
+
+            <div id="page-manager" class="hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+                    <div>
+                        <h2 class="text-5xl font-bold tracking-tighter mb-2">CEO Vault</h2>
+                        <p class="text-zinc-500 text-sm">Real-time Financial Ledger Retrieval</p>
+                    </div>
+                    <button onclick="fetchData()" class="bg-amber-400 text-black px-10 py-5 rounded-3xl font-bold text-lg btn-glow transition-all active:scale-95 flex items-center gap-3">
+                        <span id="sync-icon">🔄</span> Retrieve System Data
+                    </button>
+                </div>
+                <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
+                <div class="glass rounded-[3rem] overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-white/5">
+                            <tr class="text-zinc-500 text-[10px] uppercase tracking-[0.2em] font-bold">
+                                <th class="p-8">Staff Member</th>
+                                <th class="p-8">Transaction Details</th>
+                                <th class="p-8 text-right">Net Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manager-tbody" class="divide-y divide-white/5">
+                            <tr><td colspan='3' class='p-20 text-center text-zinc-500 italic'>Vault is locked. Hit "Retrieve" to sync.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // CORE INFRASTRUCTURE
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
+
+        const users = {
+            "charisma_ceo": { pass: "Tunaweza,2026", role: "ceo", name: "Collins", lang: "en" },
+            "OdriaToto": { pass: "Tunaweza,2026", role: "worker", name: "Odria", lang: "sw" },
+            "BerthaToto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" }
+        };
+
+        let currentLang = 'sw';
+        let currentUser = null;
+
+        // ROBUST LOGIN LOGIC
+        function handleLogin(e) {
+            e.preventDefault();
+            const uInput = document.getElementById('username').value.trim();
+            const pInput = document.getElementById('password').value.trim();
+            const card = document.getElementById('login-card');
+
+            // Find user (case-insensitive)
+            const foundUserKey = Object.keys(users).find(
+                key => key.toLowerCase() === uInput.toLowerCase()
+            );
+
+            if (foundUserKey && users[foundUserKey].pass === pInput) {
+                currentUser = users[foundUserKey];
+                currentLang = currentUser.lang;
+                startApp();
+            } else {
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 400);
+                document.getElementById('password').value = '';
+            }
+        }
