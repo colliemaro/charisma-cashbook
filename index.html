@@ -3,93 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charisma</title>
+    <title>Charisma Distillers Mauzo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Ubuntu', sans-serif; background: #0a0a0a; color: white; margin: 0; overflow-x: hidden; }
-        .nebula { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #0d0d0d, #000); }
-        .orb { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(100px); opacity: 0.25; animation: move 20s infinite alternate ease-in-out; }
-        .orb-1 { background: #facc15; top: -10%; left: -5%; }
-        .orb-2 { background: #4f46e5; bottom: -10%; right: -5%; animation-delay: -5s; }
-        @keyframes move { from { transform: translate(0,0); } to { transform: translate(80px, 80px); } }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .shake { animation: shake 0.4s both; border: 1px solid #ef4444 !important; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } }
+        body { font-family: 'Ubuntu', sans-serif; background: #050505; color: white; margin: 0; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* LIQUID CLASSIC BACKGROUND */
+        .liquid-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background: linear-gradient(45deg, #050505, #0a0a0a, #000814);
+        }
+        .blob {
+            position: absolute; width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, rgba(79, 70, 229, 0.05) 50%, transparent 100%);
+            filter: blur(80px); border-radius: 50%; animation: liquid 20s infinite alternate ease-in-out;
+        }
+        @keyframes liquid {
+            0% { transform: translate(-10%, -10%) scale(1); }
+            100% { transform: translate(20%, 10%) scale(1.2); }
+        }
+
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
         .sidebar.closed { transform: translateX(-100%); }
         .hidden { display: none !important; }
+        
+        /* SHAKE EFFECT */
+        .shake { animation: shake 0.4s both; border: 1px solid #ef4444 !important; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } }
     </style>
 </head>
 <body>
-    <div class="nebula"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+    <div class="liquid-bg"><div class="blob"></div></div>
 
     <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6">
         <div id="login-card" class="glass p-12 rounded-[3rem] w-full max-w-md text-center">
-            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-20 mx-auto mb-8">
-            <h2 class="text-2xl font-bold mb-8 tracking-tighter">Charisma Distillers Login</h2>
+            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-24 mx-auto mb-6 drop-shadow-2xl">
+            <h2 class="text-2xl font-bold mb-8 tracking-tighter">Charisma Systems Login</h2>
             <form onsubmit="handleLogin(event)" class="space-y-4">
-                <input type="text" id="username" placeholder="Username" class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400">
-                <input type="password" id="password" placeholder="Password" class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400">
-                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl active:scale-95 transition-all">Sign In</button>
+                <input type="text" id="username" placeholder="Username" class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400 transition-all">
+                <input type="password" id="password" placeholder="Password" class="w-full bg-black/50 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400 transition-all">
+                <button type="submit" class="w-full bg-amber-400 text-black font-bold py-5 rounded-2xl hover:brightness-110 active:scale-95 transition-all">Authorize Access</button>
             </form>
             <p id="login-error" class="text-red-500 text-xs mt-4 font-bold hidden">Incorrect username or password.</p>
         </div>
     </div>
 
-    <div id="main-app" class="hidden min-h-screen">
-        <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass">
-            <button onclick="toggleMenu()" class="p-3 glass rounded-xl border border-white/10">
-                <div class="w-6 h-0.5 bg-amber-400 mb-1.5"></div>
-                <div class="w-4 h-0.5 bg-amber-400 mb-1.5"></div>
-                <div class="w-6 h-0.5 bg-amber-400"></div>
-            </button>
+    <div id="main-app" class="hidden flex-1 flex flex-col">
+        <header class="p-6 flex items-center justify-between sticky top-0 z-50 glass border-b border-white/5">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleMenu()" class="p-3 hover:bg-white/5 rounded-xl transition-all">
+                    <div class="w-6 h-0.5 bg-amber-400 mb-1.5"></div>
+                    <div class="w-4 h-0.5 bg-amber-400 mb-1.5"></div>
+                    <div class="w-6 h-0.5 bg-amber-400"></div>
+                </button>
+                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-10 hidden md:block">
+            </div>
+            
             <div class="text-right">
-                <p id="user-display" class="font-bold text-amber-400">Habari, User</p>
-                <button onclick="toggleLang()" class="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">EN / SW</button>
+                <div id="digital-clock" class="text-amber-400 font-mono text-lg font-bold">00:00:00</div>
+                <div id="digital-date" class="text-[9px] text-zinc-500 uppercase tracking-widest">Loading Date...</div>
             </div>
         </header>
 
         <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full w-72 glass p-8 flex flex-col border-r border-white/10">
             <div class="flex justify-between items-center mb-12">
-                <span class="text-xs font-bold text-amber-500 uppercase tracking-widest">Menu</span>
-                <button onclick="toggleMenu()" class="text-3xl">&times;</button>
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-widest">Enterprise Menu</span>
+                <button onclick="toggleMenu()" class="text-3xl text-zinc-500">&times;</button>
             </div>
-            <nav class="space-y-4 flex-1">
-                <button onclick="showPage('entry')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3">
-                    📝 <span data-en="Record Data" data-sw="Weka Kumbukumbu">Weka Kumbukumbu</span>
+            <nav class="space-y-3 flex-1">
+                <button onclick="showPage('entry')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-3 group">
+                    <span>📝</span> <span data-en="New Entry" data-sw="Ingizo Jipya">Ingizo Jipya</span>
                 </button>
-                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-4 rounded-2xl hover:bg-white/5 flex items-center gap-3 hidden">
-                    📊 <span data-en="CEO Vault" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
+                <button onclick="showPage('ledger')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-3 group">
+                    <span>📑</span> <span data-en="Public Ledger" data-sw="Daftari Kuu">Daftari Kuu</span>
+                </button>
+                <button id="btn-ceo" onclick="showPage('manager')" class="w-full text-left p-4 rounded-2xl hover:bg-amber-400 hover:text-black transition-all flex items-center gap-3 hidden">
+                    <span>💎</span> <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">Usimamizi wa CEO</span>
                 </button>
             </nav>
-            <button onclick="location.reload()" class="p-4 bg-red-500/10 text-red-400 rounded-2xl font-bold text-sm">Sign Out</button>
+            <div class="pt-6 border-t border-white/5">
+                <p id="user-display" class="text-xs text-zinc-400 mb-4 px-2 italic"></p>
+                <button onclick="location.reload()" class="w-full p-4 bg-red-500/10 text-red-400 rounded-2xl font-bold text-sm hover:bg-red-500/20 transition-all">Terminate Session</button>
+            </div>
         </aside>
 
-        <main class="max-w-4xl mx-auto p-6">
-            <div id="page-entry">
-                <h2 class="text-4xl font-bold mb-8 tracking-tighter" data-en="Daily Ledger" data-sw="Daftari la Leo">Daftari la Leo</h2>
-                <div class="glass p-8 rounded-[2.5rem] space-y-6">
-                    <input type="text" id="entry-desc" placeholder="Maelezo..." class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="number" id="entry-in" placeholder="In (+)" class="w-full bg-black/40 border border-emerald-500/20 rounded-2xl px-6 py-4 text-emerald-400 outline-none">
-                        <input type="number" id="entry-out" placeholder="Out (-)" class="w-full bg-black/40 border border-red-500/20 rounded-2xl px-6 py-4 text-red-400 outline-none">
+        <main class="max-w-5xl mx-auto w-full p-6 flex-1">
+            
+            <div id="page-entry" class="page">
+                <h2 class="text-4xl font-bold mb-8 tracking-tighter" data-en="Record Transaction" data-sw="Rekodi Muamala">Rekodi Muamala</h2>
+                <div class="glass p-10 rounded-[3rem] space-y-8">
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase tracking-widest text-zinc-500 ml-4">Details / Maelezo</label>
+                        <input type="text" id="entry-desc" placeholder="..." class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-amber-400 text-lg">
                     </div>
-                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-5 rounded-2xl hover:bg-amber-400 transition-all">Sync to Cloud</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest text-emerald-500 ml-4">Income (+)</label>
+                            <input type="number" id="entry-in" placeholder="0" class="w-full bg-black/40 border border-emerald-500/20 rounded-2xl px-6 py-4 text-emerald-400 text-xl font-bold outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest text-red-500 ml-4">Expense (-)</label>
+                            <input type="number" id="entry-out" placeholder="0" class="w-full bg-black/40 border border-red-500/20 rounded-2xl px-6 py-4 text-red-400 text-xl font-bold outline-none">
+                        </div>
+                    </div>
+                    <button onclick="submitEntry()" id="submit-btn" class="w-full bg-white text-black font-bold py-6 rounded-3xl text-xl hover:bg-amber-400 transition-all">Push to Cloud</button>
                 </div>
             </div>
 
-            <div id="page-manager" class="hidden">
-                <div class="flex justify-between items-end mb-8">
-                    <h2 class="text-4xl font-bold tracking-tighter">Managerial</h2>
-                    <button onclick="fetchData()" class="bg-amber-400 text-black px-6 py-3 rounded-xl font-bold">🔄 Sync Data</button>
+            <div id="page-ledger" class="page hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-4xl font-bold tracking-tighter" data-en="History" data-sw="Kumbukumbu">Kumbukumbu</h2>
+                    <button onclick="fetchData()" class="bg-white/5 px-6 py-3 rounded-xl hover:bg-white/10">🔄 Refresh</button>
                 </div>
-                <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></div>
-                <div class="glass rounded-[2rem] overflow-hidden">
-                    <table class="w-full text-left"><tbody id="manager-tbody"></tbody></table>
+                <div class="glass rounded-[2rem] overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-white/5">
+                            <tr class="text-[10px] uppercase text-zinc-500 tracking-widest font-bold">
+                                <th class="p-6">Staff</th><th class="p-6">Time</th><th class="p-6">Description</th><th class="p-6 text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-tbody" class="divide-y divide-white/5"></tbody>
+                    </table>
                 </div>
             </div>
+
+            <div id="page-manager" class="page hidden">
+                <h2 class="text-4xl font-bold mb-8 tracking-tighter">CEO Strategy Desk</h2>
+                <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"></div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 glass p-8 rounded-[2.5rem]">
+                        <h3 class="font-bold mb-4 text-amber-400 uppercase text-xs tracking-widest">Global Audit Trail</h3>
+                        <div id="manager-audit" class="space-y-4"></div>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <h3 class="font-bold mb-4 text-emerald-400 uppercase text-xs tracking-widest">Manager's Suggestion Box</h3>
+                        <textarea placeholder="Note down future juice flavors or staff tasks..." class="w-full h-48 bg-black/40 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:border-emerald-400"></textarea>
+                        <button class="w-full mt-4 bg-emerald-500/20 text-emerald-400 py-3 rounded-xl font-bold text-xs">SAVE STRATEGY</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
+
+        <footer class="p-8 text-center glass border-t border-white/5 mt-auto">
+            <p class="font-bold text-amber-400 text-lg">Charisma Distillers Ltd</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-[0.4em] mb-4 italic">"Eternal Taste"</p>
+            <p class="text-[9px] text-zinc-600">@2026 All rights are preserved. Secured by Nebula Systems.</p>
+        </footer>
     </div>
 
     <script>
@@ -98,12 +161,20 @@
         const users = {
             "charisma_ceo": { pass: "Tunaweza,2026", role: "ceo", name: "Collins", lang: "en" },
             "odriatoto": { pass: "Tunaweza,2026", role: "worker", name: "Odria", lang: "sw" },
-            "berthatoto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" },
-            "admin": { pass: "123", role: "ceo", name: "Admin", lang: "en" } // MASTER BYPASS
+            "berthatoto": { pass: "Tunaweza,2026", role: "worker", name: "Bertha", lang: "sw" }
         };
 
         let currentLang = 'sw';
         let currentUser = null;
+
+        // CLOCK SYSTEM
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB');
+            document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
         function handleLogin(e) {
             e.preventDefault();
@@ -115,16 +186,12 @@
             if (users[u] && users[u].pass === p) {
                 currentUser = users[u];
                 currentLang = currentUser.lang;
-                
-                // HIDE LOGIN, SHOW APP
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                
-                // SETUP UI
-                document.getElementById('user-display').innerText = `Habari, ${currentUser.name}`;
+                document.getElementById('user-display').innerText = `Active Session: ${currentUser.name} (${currentUser.role})`;
                 if (currentUser.role === 'ceo') document.getElementById('btn-ceo').classList.remove('hidden');
-                
                 updateTranslations();
+                fetchData(); // Pre-load data
             } else {
                 card.classList.add('shake');
                 err.classList.remove('hidden');
@@ -133,7 +200,11 @@
         }
 
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('closed'); }
-        function toggleLang() { currentLang = currentLang === 'sw' ? 'en' : 'sw'; updateTranslations(); }
+        function showPage(p) {
+            document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+            document.getElementById(`page-${p}`).classList.remove('hidden');
+            if (window.innerWidth < 768) toggleMenu();
+        }
 
         function updateTranslations() {
             document.querySelectorAll('[data-en]').forEach(el => {
@@ -141,46 +212,81 @@
             });
         }
 
-        function showPage(p) {
-            document.getElementById('page-entry').classList.add('hidden');
-            document.getElementById('page-manager').classList.add('hidden');
-            document.getElementById(`page-${p}`).classList.remove('hidden');
-            toggleMenu();
-        }
-
         async function submitEntry() {
             const btn = document.getElementById('submit-btn');
+            const desc = document.getElementById('entry-desc').value;
+            const rin = document.getElementById('entry-in').value || 0;
+            const rout = document.getElementById('entry-out').value || 0;
+
+            if (!desc) return alert("Please add details!");
+
             const data = {
-                user: currentUser.name, date: new Date().toLocaleString(),
-                desc: document.getElementById('entry-desc').value,
-                receipt: document.getElementById('entry-in').value || 0,
-                payment: document.getElementById('entry-out').value || 0
+                user: currentUser.name,
+                date: new Date().toLocaleString(),
+                desc: desc,
+                receipt: rin,
+                payment: rout
             };
-            if (!data.desc) return alert("Weka maelezo!");
-            btn.innerText = "Syncing...";
+
+            btn.innerText = "Encrypting & Syncing...";
+            btn.disabled = true;
+
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-                alert("Success!"); location.reload();
-            } catch (e) { alert("Error."); btn.innerText = "Sync to Cloud"; }
+                alert("Cloud Sync Successful.");
+                location.reload();
+            } catch (e) {
+                alert("Network failure.");
+                btn.innerText = "Push to Cloud";
+                btn.disabled = false;
+            }
         }
 
         async function fetchData() {
-            const tbody = document.getElementById('manager-tbody');
-            tbody.innerHTML = "<tr><td class='p-10 text-center'>Loading...</td></tr>";
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
                 const rows = data.slice(1).reverse();
-                tbody.innerHTML = rows.map(r => `
-                    <tr class="border-b border-white/5">
-                        <td class="p-6 font-bold text-amber-400">${r[1]}</td>
-                        <td class="p-6 text-xs">${r[3]}<br><span class="text-zinc-500">${r[2]}</span></td>
-                        <td class="p-6 text-right font-bold ${r[4] > 0 ? 'text-emerald-400' : 'text-red-400'}">
-                            ${r[4] > 0 ? '+'+r[4] : '-'+r[5]}
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (e) { alert("Failed to fetch."); }
+                
+                const ledgerBody = document.getElementById('ledger-tbody');
+                const auditDiv = document.getElementById('manager-audit');
+                const statsDiv = document.getElementById('stats');
+
+                let totalIn = 0, totalOut = 0;
+
+                const tableHTML = rows.map(r => {
+                    const tin = parseFloat(r[4]) || 0;
+                    const tout = parseFloat(r[5]) || 0;
+                    totalIn += tin; totalOut += tout;
+                    return `
+                        <tr>
+                            <td class="p-6 font-bold text-amber-400 text-xs">${r[1]}</td>
+                            <td class="p-6 text-zinc-500 text-[10px]">${r[2]}</td>
+                            <td class="p-6 text-sm font-medium">${r[3]}</td>
+                            <td class="p-6 text-right font-mono font-bold ${tin > 0 ? 'text-emerald-400' : 'text-red-400'}">
+                                ${tin > 0 ? '+'+tin.toLocaleString() : '-'+tout.toLocaleString()}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                ledgerBody.innerHTML = tableHTML;
+                
+                if (currentUser.role === 'ceo') {
+                    auditDiv.innerHTML = rows.slice(0, 5).map(r => `
+                        <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <div><p class="text-xs font-bold text-amber-400">${r[1]}</p><p class="text-[10px] text-zinc-500">${r[3]}</p></div>
+                            <div class="text-right"><p class="font-bold text-sm">${(parseFloat(r[4])||parseFloat(r[5])).toLocaleString()}</p></div>
+                        </div>
+                    `).join('');
+
+                    statsDiv.innerHTML = `
+                        <div class="glass p-8 rounded-3xl"><p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Total Collections</p><p class="text-3xl font-bold text-emerald-400">${totalIn.toLocaleString()}</p></div>
+                        <div class="glass p-8 rounded-3xl"><p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">Total Payouts</p><p class="text-3xl font-bold text-red-400">${totalOut.toLocaleString()}</p></div>
+                        <div class="glass p-8 rounded-3xl border-amber-400/20"><p class="text-[10px] text-amber-500 uppercase font-bold mb-1">Net Reserve</p><p class="text-3xl font-bold text-white">${(totalIn - totalOut).toLocaleString()}</p></div>
+                    `;
+                }
+            } catch (e) { console.log("Data fetch pending or failed."); }
         }
     </script>
 </body>
