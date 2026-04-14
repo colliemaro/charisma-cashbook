@@ -1,1168 +1,842 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charisma Distillers • Finance Vault</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root[data-theme="dark"] {
-            --bg: #06060f;
-            --bg2: #0d0d1f;
-            --surface: rgba(255,255,255,0.04);
-            --surface2: rgba(255,255,255,0.07);
-            --border: rgba(255,255,255,0.1);
-            --text: #f0f0f0;
-            --text2: #a0a0b0;
-            --text3: #606070;
-            --gold: #f5c518;
-            --gold2: #e8b800;
-            --green: #22c55e;
-            --red: #ef4444;
-            --blue: #60a5fa;
-            --card-bg: rgba(255,255,255,0.03);
-            --card-border: rgba(255,255,255,0.08);
-            --input-bg: rgba(0,0,0,0.5);
-            --input-border: rgba(255,255,255,0.12);
-            --header-bg: rgba(6,6,15,0.92);
-            --sidebar-bg: rgba(8,8,20,0.98);
-            --blob1: rgba(245,197,24,0.1);
-            --blob2: rgba(79,70,229,0.07);
-            --shadow: rgba(245,197,24,0.15);
-        }
-        :root[data-theme="light"] {
-            --bg: #f5f0e8;
-            --bg2: #ede8da;
-            --surface: rgba(255,255,255,0.7);
-            --surface2: rgba(255,255,255,0.9);
-            --border: rgba(0,0,0,0.1);
-            --text: #1a1a2e;
-            --text2: #4a4a6a;
-            --text3: #9a9ab0;
-            --gold: #b8860b;
-            --gold2: #a07800;
-            --green: #16a34a;
-            --red: #dc2626;
-            --blue: #2563eb;
-            --card-bg: rgba(255,255,255,0.8);
-            --card-border: rgba(0,0,0,0.08);
-            --input-bg: rgba(255,255,255,0.9);
-            --input-border: rgba(0,0,0,0.15);
-            --header-bg: rgba(245,240,232,0.95);
-            --sidebar-bg: rgba(240,235,225,0.99);
-            --blob1: rgba(184,134,11,0.12);
-            --blob2: rgba(79,70,229,0.06);
-            --shadow: rgba(184,134,11,0.2);
-        }
-
-        * { box-sizing: border-box; transition: background 0.3s, color 0.2s, border-color 0.2s; }
-        body {
-            font-family: 'Ubuntu', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .liquid-bg { position: fixed; inset: 0; z-index: -1; background: var(--bg); }
-        .liquid-blob {
-            position: absolute;
-            width: 900px; height: 900px;
-            background: radial-gradient(circle, var(--blob1) 0%, var(--blob2) 40%, transparent 70%);
-            filter: blur(100px); border-radius: 50%;
-            animation: flow 25s infinite alternate ease-in-out;
-        }
-        .liquid-blob2 {
-            position: absolute; right: -200px; bottom: -200px;
-            width: 700px; height: 700px;
-            background: radial-gradient(circle, var(--blob2) 0%, var(--blob1) 50%, transparent 70%);
-            filter: blur(120px); border-radius: 50%;
-            animation: flow2 30s infinite alternate ease-in-out;
-        }
-        @keyframes flow { 0% { transform: translate(-20%,-20%) rotate(0deg); } 100% { transform: translate(30%,15%) rotate(180deg); } }
-        @keyframes flow2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-15%,-10%) scale(1.1); } }
-
-        .glass {
-            background: var(--surface);
-            backdrop-filter: blur(40px);
-            border: 1px solid var(--border);
-        }
-        .glass2 {
-            background: var(--surface2);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-        }
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 1.5rem;
-        }
-
-        .sidebar { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); z-index: 100; background: var(--sidebar-bg); }
-        .sidebar.closed { transform: translateX(-100%); }
-
-        input, select, textarea {
-            background: var(--input-bg) !important;
-            border: 1px solid var(--input-border) !important;
-            color: var(--text) !important;
-            border-radius: 1rem;
-            padding: 0.85rem 1.25rem;
-            font-family: 'Ubuntu', sans-serif;
-            font-size: 0.95rem;
-            width: 100%;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--gold) !important;
-            box-shadow: 0 0 0 3px var(--shadow);
-        }
-        select option { background: var(--bg2); color: var(--text); }
-
-        .page { display: none; }
-        .page.active { display: block; }
-
-        .nav-link {
-            color: var(--text2);
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .nav-link:hover, .nav-link.active-nav {
-            background: var(--gold) !important;
-            color: #000 !important;
-            border-color: transparent;
-        }
-
-        .btn-primary {
-            background: var(--gold);
-            color: #000;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        .btn-primary:hover {
-            background: var(--gold2);
-            box-shadow: 0 0 30px var(--shadow);
-            transform: translateY(-1px);
-        }
-        .btn-danger {
-            background: rgba(239,68,68,0.15);
-            color: var(--red);
-            border: 1px solid rgba(239,68,68,0.3);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        .btn-danger:hover {
-            background: var(--red);
-            color: white;
-        }
-        .btn-ghost {
-            background: var(--surface2);
-            color: var(--text2);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
-
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 1.5rem;
-            padding: 1.5rem 2rem;
-        }
-
-        .mono { font-family: 'Ubuntu Mono', monospace; }
-
-        .table-row { border-bottom: 1px solid var(--border); }
-        .table-row:hover { background: var(--surface2); }
-
-        .tag {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.2rem 0.6rem; border-radius: 9999px;
-            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-        }
-        .tag-green { background: rgba(34,197,94,0.15); color: var(--green); }
-        .tag-red { background: rgba(239,68,68,0.15); color: var(--red); }
-        .tag-gold { background: rgba(245,197,24,0.15); color: var(--gold); }
-        .tag-blue { background: rgba(96,165,250,0.15); color: var(--blue); }
-
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            animation: fadeIn 0.3s ease;
-        }
-        .alert-success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
-        .alert-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
-        .alert-info { background: rgba(245,197,24,0.1); border: 1px solid rgba(245,197,24,0.2); color: var(--gold); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-
-        .theme-toggle {
-            width: 52px; height: 28px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 9999px;
-            position: relative; cursor: pointer;
-            transition: all 0.3s;
-        }
-        .theme-toggle .knob {
-            position: absolute; top: 3px; left: 3px;
-            width: 20px; height: 20px;
-            border-radius: 50%;
-            background: var(--gold);
-            transition: transform 0.3s;
-        }
-        [data-theme="light"] .theme-toggle .knob { transform: translateX(24px); }
-        [data-theme="light"] .theme-toggle { background: rgba(184,134,11,0.15); }
-
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 300;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1.5rem;
-        }
-        .modal-box {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 2rem;
-            padding: 2.5rem;
-            width: 100%; max-width: 440px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .progress-bar {
-            height: 6px; border-radius: 9999px;
-            background: var(--border);
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%; border-radius: 9999px;
-            background: linear-gradient(90deg, var(--gold2), var(--gold));
-            transition: width 0.5s ease;
-        }
-
-        .section-title {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--text3);
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-        }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
-
-        @media (max-width: 640px) {
-            .hide-mobile { display: none !important; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charisma Distillers • Finance Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ══ TOKENS ══════════════════════════════════════ */
+:root[data-theme="dark"]{
+  --bg:#06060f;--bg2:#0d0d1f;--bg3:#13131f;
+  --surf:rgba(255,255,255,.04);--surf2:rgba(255,255,255,.07);
+  --bdr:rgba(255,255,255,.09);--bdr2:rgba(255,255,255,.16);
+  --txt:#f0f0f5;--txt2:#9090a8;--txt3:#50506a;
+  --gold:#f5c518;--gold2:#d4a800;--glow:rgba(245,197,24,.18);
+  --green:#22c55e;--green-bg:rgba(34,197,94,.12);
+  --red:#ef4444;--red-bg:rgba(239,68,68,.12);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,.12);
+  --inp:rgba(0,0,0,.55);--inp-bdr:rgba(255,255,255,.12);
+  --header-bg:rgba(6,6,15,.93);
+  --b1:rgba(245,197,24,.09);--b2:rgba(79,70,229,.06)
+}
+:root[data-theme="light"]{
+  --bg:#f2ede1;--bg2:#e8e2d4;--bg3:#ddd7c8;
+  --surf:rgba(255,255,255,.75);--surf2:rgba(255,255,255,.92);
+  --bdr:rgba(0,0,0,.09);--bdr2:rgba(0,0,0,.16);
+  --txt:#1a1830;--txt2:#4a485e;--txt3:#8a8a9e;
+  --gold:#8a6200;--gold2:#6e4e00;--glow:rgba(138,98,0,.15);
+  --green:#166534;--green-bg:rgba(22,101,52,.1);
+  --red:#991b1b;--red-bg:rgba(153,27,27,.1);
+  --blue:#1d4ed8;--blue-bg:rgba(29,78,216,.1);
+  --inp:rgba(255,255,255,.9);--inp-bdr:rgba(0,0,0,.14);
+  --header-bg:rgba(242,237,225,.95);
+  --b1:rgba(138,98,0,.1);--b2:rgba(79,70,229,.05)
+}
+/* ══ RESET ══════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Ubuntu',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;line-height:1.5}
+button{cursor:pointer;font-family:'Ubuntu',sans-serif;border:none;background:none}
+input,select,textarea{font-family:'Ubuntu',sans-serif}
+img{display:block}
+/* ══ BG BLOBS ══════════════════════════════════ */
+.bg{position:fixed;inset:0;z-index:-1;background:var(--bg);overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(110px);animation:blob 28s ease-in-out infinite alternate}
+.b1{width:900px;height:900px;background:radial-gradient(circle,var(--b1) 0%,var(--b2) 40%,transparent 70%);top:-200px;left:-200px}
+.b2{width:700px;height:700px;background:radial-gradient(circle,var(--b2) 0%,var(--b1) 50%,transparent 70%);bottom:-200px;right:-200px;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes blob{0%{transform:translate(0,0)}100%{transform:translate(30px,20px) scale(1.04)}}
+/* ══ HEADER ══════════════════════════════════════ */
+.header{position:sticky;top:0;z-index:50;background:var(--header-bg);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-bottom:1px solid var(--bdr);padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.h-left{display:flex;align-items:center;gap:.85rem}
+.h-right{display:flex;align-items:center;gap:.7rem}
+.hbg{width:40px;height:40px;background:var(--surf);border:1px solid var(--bdr);border-radius:.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.hbl{width:18px;height:2px;background:var(--gold);border-radius:2px}
+.hbl:nth-child(2){width:13px}
+.logo{height:38px;object-fit:contain}
+.bname{font-size:.92rem;font-weight:700;color:var(--gold);letter-spacing:-.02em;line-height:1.1}
+.bsub{font-size:.54rem;color:var(--txt3);letter-spacing:.3em;text-transform:uppercase;margin-top:1px}
+/* ══ SYNC DOT ══════════════════════════════════ */
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;transition:background .3s}
+.sdot.syncing{background:var(--gold);animation:pulse .9s ease-in-out infinite}
+.sdot.err{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ══ THEME TOGGLE ══════════════════════════════ */
+.tog{width:50px;height:27px;background:var(--surf);border:1px solid var(--bdr);border-radius:9999px;position:relative;cursor:pointer}
+.tok{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:var(--gold);transition:transform .3s}
+[data-theme="light"] .tok{transform:translateX(23px)}
+/* ══ LANG BTN ══════════════════════════════════ */
+.lbtn{padding:.35rem .75rem;background:var(--surf);border:1px solid var(--bdr);border-radius:.6rem;font-size:.7rem;font-weight:700;color:var(--txt2);letter-spacing:.05em;transition:all .2s}
+.lbtn:hover{border-color:var(--gold);color:var(--gold)}
+/* ══ CLOCK ══════════════════════════════════════ */
+.clk{font-family:'Ubuntu Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--gold);line-height:1}
+.cdt{font-size:.58rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+/* ══ SIDEBAR ══════════════════════════════════ */
+.sidebar{position:fixed;top:0;left:0;height:100%;width:278px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;display:flex;flex-direction:column;padding:1.25rem;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.sidebar.open{transform:translateX(0)}
+.sb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
+.sb-close{font-size:1.6rem;color:var(--txt3);line-height:1;transition:color .2s}
+.sb-close:hover{color:var(--txt)}
+.nav-sec{font-size:.58rem;text-transform:uppercase;letter-spacing:.2em;color:var(--txt3);font-weight:700;margin:1.1rem 0 .5rem}
+.nl{width:100%;text-align:left;padding:.7rem 1rem;border-radius:.8rem;font-size:.85rem;font-weight:500;color:var(--txt2);display:flex;align-items:center;gap:.7rem;border:1px solid transparent;transition:all .18s}
+.nl:hover,.nl.on{background:var(--gold)!important;color:#000!important;border-color:transparent!important}
+.sb-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--bdr)}
+.uname{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--txt3);margin-bottom:.75rem}
+/* ══ FORM ══════════════════════════════════════ */
+.flabel{display:block;font-size:.59rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--txt3);margin-bottom:.42rem}
+.flabel.g{color:var(--green)}.flabel.r{color:var(--red)}.flabel.au{color:var(--gold)}
+.inp{width:100%;background:var(--inp);border:1px solid var(--inp-bdr);border-radius:.9rem;padding:.78rem 1.1rem;font-size:.9rem;color:var(--txt);outline:none;transition:border-color .2s,box-shadow .2s}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}
+.inp.big{font-family:'Ubuntu Mono',monospace;font-size:1.2rem}
+.inp::placeholder{color:var(--txt3)}
+select.inp{appearance:none;-webkit-appearance:none;cursor:pointer}
+select.inp option{background:var(--bg2);color:var(--txt)}
+textarea.inp{resize:vertical;min-height:80px}
+/* ══ BUTTONS ══════════════════════════════════ */
+.btn-main{width:100%;background:var(--gold);color:#000;font-weight:700;padding:1.05rem;border-radius:1rem;font-size:.88rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border:none;font-family:'Ubuntu',sans-serif;transition:all .2s;margin-top:1rem}
+.btn-main:hover{background:var(--gold2);box-shadow:0 6px 24px var(--glow);transform:translateY(-1px)}
+.btn-ghost{background:var(--surf);border:1px solid var(--bdr);border-radius:.8rem;padding:.6rem 1rem;font-size:.75rem;font-weight:700;color:var(--txt2);cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-del{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);color:var(--red);padding:.35rem .7rem;font-size:.66rem;border-radius:.55rem;font-weight:700;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.btn-del:hover{background:var(--red);color:#fff}
+.btn-danger-lg{background:var(--red-bg);border:1px solid rgba(239,68,68,.3);color:var(--red);padding:.72rem 1.2rem;border-radius:.8rem;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.btn-danger-lg:hover{background:var(--red);color:#fff}
+.btn-so{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);color:var(--red);width:100%;padding:.72rem;border-radius:.8rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.btn-so:hover{background:var(--red);color:#fff}
+.btn-rep{background:var(--surf);border:1px solid var(--bdr);color:var(--txt2);width:100%;padding:.62rem;border-radius:.72rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s;margin-top:.5rem}
+.btn-rep:hover{border-color:var(--gold);color:var(--gold)}
+.btn-cancel{background:var(--surf);border:1px solid var(--bdr2);padding:.65rem 1rem;border-radius:.8rem;font-size:.75rem;font-weight:700;color:var(--txt2);cursor:pointer;font-family:'Ubuntu',sans-serif;flex:1;transition:all .2s}
+.btn-cancel:hover{background:var(--surf2)}
+/* ══ CARDS ══════════════════════════════════════ */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:1.25rem;padding:1.25rem 1.5rem}
+.card-lg{background:var(--surf);border:1px solid var(--bdr);border-radius:2rem;padding:1.75rem}
+.stat{background:var(--surf);border:1px solid var(--bdr);border-radius:1.25rem;padding:1.2rem 1.6rem}
+.stat-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--txt3);margin-bottom:.35rem}
+.stat-v{font-family:'Ubuntu Mono',monospace;font-size:1.55rem;font-weight:700;line-height:1.1}
+/* ══ TAGS ══════════════════════════════════════ */
+.tag{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:9999px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.tg{background:var(--green-bg);color:var(--green)}
+.tr{background:var(--red-bg);color:var(--red)}
+.ta{background:rgba(245,197,24,.12);color:var(--gold)}
+.tb{background:var(--blue-bg);color:var(--blue)}
+/* ══ TABLE ══════════════════════════════════════ */
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;font-size:.79rem}
+.tbl th{padding:.7rem 1rem;text-align:left;font-size:.57rem;text-transform:uppercase;letter-spacing:.16em;color:var(--txt3);font-weight:700;border-bottom:1px solid var(--bdr)}
+.tbl th.r,.tbl td.r{text-align:right}.tbl th.c,.tbl td.c{text-align:center}
+.tbl td{padding:.72rem 1rem;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.tbl tr:hover td{background:var(--surf2)}
+.tbl tr:last-child td{border-bottom:none}
+.dim{color:var(--txt3);font-size:.7rem}.mn{font-family:'Ubuntu Mono',monospace}
+/* ══ ALERTS ══════════════════════════════════ */
+.al{padding:.85rem 1.1rem;border-radius:.9rem;font-size:.82rem;margin-bottom:.7rem;animation:fup .28s ease}
+.al-ok{background:var(--green-bg);border:1px solid rgba(34,197,94,.25);color:var(--green)}
+.al-err{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);color:var(--red)}
+.al-info{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold)}
+.al-warn{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:#b45309}
+@keyframes fup{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+/* ══ LAYOUT HELPERS ══════════════════════════ */
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 1.5rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.flex{display:flex}.flex-col{flex-direction:column}.aic{align-items:center}.jb{justify-content:space-between}.je{justify-content:flex-end}.gap1{gap:.35rem}.gap2{gap:.65rem}.gap3{gap:1rem}.gap4{gap:1.5rem}.fw{flex-wrap:wrap}.f1{flex:1}.s0{flex-shrink:0}.mw0{min-width:0}
+.stack>*+*{margin-top:.85rem}
+.divider{height:1px;background:var(--bdr);margin:1.1rem 0}
+/* ══ PAGE ══════════════════════════════════════ */
+.page{display:none}.page.on{display:block}
+.pt{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;line-height:1}
+.ps{font-size:.82rem;color:var(--txt2);margin-top:.3rem}
+.sec{font-size:.59rem;text-transform:uppercase;letter-spacing:.2em;font-weight:700;color:var(--txt3);margin-bottom:.7rem}
+/* ══ PROGRESS ══════════════════════════════════ */
+.prog{height:8px;border-radius:9999px;background:var(--bdr);overflow:hidden}
+.pfill{height:100%;border-radius:9999px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .6s ease}
+/* ══ NET PREVIEW ══════════════════════════════ */
+.net-row{display:flex;align-items:center;justify-content:space-between;padding:.82rem 1.1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:1rem;margin-top:.5rem}
+.net-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;color:var(--txt3);font-weight:700}
+.net-v{font-family:'Ubuntu Mono',monospace;font-size:1rem;font-weight:700}
+/* ══ CALC BOX ══════════════════════════════════ */
+.cbox{background:var(--surf);border:1px solid var(--bdr);border-radius:1.25rem;padding:1.1rem 1.25rem}
+.crow{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--bdr)}
+.crow:last-child{border-bottom:none;padding-top:.7rem}
+.ck{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--txt3);font-weight:700}
+.cv{font-family:'Ubuntu Mono',monospace;color:var(--txt2)}
+/* ══ RECENT ENTRIES ══════════════════════════ */
+.rentry{display:flex;align-items:center;gap:1rem;padding:.82rem 1.1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:1rem}
+.re-inf{flex:1;min-width:0}
+.re-d{font-size:.84rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.re-m{font-size:.64rem;color:var(--txt3);margin-top:2px}
+.re-a{display:flex;gap:.45rem;align-items:center;flex-shrink:0}
+/* ══ MODAL ══════════════════════════════════════ */
+.mbg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.mbox{background:var(--bg2);border:1px solid var(--bdr2);border-radius:1.75rem;padding:2.25rem;width:100%;max-width:420px;animation:fup .3s ease}
+/* ══ LOGIN ══════════════════════════════════════ */
+.lscreen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(0,0,0,.97)}
+.lbox{background:var(--bg2);border:1px solid rgba(245,197,24,.15);border-radius:2rem;padding:2.5rem;width:100%;max-width:390px;text-align:center}
+.l-logo{height:90px;margin:0 auto 1.25rem}
+.l-eye{font-size:.59rem;text-transform:uppercase;letter-spacing:.35em;color:var(--gold);margin-bottom:.35rem}
+.l-title{font-size:1.55rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.25rem}
+.l-sub{font-size:.75rem;color:var(--txt3);margin-bottom:1.75rem}
+.l-fields{text-align:left;display:flex;flex-direction:column;gap:1rem}
+/* ══ OFFLINE BANNER ══════════════════════════ */
+.offl{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);border-radius:.75rem;padding:.62rem 1rem;font-size:.75rem;color:var(--red);display:flex;align-items:center;gap:.5rem;margin-bottom:.9rem}
+/* ══ FEEDBACK CARD ══════════════════════════ */
+.fbcard{background:var(--surf);border:1px solid var(--bdr);border-radius:1rem;padding:.88rem 1.1rem}
+.fbmeta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem}
+.fbtext{font-size:.78rem;color:var(--txt2);line-height:1.5}
+/* ══ FOOTER ══════════════════════════════════ */
+footer{text-align:center;padding:2rem;border-top:1px solid var(--bdr);background:var(--surf)}
+/* ══ SCROLLBAR ══════════════════════════════ */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:9999px}
+/* ══ RESPONSIVE ══════════════════════════════ */
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}.hd-hide{display:none!important}}
+</style>
 </head>
 <body>
-    <div class="liquid-bg">
-        <div class="liquid-blob"></div>
-        <div class="liquid-blob2"></div>
-    </div>
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="fixed inset-0 z-[200] flex items-center justify-center p-6" style="background: rgba(0,0,0,0.96);">
-        <div class="glass modal-box text-center" style="max-width: 420px; border-color: rgba(245,197,24,0.2);">
-            <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-24 mx-auto mb-6" onerror="this.style.display='none'">
-            <div class="mb-2 text-xs uppercase tracking-[0.3em]" style="color: var(--gold);">SECURE ACCESS</div>
-            <h2 class="text-2xl font-bold mb-1" style="color: var(--text);">Finance Vault</h2>
-            <p class="text-xs mb-8" style="color: var(--text3);">Charisma Distillers Tz Limited — 2026</p>
-            
-            <div id="login-alert"></div>
-            
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="section-title">Authorized ID</label>
-                    <input type="text" id="username" placeholder="Enter your ID" autocomplete="off">
-                </div>
-                <div>
-                    <label class="section-title">Access Code</label>
-                    <input type="password" id="password" placeholder="••••••••••" onkeydown="if(event.key==='Enter') handleLogin()">
-                </div>
-                <button onclick="handleLogin()" class="btn-primary w-full py-4 rounded-2xl text-base tracking-widest uppercase mt-2">
-                    Enter Vault
-                </button>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div></div>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<div id="ls" class="lscreen">
+  <div class="lbox">
+    <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="l-logo" onerror="this.style.display='none'">
+    <div class="l-eye">Secure Access</div>
+    <div class="l-title">Finance Vault</div>
+    <div class="l-sub">Charisma Distillers Tz Limited · 2026</div>
+    <div id="la"></div>
+    <div class="l-fields">
+      <div><label class="flabel">Authorized ID</label>
+        <input type="text" id="un" class="inp" placeholder="Enter your ID" autocomplete="off"></div>
+      <div><label class="flabel">Access Code</label>
+        <input type="password" id="pw" class="inp" placeholder="••••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+      <button onclick="login()" class="btn-main" style="margin-top:.5rem">Enter Vault</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════ -->
+<div id="app" style="display:none;flex-direction:column;flex:1">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="h-left">
+      <button class="hbg" onclick="toggleSidebar()">
+        <div class="hbl"></div><div class="hbl"></div><div class="hbl"></div>
+      </button>
+      <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="logo" onerror="this.style.display='none'">
+      <div class="hd-hide">
+        <div class="bname">CHARISMA DISTILLERS</div>
+        <div class="bsub">Finance Vault 2026</div>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="flex aic gap1" style="font-size:.64rem;color:var(--txt3)">
+        <span class="sdot" id="sdot"></span>
+        <span id="slbl" class="hd-hide">Synced</span>
+      </div>
+      <span class="hd-hide" style="font-size:.75rem;color:var(--txt3)">🌙</span>
+      <div class="tog" onclick="toggleTheme()"><div class="tok"></div></div>
+      <span class="hd-hide" style="font-size:.75rem;color:var(--txt3)">☀️</span>
+      <button class="lbtn" onclick="toggleLang()" id="lbtn">SW</button>
+      <div class="hd-hide">
+        <div class="clk" id="clk">00:00</div>
+        <div class="cdt" id="cdt"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div style="font-size:.58rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700">Navigation</div>
+      <button class="sb-close" onclick="toggleSidebar()">×</button>
+    </div>
+    <div class="nav-sec" data-en="Financial" data-sw="Fedha">Financial</div>
+    <button class="nl" id="nb-cash" onclick="showPage('cash')">📖 <span data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</span></button>
+    <button class="nl" id="nb-proc" onclick="showPage('proc')">🛒 <span data-en="Procurement / Buying" data-sw="Ununuzi wa Bidhaa">Procurement / Buying</span></button>
+    <button class="nl" id="nb-ledg" onclick="showPage('ledg')">📋 <span data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</span></button>
+    <button class="nl" id="nb-ceo" style="display:none;border:1px solid rgba(245,197,24,.3)" onclick="showPage('ceo')">⚜️ <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">CEO Intelligence</span></button>
+    <!-- Staff report -->
+    <div id="wfb" class="divider" style="display:block"></div>
+    <div id="wfb2">
+      <div class="sec" data-en="Report to Management" data-sw="Ripoti kwa Usimamizi">Report to Management</div>
+      <textarea id="sug" class="inp" rows="3" style="font-size:.78rem" placeholder="Write a note to Collins..."></textarea>
+      <button onclick="sendReport()" class="btn-rep"><span data-en="Submit Report" data-sw="Tuma Ripoti">Submit Report</span></button>
+    </div>
+    <div class="sb-footer">
+      <div class="uname" id="ud"></div>
+      <button onclick="location.reload()" class="btn-so">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main style="flex:1;padding:2rem 1.5rem">
+  <div class="wrap">
+    <div id="na"></div><!-- notifications -->
+    <div id="offb" class="offl" style="display:none">⚠️ <span data-en="Offline — showing cached data. Changes will sync when back online." data-sw="Nje ya mtandao — data ya cache. Mabadiliko yatasawazishwa.">Offline — showing cached data.</span></div>
+
+    <!-- ══ CASH BOOK ══════════════════════════════════ -->
+    <div id="page-cash" class="page on">
+      <div style="margin-bottom:1.75rem">
+        <div class="pt" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</div>
+        <div class="ps" data-en="Every shilling in. Every shilling out. No gaps." data-sw="Kila shilingi inayoingia na kutoka. Bila mapungufu.">Every shilling in. Every shilling out. No gaps.</div>
+      </div>
+      <div class="card-lg" style="margin-bottom:1.75rem">
+        <div class="g2">
+          <div>
+            <label class="flabel" data-en="Transaction Description" data-sw="Maelezo ya Muamala">Transaction Description</label>
+            <textarea id="desc" class="inp" rows="5" placeholder="e.g. Sales from Tegeta Market, morning shift..."></textarea>
+          </div>
+          <div class="stack">
+            <div>
+              <label class="flabel g" data-en="💰 Cash In (TSh)" data-sw="💰 Pesa Inayoingia (TSh)">💰 Cash In (TSh)</label>
+              <input type="number" id="recpt" class="inp big" style="color:var(--green)" placeholder="0" min="0" oninput="previewNet()">
             </div>
+            <div>
+              <label class="flabel r" data-en="💸 Cash Out (TSh)" data-sw="💸 Pesa Inayotoka (TSh)">💸 Cash Out (TSh)</label>
+              <input type="number" id="paym" class="inp big" style="color:var(--red)" placeholder="0" min="0" oninput="previewNet()">
+            </div>
+            <div class="net-row">
+              <span class="net-lbl" data-en="Net this entry" data-sw="Jumla ya Ingizo">Net this entry</span>
+              <span class="net-v" id="netp" style="color:var(--gold)">TSh 0</span>
+            </div>
+          </div>
         </div>
+        <button onclick="addTx()" class="btn-main" data-en="✓ Commit to Ledger" data-sw="✓ Hifadhi Kwenye Daftari">✓ Commit to Ledger</button>
+      </div>
+      <div class="sec" data-en="Today's Entries" data-sw="Ingizo la Leo">Today's Entries</div>
+      <div id="rentries" class="stack"></div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="main-app" style="display:none; flex-direction:column; flex:1; min-height:100vh;">
-
-        <!-- HEADER -->
-        <header class="sticky top-0 z-50 px-6 py-4 flex items-center justify-between" style="background: var(--header-bg); border-bottom: 1px solid var(--border); backdrop-filter: blur(40px);">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleMenu()" class="glass2 p-2.5 rounded-xl flex flex-col gap-1 items-center justify-center" style="width:42px; height:42px;">
-                    <div style="width:18px; height:2px; background:var(--gold); border-radius:2px;"></div>
-                    <div style="width:13px; height:2px; background:var(--gold); border-radius:2px;"></div>
-                    <div style="width:18px; height:2px; background:var(--gold); border-radius:2px;"></div>
-                </button>
-                <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="h-10" onerror="this.style.display='none'">
-                <div class="hide-mobile">
-                    <div class="font-bold tracking-tight" style="font-size:1rem; color:var(--gold); line-height:1.1;">CHARISMA DISTILLERS</div>
-                    <div style="font-size:0.6rem; color:var(--text3); letter-spacing:0.3em; text-transform:uppercase;">Finance Vault 2026</div>
-                </div>
+    <!-- ══ PROCUREMENT ═══════════════════════════════ -->
+    <div id="page-proc" class="page">
+      <div style="margin-bottom:1.75rem">
+        <div class="pt" data-en="Procurement Log" data-sw="Kumbukumbu ya Ununuzi">Procurement Log</div>
+        <div class="ps" data-en="Track every purchase: item, quantity, unit price → auto-total." data-sw="Fuatilia kila ununuzi: bidhaa, kiasi, bei → jumla moja kwa moja.">Track every purchase: item, quantity, unit price → auto-total.</div>
+      </div>
+      <div class="card-lg" style="margin-bottom:1.75rem">
+        <div class="g2">
+          <div class="stack">
+            <div><label class="flabel" data-en="Item Name" data-sw="Jina la Bidhaa">Item Name</label>
+              <input type="text" id="pi" class="inp" placeholder="e.g. Mangoes, Pineapples, Bottles..."></div>
+            <div><label class="flabel" data-en="Supplier / Source" data-sw="Muuzaji / Chanzo">Supplier / Source</label>
+              <input type="text" id="ps" class="inp" placeholder="e.g. Tegeta Market, Kariakoo..."></div>
+            <div><label class="flabel" data-en="Notes (optional)" data-sw="Maelezo zaidi">Notes (optional)</label>
+              <textarea id="pn" class="inp" rows="2" placeholder="Any extra details..."></textarea></div>
+          </div>
+          <div class="stack">
+            <div class="g2">
+              <div><label class="flabel" data-en="Quantity" data-sw="Kiasi">Quantity</label>
+                <input type="number" id="pq" class="inp" placeholder="0" min="0" step="0.1" oninput="calcProc()"></div>
+              <div><label class="flabel" data-en="Unit" data-sw="Kipimo">Unit</label>
+                <select id="pu" class="inp" onchange="calcProc()">
+                  <option>kg</option><option>pcs</option><option>L</option>
+                  <option>bunches</option><option>bags</option>
+                  <option>boxes</option><option>bottles</option><option>crates</option><option>other</option>
+                </select></div>
             </div>
-
-            <div class="flex items-center gap-4">
-                <!-- Theme Toggle -->
-                <div class="flex items-center gap-2" style="font-size:0.7rem; color: var(--text3);">
-                    <span class="hide-mobile">🌙</span>
-                    <div class="theme-toggle" onclick="toggleTheme()"><div class="knob"></div></div>
-                    <span class="hide-mobile">☀️</span>
-                </div>
-
-                <!-- Language -->
-                <button onclick="toggleLanguage()" class="btn-ghost px-3 py-1.5 rounded-xl text-xs font-bold tracking-wider">
-                    <span id="lang-label">SW</span>
-                </button>
-
-                <!-- Clock -->
-                <div class="text-right hide-mobile">
-                    <div id="digital-clock" class="mono font-bold" style="font-size:1.2rem; color:var(--gold); line-height:1;">00:00</div>
-                    <div id="digital-date" style="font-size:0.6rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em; margin-top:2px;"></div>
-                </div>
+            <div><label class="flabel au" data-en="@ Price per Unit (TSh)" data-sw="@ Bei kwa Kipimo (TSh)">@ Price per Unit (TSh)</label>
+              <input type="number" id="pp" class="inp big" placeholder="0" min="0" oninput="calcProc()"></div>
+            <div class="cbox">
+              <div class="crow"><span class="ck" data-en="Quantity" data-sw="Kiasi">Quantity</span><span class="cv" id="cq">0</span></div>
+              <div class="crow"><span class="ck" data-en="Unit Price" data-sw="Bei/Kipimo">Unit Price</span><span class="cv" id="cup">TSh 0</span></div>
+              <div class="crow"><span class="ck" style="color:var(--red)" data-en="TOTAL COST" data-sw="JUMLA">TOTAL COST</span><span class="cv" id="ctot" style="color:var(--red);font-size:1.3rem">TSh 0</span></div>
             </div>
-        </header>
-
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="sidebar closed fixed top-0 left-0 h-full flex flex-col" style="width:290px; padding: 1.5rem; border-right: 1px solid var(--border);">
-            <div class="flex items-center justify-between mb-8">
-                <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.2em; color:var(--gold); font-weight:700;">Navigation</div>
-                <button onclick="toggleMenu()" style="color:var(--text3); font-size:1.5rem; background:none; border:none; cursor:pointer; line-height:1;">×</button>
-            </div>
-
-            <nav class="space-y-1 flex-1">
-                <button onclick="showPage('cashbook')" class="nav-link w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium" id="nav-cashbook">
-                    📖 <span data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</span>
-                </button>
-                <button onclick="showPage('procurement')" class="nav-link w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium" id="nav-procurement">
-                    🛒 <span data-en="Procurement / Buying" data-sw="Ununuzi wa Bidhaa">Procurement / Buying</span>
-                </button>
-                <button onclick="showPage('ledger')" class="nav-link w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium" id="nav-ledger">
-                    📋 <span data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</span>
-                </button>
-                <button id="btn-ceo" onclick="showPage('manager')" class="nav-link w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium" style="display:none; border:1px solid rgba(245,197,24,0.3);" id="nav-manager">
-                    ⚜️ <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">CEO Intelligence</span>
-                </button>
-            </nav>
-
-            <!-- Staff Report Box -->
-            <div id="worker-feedback" class="mt-6 pt-6" style="border-top: 1px solid var(--border);">
-                <div class="section-title" data-en="Report to Management" data-sw="Ripoti kwa Usimamizi">Report to Management</div>
-                <textarea id="suggestion-input" rows="3" style="font-size:0.8rem;" placeholder="Write a note to Collins..."></textarea>
-                <button onclick="sendSuggestion()" class="btn-ghost w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest mt-2">
-                    <span data-en="Submit Report" data-sw="Tuma Ripoti">Submit Report</span>
-                </button>
-            </div>
-
-            <div class="mt-4 pt-4" style="border-top: 1px solid var(--border);">
-                <div id="user-display" style="font-size:0.65rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em;"></div>
-                <button onclick="location.reload()" class="btn-danger w-full py-3 rounded-xl text-xs font-bold uppercase tracking-widest mt-3">
-                    Sign Out
-                </button>
-            </div>
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <main style="flex:1; padding: 2rem; max-width: 1100px; margin: 0 auto; width:100%;">
-
-            <!-- NOTIFICATION AREA -->
-            <div id="notification-area"></div>
-
-            <!-- ===== CASH BOOK PAGE ===== -->
-            <div id="page-cashbook" class="page active">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold tracking-tight" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</h2>
-                    <p style="color:var(--text2); font-size:0.85rem; margin-top:0.25rem;" data-en="Record all money in and money out. Every shilling matters." data-sw="Rekodi pesa zote zinazoingia na kutoka. Kila shilingi inahesabiwa.">Record all money in and money out. Every shilling matters.</p>
-                </div>
-
-                <div class="glass rounded-3xl p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="section-title" data-en="Transaction Description" data-sw="Maelezo ya Muamala">Transaction Description</label>
-                            <textarea id="desc" rows="4" placeholder="e.g. Sales from Tegeta Market, morning shift..."></textarea>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="section-title" style="color: var(--green);" data-en="💰 Cash In (TSh)" data-sw="💰 Pesa Inayoingia (TSh)">💰 Cash In (TSh)</label>
-                                <input type="number" id="receipt" placeholder="0" style="color: var(--green) !important; font-size:1.3rem; font-family:'Ubuntu Mono',monospace;" oninput="updateNetPreview()">
-                            </div>
-                            <div>
-                                <label class="section-title" style="color: var(--red);" data-en="💸 Cash Out (TSh)" data-sw="💸 Pesa Inayotoka (TSh)">💸 Cash Out (TSh)</label>
-                                <input type="number" id="payment" placeholder="0" style="color: var(--red) !important; font-size:1.3rem; font-family:'Ubuntu Mono',monospace;" oninput="updateNetPreview()">
-                            </div>
-                            <div class="card p-4 flex items-center justify-between">
-                                <span style="font-size:0.7rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em;">Net this entry</span>
-                                <span id="net-preview" class="mono font-bold" style="font-size:1.1rem; color:var(--gold);">TSh 0</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="addTransaction()" class="btn-primary w-full py-5 rounded-2xl text-base mt-8 uppercase tracking-widest">
-                        <span data-en="✓ Commit to Ledger" data-sw="✓ Hifadhi Kwenye Daftari">✓ Commit to Ledger</span>
-                    </button>
-                </div>
-
-                <!-- Recent entries preview -->
-                <div class="mt-8">
-                    <div class="section-title" data-en="Recent Entries (Today)" data-sw="Ingizo la Leo">Recent Entries (Today)</div>
-                    <div id="recent-entries" class="space-y-3"></div>
-                </div>
-            </div>
-
-            <!-- ===== PROCUREMENT PAGE ===== -->
-            <div id="page-procurement" class="page">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold tracking-tight" data-en="Procurement Log" data-sw="Kumbukumbu ya Ununuzi">Procurement Log</h2>
-                    <p style="color:var(--text2); font-size:0.85rem; margin-top:0.25rem;" data-en="Track what you buy, at what price, and how much." data-sw="Fuatilia unachonunua, bei yake, na kiasi chake.">Track what you buy, at what price, and how much.</p>
-                </div>
-
-                <div class="glass rounded-3xl p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="section-title" data-en="Item Name" data-sw="Jina la Bidhaa">Item Name</label>
-                            <input type="text" id="proc-item" placeholder="e.g. Mangoes, Pineapples, Bottles...">
-                            
-                            <div class="mt-4">
-                                <label class="section-title" data-en="Supplier / Source" data-sw="Muuzaji / Chanzo">Supplier / Source</label>
-                                <input type="text" id="proc-supplier" placeholder="e.g. Tegeta Market, Kariakoo...">
-                            </div>
-
-                            <div class="mt-4">
-                                <label class="section-title" data-en="Notes (optional)" data-sw="Maelezo zaidi">Notes (optional)</label>
-                                <textarea id="proc-notes" rows="2" placeholder="Any extra details..."></textarea>
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="section-title" data-en="Quantity" data-sw="Kiasi">Quantity</label>
-                                    <input type="number" id="proc-qty" placeholder="0" min="0" step="0.1" oninput="calcProcTotal()">
-                                </div>
-                                <div>
-                                    <label class="section-title" data-en="Unit" data-sw="Kipimo">Unit</label>
-                                    <select id="proc-unit">
-                                        <option value="kg">kg</option>
-                                        <option value="pcs">pieces</option>
-                                        <option value="L">litres</option>
-                                        <option value="bunches">bunches</option>
-                                        <option value="bags">bags</option>
-                                        <option value="boxes">boxes</option>
-                                        <option value="bottles">bottles</option>
-                                        <option value="crates">crates</option>
-                                        <option value="other">other</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="section-title" data-en="@ Price per Unit (TSh)" data-sw="@ Bei kwa Kipimo (TSh)">@ Price per Unit (TSh)</label>
-                                <input type="number" id="proc-unit-price" placeholder="0" min="0" oninput="calcProcTotal()" style="font-family:'Ubuntu Mono',monospace; font-size:1.1rem;">
-                            </div>
-
-                            <div class="card p-5 space-y-3">
-                                <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
-                                    <span style="font-size:0.7rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em;">Quantity</span>
-                                    <span id="calc-qty" class="mono font-bold" style="color:var(--text2);">0</span>
-                                </div>
-                                <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
-                                    <span style="font-size:0.7rem; color:var(--text3); text-transform:uppercase; letter-spacing:0.1em;">Unit Price</span>
-                                    <span id="calc-unit-price" class="mono font-bold" style="color:var(--text2);">TSh 0</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span style="font-size:0.7rem; color:var(--red); text-transform:uppercase; letter-spacing:0.1em; font-weight:700;">TOTAL COST</span>
-                                    <span id="calc-total" class="mono font-bold" style="font-size:1.4rem; color:var(--red);">TSh 0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="addProcurement()" class="btn-primary w-full py-5 rounded-2xl text-base mt-8 uppercase tracking-widest">
-                        <span data-en="🛒 Record Purchase" data-sw="🛒 Hifadhi Ununuzi">🛒 Record Purchase</span>
-                    </button>
-                </div>
-
-                <!-- Procurement History -->
-                <div class="mt-8">
-                    <div class="section-title" data-en="Procurement History" data-sw="Historia ya Ununuzi">Procurement History</div>
-                    <div class="glass rounded-2xl overflow-hidden">
-                        <table class="w-full" style="font-size:0.8rem;">
-                            <thead>
-                                <tr style="background:var(--surface2); border-bottom: 1px solid var(--border);">
-                                    <th class="px-5 py-4 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Date</th>
-                                    <th class="px-5 py-4 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Item</th>
-                                    <th class="px-5 py-4 text-center" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Qty</th>
-                                    <th class="px-5 py-4 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Unit Price</th>
-                                    <th class="px-5 py-4 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Total</th>
-                                    <th class="px-5 py-4 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">By</th>
-                                    <th id="proc-del-col" class="px-5 py-4" style="display:none;"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="proc-body" class="divide-y" style="divide-color: var(--border);"></tbody>
-                        </table>
-                        <div id="proc-empty" class="py-12 text-center" style="color:var(--text3); font-size:0.8rem;">
-                            No procurement records yet.
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== LEDGER PAGE ===== -->
-            <div id="page-ledger" class="page">
-                <div class="mb-8 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-3xl font-bold tracking-tight" data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</h2>
-                        <p style="color:var(--text2); font-size:0.85rem; margin-top:0.25rem;" data-en="All transactions — complete and unedited." data-sw="Miamala yote — kamili na bila kubadilika.">All transactions — complete and unedited.</p>
-                    </div>
-                    <!-- Running totals -->
-                    <div class="flex gap-3 hide-mobile">
-                        <div class="tag tag-green">
-                            <span>IN</span><span id="ledger-total-in" class="mono">0</span>
-                        </div>
-                        <div class="tag tag-red">
-                            <span>OUT</span><span id="ledger-total-out" class="mono">0</span>
-                        </div>
-                        <div class="tag tag-gold">
-                            <span>NET</span><span id="ledger-total-net" class="mono">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass rounded-2xl overflow-hidden">
-                    <table class="w-full" style="font-size:0.82rem;">
-                        <thead>
-                            <tr style="background:var(--surface2); border-bottom: 1px solid var(--border);">
-                                <th class="px-5 py-4 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Time</th>
-                                <th class="px-5 py-4 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Description</th>
-                                <th class="px-5 py-4 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">In</th>
-                                <th class="px-5 py-4 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">Out</th>
-                                <th class="px-5 py-4 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); font-weight:700;">By</th>
-                                <th id="ledger-del-col" class="px-5 py-4" style="display:none;"></th>
-                            </tr>
-                        </thead>
-                        <tbody id="ledger-body"></tbody>
-                    </table>
-                    <div id="ledger-empty" class="py-12 text-center" style="color:var(--text3); font-size:0.8rem;">
-                        No transactions yet. Start recording in Cash Book.
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===== CEO INTELLIGENCE PAGE ===== -->
-            <div id="page-manager" class="page">
-                <div class="mb-8 flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                        <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.2em; color:var(--gold); font-weight:700;">⚜️ EXECUTIVE VIEW</div>
-                        <h2 class="text-3xl font-bold tracking-tight mt-1">CEO Intelligence</h2>
-                    </div>
-                    <button onclick="showClearModal()" class="btn-danger px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest">
-                        🗑 Clear All Data
-                    </button>
-                </div>
-
-                <!-- KPI Stats -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="ceo-stats"></div>
-
-                <!-- Break Even Progress -->
-                <div class="card p-6 mb-8">
-                    <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <div class="section-title">Daily Target Progress</div>
-                            <div class="font-bold" style="color:var(--text); font-size:1rem;">TSh 100,000 / day</div>
-                        </div>
-                        <div class="text-right">
-                            <div id="daily-pct" class="mono font-bold" style="font-size:1.5rem; color:var(--gold);">0%</div>
-                            <div style="font-size:0.65rem; color:var(--text3);" id="daily-amount">TSh 0 today</div>
-                        </div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="daily-progress" style="width:0%"></div>
-                    </div>
-                    <div id="daily-status" class="text-xs mt-2" style="color:var(--text3);"></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    <!-- Staff Reports -->
-                    <div class="card p-6">
-                        <div class="section-title">Staff Intelligence / Reports</div>
-                        <div id="feedback-list" class="space-y-3 overflow-y-auto" style="max-height:360px;"></div>
-                        <div id="feedback-empty" class="py-8 text-center" style="color:var(--text3); font-size:0.75rem;">No staff reports yet.</div>
-                    </div>
-
-                    <!-- Full Audit Trail -->
-                    <div class="card p-6 lg:col-span-2 overflow-hidden">
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="section-title">Master Audit Trail</div>
-                            <div class="flex gap-2">
-                                <span class="tag tag-green">Total In: <span id="ceo-total-in" class="mono">0</span></span>
-                                <span class="tag tag-red">Total Out: <span id="ceo-total-out" class="mono">0</span></span>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full" style="font-size:0.75rem;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid var(--border);">
-                                        <th class="pb-3 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Staff</th>
-                                        <th class="pb-3 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Description</th>
-                                        <th class="pb-3 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">In</th>
-                                        <th class="pb-3 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Out</th>
-                                        <th class="pb-3 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ceo-raw-body" class="divide-y" style="divide-color: var(--border);"></tbody>
-                            </table>
-                            <div id="ceo-empty" class="py-8 text-center" style="color:var(--text3); font-size:0.75rem;">No transactions recorded.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Procurement Summary (CEO only) -->
-                <div class="card p-6 mt-6">
-                    <div class="section-title">Procurement Summary</div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full" style="font-size:0.78rem;">
-                            <thead>
-                                <tr style="border-bottom: 1px solid var(--border);">
-                                    <th class="pb-3 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Date</th>
-                                    <th class="pb-3 text-left" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Item</th>
-                                    <th class="pb-3 text-center" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Qty</th>
-                                    <th class="pb-3 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Unit Price</th>
-                                    <th class="pb-3 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700; padding-right:1rem;">Total</th>
-                                    <th class="pb-3 text-right" style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); font-weight:700;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ceo-proc-body"></tbody>
-                        </table>
-                        <div id="ceo-proc-empty" class="py-8 text-center" style="color:var(--text3); font-size:0.75rem;">No procurement records.</div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <footer style="padding: 2.5rem; text-align:center; border-top: 1px solid var(--border); background: var(--surface); margin-top:auto;">
-            <div style="font-weight:700; color:var(--gold); font-size:1.1rem; letter-spacing:-0.02em;">Charisma Distillers Tz Limited</div>
-            <div style="font-size:0.6rem; color:var(--text3); letter-spacing:0.4em; text-transform:uppercase; margin:0.5rem 0;">"Eternal Taste"</div>
-            <div style="font-size:0.65rem; color:var(--text3);">© 2026 All rights reserved.</div>
-        </footer>
-    </div>
-
-    <!-- CONFIRM MODAL -->
-    <div id="clear-modal" style="display:none;" class="modal-overlay">
-        <div class="modal-box">
-            <div style="font-size:2rem; text-align:center; margin-bottom:1rem;">⚠️</div>
-            <h3 class="text-xl font-bold text-center mb-2" style="color:var(--red);">Clear All Data</h3>
-            <p class="text-sm text-center mb-6" style="color:var(--text2);">This will permanently delete ALL transactions, procurement records, and staff reports. This cannot be undone.</p>
-            <div class="flex gap-3">
-                <button onclick="hideClearModal()" class="btn-ghost flex-1 py-3 rounded-xl text-sm font-bold">Cancel</button>
-                <button onclick="clearAllData()" class="btn-danger flex-1 py-3 rounded-xl text-sm font-bold">Yes, Delete Everything</button>
-            </div>
+          </div>
         </div>
+        <button onclick="addProc()" class="btn-main" data-en="🛒 Record Purchase" data-sw="🛒 Hifadhi Ununuzi">🛒 Record Purchase</button>
+      </div>
+      <div class="sec" data-en="Procurement History" data-sw="Historia ya Ununuzi">Procurement History</div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="twrap"><table class="tbl">
+          <thead><tr>
+            <th data-en="Date" data-sw="Tarehe">Date</th>
+            <th data-en="Item" data-sw="Bidhaa">Item</th>
+            <th class="c" data-en="Qty" data-sw="Kiasi">Qty</th>
+            <th class="r" data-en="Unit Price" data-sw="Bei/Kipimo">Unit Price</th>
+            <th class="r" data-en="Total" data-sw="Jumla">Total</th>
+            <th class="r" data-en="By" data-sw="Na">By</th>
+            <th id="pdelth" class="r" style="display:none"></th>
+          </tr></thead>
+          <tbody id="ptbl"></tbody>
+        </table>
+        <div id="pemp" style="padding:2.25rem;text-align:center;font-size:.8rem;color:var(--txt3)" data-en="No procurement records yet." data-sw="Bado hakuna rekodi za ununuzi.">No procurement records yet.</div></div>
+      </div>
     </div>
 
-    <script>
-    // ============================================================
-    // CONFIG
-    // ============================================================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
-    const TARGET_DAILY = 100000;
+    <!-- ══ LEDGER ═════════════════════════════════════ -->
+    <div id="page-ledg" class="page">
+      <div style="margin-bottom:1.75rem" class="flex aic jb fw gap2">
+        <div>
+          <div class="pt" data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</div>
+          <div class="ps" data-en="All transactions — complete and unedited." data-sw="Miamala yote — kamili na bila kubadilika.">All transactions — complete and unedited.</div>
+        </div>
+        <div class="flex gap2 fw">
+          <span class="tag tg">IN <span id="lti" class="mn" style="margin-left:.25rem">0</span></span>
+          <span class="tag tr">OUT <span id="lto" class="mn" style="margin-left:.25rem">0</span></span>
+          <span class="tag ta">NET <span id="ltn" class="mn" style="margin-left:.25rem">0</span></span>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="twrap"><table class="tbl">
+          <thead><tr>
+            <th data-en="Time" data-sw="Wakati">Time</th>
+            <th data-en="Description" data-sw="Maelezo">Description</th>
+            <th class="r" data-en="In" data-sw="Inayoingia">In</th>
+            <th class="r" data-en="Out" data-sw="Inayotoka">Out</th>
+            <th class="r" data-en="By" data-sw="Na">By</th>
+            <th id="ldelth" class="r" style="display:none"></th>
+          </tr></thead>
+          <tbody id="ltbl"></tbody>
+        </table>
+        <div id="lemp" style="padding:2.25rem;text-align:center;font-size:.8rem;color:var(--txt3)" data-en="No transactions yet." data-sw="Bado hakuna miamala.">No transactions yet.</div></div>
+      </div>
+    </div>
 
-    const USERS = {
-        "charisma_ceo":  { pass: "Tunaweza,2026", role: "ceo",    name: "Collins" },
-        "odriatoto":     { pass: "Tunaweza,2026", role: "worker", name: "Odria"   },
-        "berthatoto":    { pass: "Tunaweza,2026", role: "worker", name: "Bertha"  }
-    };
+    <!-- ══ CEO ════════════════════════════════════════ -->
+    <div id="page-ceo" class="page">
+      <div style="margin-bottom:1.75rem" class="flex aic jb fw gap2">
+        <div>
+          <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:.3rem">⚜️ Executive View</div>
+          <div class="pt">CEO Intelligence</div>
+        </div>
+        <button onclick="showClear()" class="btn-danger-lg">🗑 Clear All Data</button>
+      </div>
+      <!-- KPI -->
+      <div class="g4" id="kpi" style="margin-bottom:1.5rem"></div>
+      <!-- Daily target -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="flex aic jb" style="margin-bottom:.85rem">
+          <div>
+            <div class="sec" data-en="Daily Revenue Target" data-sw="Lengo la Mapato">Daily Revenue Target</div>
+            <div style="font-weight:700;font-size:.95rem" data-en="TSh 100,000 / day" data-sw="TSh 100,000 / siku">TSh 100,000 / day</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mn" style="font-size:1.5rem;font-weight:700;color:var(--gold);line-height:1" id="dpct">0%</div>
+            <div style="font-size:.7rem;color:var(--txt3);margin-top:2px" id="damt">TSh 0 today</div>
+          </div>
+        </div>
+        <div class="prog"><div class="pfill" id="dprog" style="width:0%"></div></div>
+        <div style="font-size:.72rem;color:var(--txt3);margin-top:.5rem" id="dstat"></div>
+      </div>
+      <!-- Staff + Audit -->
+      <div class="g2" style="margin-bottom:1.25rem">
+        <div class="card" style="padding:1.25rem">
+          <div class="sec" data-en="Staff Reports" data-sw="Ripoti za Wafanyakazi">Staff Reports</div>
+          <div id="fblist" class="stack" style="max-height:340px;overflow-y:auto"></div>
+          <div id="fbemp" style="padding:2rem;text-align:center;font-size:.78rem;color:var(--txt3)" data-en="No staff reports yet." data-sw="Bado hakuna ripoti.">No staff reports yet.</div>
+        </div>
+        <div class="card" style="padding:1.25rem;overflow:hidden">
+          <div class="sec" data-en="Audit Trail" data-sw="Mkondo wa Ukaguzi">Audit Trail</div>
+          <div class="twrap" style="max-height:340px;overflow-y:auto"><table class="tbl" style="font-size:.74rem">
+            <thead><tr><th>Staff</th><th>Desc</th><th class="r">In</th><th class="r">Out</th><th class="r">Del</th></tr></thead>
+            <tbody id="atbl"></tbody>
+          </table>
+          <div id="aemp" style="padding:2rem;text-align:center;font-size:.74rem;color:var(--txt3)">No transactions yet.</div>
+          </div>
+        </div>
+      </div>
+      <!-- Procurement summary -->
+      <div class="card" style="padding:1.25rem;overflow:hidden">
+        <div class="flex aic jb" style="margin-bottom:.85rem">
+          <div class="sec" data-en="Procurement Summary" data-sw="Muhtasari wa Ununuzi">Procurement Summary</div>
+          <span class="tag tr">Total Spend: <span id="pspend" class="mn" style="margin-left:.25rem">TSh 0</span></span>
+        </div>
+        <div class="twrap"><table class="tbl" style="font-size:.75rem">
+          <thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">Del</th></tr></thead>
+          <tbody id="cptbl"></tbody>
+        </table>
+        <div id="cpemp" style="padding:2rem;text-align:center;font-size:.75rem;color:var(--txt3)">No procurement records.</div></div>
+      </div>
+    </div>
 
-    // ============================================================
-    // STATE — loaded from localStorage
-    // ============================================================
-    let currentUser = null;
-    let currentLang = 'en';
-    let transactions   = JSON.parse(localStorage.getItem('charisma_transactions')   || '[]');
-    let procurements   = JSON.parse(localStorage.getItem('charisma_procurements')   || '[]');
-    let feedbacks      = JSON.parse(localStorage.getItem('charisma_feedbacks')      || '[]');
+  </div><!-- /wrap -->
+  </main>
 
-    function save() {
-        localStorage.setItem('charisma_transactions', JSON.stringify(transactions));
-        localStorage.setItem('charisma_procurements', JSON.stringify(procurements));
-        localStorage.setItem('charisma_feedbacks',    JSON.stringify(feedbacks));
-    }
+  <footer>
+    <div style="font-weight:700;color:var(--gold);font-size:1.05rem;letter-spacing:-.02em">Charisma Distillers Tz Limited</div>
+    <div style="font-size:.58rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.4em;margin:.45rem 0">"Eternal Taste"</div>
+    <div style="font-size:.65rem;color:var(--txt3)">© 2026 All rights reserved.</div>
+  </footer>
+</div>
 
-    // ============================================================
-    // THEME
-    // ============================================================
-    (function initTheme() {
-        const saved = localStorage.getItem('charisma_theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', saved);
-    })();
+<!-- CLEAR MODAL -->
+<div id="cmodal" class="mbg" style="display:none">
+  <div class="mbox" style="text-align:center">
+    <div style="font-size:2rem;margin-bottom:.6rem">⚠️</div>
+    <div style="font-weight:700;color:var(--red);font-size:1.15rem;margin-bottom:.5rem">Clear All Data</div>
+    <p style="font-size:.82rem;color:var(--txt2);margin-bottom:1.75rem">This permanently deletes ALL transactions, procurement records and staff reports from <strong>every device</strong>. CEO action only. Cannot be undone.</p>
+    <div class="flex gap3">
+      <button onclick="hideClear()" class="btn-cancel">Cancel</button>
+      <button onclick="clearAll()" class="btn-danger-lg" style="flex:1">Yes, Delete Everything</button>
+    </div>
+  </div>
+</div>
 
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('charisma_theme', next);
-    }
+<script>
+// ════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════
+// ⬇ IMPORTANT: Replace this URL with your new Google Apps Script URL
+// after deploying the updated script (see charisma-apps-script.js)
+const GS_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
+const DAILY  = 100000;
+const CK_T   = 'ch_tx';
+const CK_P   = 'ch_pr';
+const CK_F   = 'ch_fb';
 
-    // ============================================================
-    // LANGUAGE
-    // ============================================================
-    function toggleLanguage() {
-        currentLang = currentLang === 'en' ? 'sw' : 'en';
-        document.getElementById('lang-label').innerText = currentLang === 'en' ? 'SW' : 'EN';
-        document.querySelectorAll('[data-en]').forEach(el => {
-            const val = el.getAttribute('data-' + currentLang);
-            if (val) el.innerText = val;
-        });
-    }
+const USERS = {
+  "charisma_ceo":{ pass:"Tunaweza,2026", role:"ceo",    name:"Collins" },
+  "odriatoto":   { pass:"Tunaweza,2026", role:"worker", name:"Odria"   },
+  "berthatoto":  { pass:"Tunaweza,2026", role:"worker", name:"Bertha"  }
+};
 
-    // ============================================================
-    // CLOCK
-    // ============================================================
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('digital-clock').innerText = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-        document.getElementById('digital-date').innerText = now.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
-    }
-    setInterval(updateClock, 1000); updateClock();
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let CU = null;          // current user
+let lang = 'en';
+let TX = [], PR = [], FB = [];
 
-    // ============================================================
-    // NOTIFICATIONS
-    // ============================================================
-    function notify(msg, type='success', duration=4000) {
-        const area = document.getElementById('notification-area');
-        const div = document.createElement('div');
-        div.className = `alert alert-${type}`;
-        div.innerHTML = msg;
-        area.prepend(div);
-        setTimeout(() => div.remove(), duration);
-    }
+// ════════════════════════════════════════════════
+//  CACHE  (localStorage as fast local mirror)
+// ════════════════════════════════════════════════
+function cacheLoad(){
+  try{TX=JSON.parse(localStorage.getItem(CK_T)||'[]');PR=JSON.parse(localStorage.getItem(CK_P)||'[]');FB=JSON.parse(localStorage.getItem(CK_F)||'[]')}
+  catch(e){TX=[];PR=[];FB=[]}
+}
+function cacheSave(){
+  try{localStorage.setItem(CK_T,JSON.stringify(TX));localStorage.setItem(CK_P,JSON.stringify(PR));localStorage.setItem(CK_F,JSON.stringify(FB))}catch(e){}
+}
 
-    // ============================================================
-    // LOGIN
-    // ============================================================
-    function handleLogin() {
-        const u = document.getElementById('username').value.trim().toLowerCase();
-        const p = document.getElementById('password').value.trim();
-        const errEl = document.getElementById('login-alert');
-        errEl.innerHTML = '';
+// ════════════════════════════════════════════════
+//  SYNC STATUS
+// ════════════════════════════════════════════════
+function ss(state,txt){
+  const d=document.getElementById('sdot'),l=document.getElementById('slbl');
+  d.className='sdot'+(state==='syncing'?' syncing':state==='err'?' err':'');
+  if(l)l.textContent=txt;
+}
 
-        if (USERS[u] && USERS[u].pass === p) {
-            currentUser = USERS[u];
-            document.getElementById('login-screen').style.display = 'none';
-            const app = document.getElementById('main-app');
-            app.style.display = 'flex';
-            app.style.flexDirection = 'column';
+// ════════════════════════════════════════════════
+//  THEME
+// ════════════════════════════════════════════════
+(function(){const t=localStorage.getItem('ch_theme')||'dark';document.documentElement.setAttribute('data-theme',t)})();
+function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('ch_theme',n)}
 
-            document.getElementById('user-display').innerText = `Authenticated: ${currentUser.name} · ${currentUser.role.toUpperCase()}`;
+// ════════════════════════════════════════════════
+//  LANGUAGE
+// ════════════════════════════════════════════════
+function toggleLang(){
+  lang=lang==='en'?'sw':'en';
+  document.getElementById('lbtn').textContent=lang==='en'?'SW':'EN';
+  document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+lang);if(v)el.textContent=v});
+}
 
-            if (currentUser.role === 'ceo') {
-                document.getElementById('btn-ceo').style.display = 'flex';
-                document.getElementById('worker-feedback').style.display = 'none';
-                document.getElementById('ledger-del-col').style.display = 'table-cell';
-                document.getElementById('proc-del-col').style.display = 'table-cell';
-            }
-            showPage('cashbook');
-            renderAll();
-        } else {
-            errEl.innerHTML = '<div class="alert alert-error">Access Denied: Invalid credentials.</div>';
-        }
-    }
-    document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+// ════════════════════════════════════════════════
+//  CLOCK
+// ════════════════════════════════════════════════
+function tick(){const n=new Date();document.getElementById('clk').textContent=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});document.getElementById('cdt').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
+setInterval(tick,1000);tick();
 
-    // ============================================================
-    // SIDEBAR / PAGES
-    // ============================================================
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('closed');
-    }
+// ════════════════════════════════════════════════
+//  NOTIFY
+// ════════════════════════════════════════════════
+function notify(msg,type,ms=4200){
+  const a=document.getElementById('na'),d=document.createElement('div');
+  d.className='al al-'+type;d.innerHTML=msg;a.prepend(d);setTimeout(()=>d.remove(),ms);
+}
 
-    function showPage(page) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + page).classList.add('active');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
-        const navBtn = document.getElementById('nav-' + page);
-        if (navBtn) navBtn.classList.add('active-nav');
-        if (window.innerWidth < 768) {
-            const sb = document.getElementById('sidebar');
-            if (!sb.classList.contains('closed')) toggleMenu();
-        }
-        if (page === 'ledger') renderLedger();
-        if (page === 'manager') renderCEOData();
-        if (page === 'procurement') renderProcurement();
-    }
+// ════════════════════════════════════════════════
+//  OFFLINE WATCH
+// ════════════════════════════════════════════════
+window.addEventListener('online', ()=>{document.getElementById('offb').style.display='none'});
+window.addEventListener('offline',()=>{document.getElementById('offb').style.display='flex'});
 
-    // ============================================================
-    // CASH IN / OUT — LIVE PREVIEW
-    // ============================================================
-    function updateNetPreview() {
-        const rin  = parseFloat(document.getElementById('receipt').value)  || 0;
-        const rout = parseFloat(document.getElementById('payment').value) || 0;
-        const net  = rin - rout;
-        const el   = document.getElementById('net-preview');
-        el.innerText = 'TSh ' + net.toLocaleString();
-        el.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
-    }
+// ════════════════════════════════════════════════
+//  GOOGLE SHEETS — FETCH ALL
+//  Reads live data from Sheets so all devices stay in sync
+// ════════════════════════════════════════════════
+async function fetchFromSheets(){
+  ss('syncing','Loading…');
+  try{
+    const r=await fetch(GS_URL+'?action=getAll',{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    if(Array.isArray(d.transactions)) TX=d.transactions;
+    if(Array.isArray(d.procurements)) PR=d.procurements;
+    if(Array.isArray(d.feedbacks))    FB=d.feedbacks;
+    cacheSave();
+    ss('','Synced');
+    return true;
+  }catch(e){
+    console.warn('[Charisma] Sheets GET failed:',e.message);
+    ss('err','Offline');
+    document.getElementById('offb').style.display='flex';
+    return false;
+  }
+}
 
-    // ============================================================
-    // ADD TRANSACTION
-    // ============================================================
-    function addTransaction() {
-        const desc = document.getElementById('desc').value.trim();
-        const rin  = parseFloat(document.getElementById('receipt').value)  || 0;
-        const rout = parseFloat(document.getElementById('payment').value) || 0;
-        if (!desc) { notify('⚠️ Description is required.', 'error'); return; }
-        if (rin === 0 && rout === 0) { notify('⚠️ Enter at least one amount.', 'error'); return; }
+// ════════════════════════════════════════════════
+//  GOOGLE SHEETS — POST COMMAND
+// ════════════════════════════════════════════════
+function post(payload){
+  ss('syncing','Saving…');
+  fetch(GS_URL,{method:'POST',body:JSON.stringify(payload)})
+    .then(r=>r.json())
+    .then(()=>ss('','Synced'))
+    .catch(e=>{console.warn('[Charisma] POST failed:',e.message);ss('err','Sync failed')});
+}
 
-        const entry = {
-            id:      Date.now().toString(),
-            date:    new Date().toISOString(),
-            user:    currentUser.name,
-            desc:    desc,
-            receipt: rin,
-            payment: rout
-        };
-        transactions.unshift(entry);
-        save();
+// ════════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════════
+async function login(){
+  const u=document.getElementById('un').value.trim().toLowerCase();
+  const p=document.getElementById('pw').value.trim();
+  const ae=document.getElementById('la');ae.innerHTML='';
+  if(!USERS[u]||USERS[u].pass!==p){ae.innerHTML='<div class="al al-err">Access Denied: Invalid credentials.</div>';return}
+  CU=USERS[u];
 
-        // Sync to Google Sheets (background)
-        fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({type:'transaction', ...entry}) }).catch(()=>{});
+  document.getElementById('ls').style.display='none';
+  const app=document.getElementById('app');app.style.display='flex';
+  document.getElementById('ud').textContent=`Auth: ${CU.name} · ${CU.role.toUpperCase()}`;
+  if(CU.role==='ceo'){
+    document.getElementById('nb-ceo').style.display='flex';
+    document.getElementById('wfb').style.display='none';
+    document.getElementById('wfb2').style.display='none';
+    document.getElementById('ldelth').style.display='table-cell';
+    document.getElementById('pdelth').style.display='table-cell';
+  }
+  // Render cache immediately so UI isn't blank
+  cacheLoad(); showPage('cash'); renderAll();
+  // Then fetch live data from Google Sheets
+  notify('🔄 Connecting to cloud database…','info',6000);
+  const ok=await fetchFromSheets();
+  renderAll();
+  if(ok) notify('✓ Data loaded from cloud. All devices in sync.','ok');
+  else   notify('⚠️ Could not reach cloud — showing cached data.','warn',7000);
+}
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
 
-        document.getElementById('desc').value     = '';
-        document.getElementById('receipt').value  = '';
-        document.getElementById('payment').value  = '';
-        updateNetPreview();
-        renderRecentEntries();
-        notify(`✓ Entry saved: "${desc}"`, 'success');
-    }
+// ════════════════════════════════════════════════
+//  SIDEBAR / PAGES
+// ════════════════════════════════════════════════
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelectorAll('.nl').forEach(x=>x.classList.remove('on'));
+  const nb=document.getElementById('nb-'+p);if(nb)nb.classList.add('on');
+  if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');
+  if(p==='ledg')renderLedger();
+  if(p==='ceo')renderCEO();
+  if(p==='proc')renderProc();
+}
 
-    // ============================================================
-    // PROCUREMENT CALCULATOR
-    // ============================================================
-    function calcProcTotal() {
-        const qty   = parseFloat(document.getElementById('proc-qty').value)        || 0;
-        const price = parseFloat(document.getElementById('proc-unit-price').value) || 0;
-        const unit  = document.getElementById('proc-unit').value;
-        const total = qty * price;
-        document.getElementById('calc-qty').innerText        = qty + ' ' + unit;
-        document.getElementById('calc-unit-price').innerText = 'TSh ' + price.toLocaleString();
-        document.getElementById('calc-total').innerText      = 'TSh ' + total.toLocaleString();
-    }
-    document.getElementById('proc-unit').addEventListener('change', calcProcTotal);
+// ════════════════════════════════════════════════
+//  NET PREVIEW
+// ════════════════════════════════════════════════
+function previewNet(){
+  const i=parseFloat(document.getElementById('recpt').value)||0;
+  const o=parseFloat(document.getElementById('paym').value)||0;
+  const n=i-o,el=document.getElementById('netp');
+  el.textContent='TSh '+n.toLocaleString();
+  el.style.color=n>=0?'var(--green)':'var(--red)';
+}
 
-    function addProcurement() {
-        const item     = document.getElementById('proc-item').value.trim();
-        const supplier = document.getElementById('proc-supplier').value.trim();
-        const notes    = document.getElementById('proc-notes').value.trim();
-        const qty      = parseFloat(document.getElementById('proc-qty').value)        || 0;
-        const unit     = document.getElementById('proc-unit').value;
-        const unitPrice= parseFloat(document.getElementById('proc-unit-price').value) || 0;
+// ════════════════════════════════════════════════
+//  ADD TRANSACTION
+// ════════════════════════════════════════════════
+function addTx(){
+  const desc=document.getElementById('desc').value.trim();
+  const rin=parseFloat(document.getElementById('recpt').value)||0;
+  const rout=parseFloat(document.getElementById('paym').value)||0;
+  if(!desc){notify('⚠️ Description is required.','err');return}
+  if(!rin&&!rout){notify('⚠️ Enter at least one amount.','err');return}
+  const e={id:Date.now().toString(),date:new Date().toISOString(),user:CU.name,desc,receipt:rin,payment:rout};
+  TX.unshift(e); cacheSave(); post({type:'transaction',...e});
+  document.getElementById('desc').value='';
+  document.getElementById('recpt').value='';
+  document.getElementById('paym').value='';
+  previewNet(); renderRecent();
+  if(document.getElementById('page-ledg').classList.contains('on'))renderLedger();
+  if(document.getElementById('page-ceo').classList.contains('on'))renderCEO();
+  notify('✓ Entry saved: "'+desc+'"','ok');
+}
 
-        if (!item)       { notify('⚠️ Item name is required.', 'error'); return; }
-        if (qty <= 0)    { notify('⚠️ Quantity must be greater than 0.', 'error'); return; }
-        if (unitPrice <= 0) { notify('⚠️ Unit price must be greater than 0.', 'error'); return; }
+// ════════════════════════════════════════════════
+//  PROCUREMENT CALC
+// ════════════════════════════════════════════════
+function calcProc(){
+  const q=parseFloat(document.getElementById('pq').value)||0;
+  const p=parseFloat(document.getElementById('pp').value)||0;
+  const u=document.getElementById('pu').value;
+  document.getElementById('cq').textContent=q+' '+u;
+  document.getElementById('cup').textContent='TSh '+p.toLocaleString();
+  document.getElementById('ctot').textContent='TSh '+(q*p).toLocaleString();
+}
 
-        const total = qty * unitPrice;
-        const entry = {
-            id:        Date.now().toString(),
-            date:      new Date().toISOString(),
-            user:      currentUser.name,
-            item:      item,
-            supplier:  supplier,
-            notes:     notes,
-            qty:       qty,
-            unit:      unit,
-            unitPrice: unitPrice,
-            total:     total
-        };
-        procurements.unshift(entry);
-        save();
+// ════════════════════════════════════════════════
+//  ADD PROCUREMENT
+// ════════════════════════════════════════════════
+function addProc(){
+  const item=document.getElementById('pi').value.trim();
+  const sup=document.getElementById('ps').value.trim();
+  const notes=document.getElementById('pn').value.trim();
+  const qty=parseFloat(document.getElementById('pq').value)||0;
+  const unit=document.getElementById('pu').value;
+  const up=parseFloat(document.getElementById('pp').value)||0;
+  if(!item){notify('⚠️ Item name is required.','err');return}
+  if(qty<=0){notify('⚠️ Quantity must be > 0.','err');return}
+  if(up<=0){notify('⚠️ Unit price must be > 0.','err');return}
+  const e={id:Date.now().toString(),date:new Date().toISOString(),user:CU.name,item,supplier:sup,notes,qty,unit,unitPrice:up,total:qty*up};
+  PR.unshift(e); cacheSave(); post({type:'procurement',...e});
+  document.getElementById('pi').value='';document.getElementById('ps').value='';
+  document.getElementById('pn').value='';document.getElementById('pq').value='';
+  document.getElementById('pp').value='';calcProc();renderProc();
+  if(document.getElementById('page-ceo').classList.contains('on'))renderCEO();
+  notify('✓ Purchase recorded: '+qty+' '+unit+' of '+item+' — TSh '+e.total.toLocaleString(),'ok');
+}
 
-        fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({type:'procurement', ...entry}) }).catch(()=>{});
+// ════════════════════════════════════════════════
+//  STAFF REPORT
+// ════════════════════════════════════════════════
+function sendReport(){
+  const txt=document.getElementById('sug').value.trim();if(!txt)return;
+  const e={user:CU.name,text:txt,time:new Date().toLocaleString()};
+  FB.unshift(e);cacheSave();post({type:'feedback',...e});
+  document.getElementById('sug').value='';
+  notify('✓ Report sent to Management.','info');
+}
 
-        document.getElementById('proc-item').value       = '';
-        document.getElementById('proc-supplier').value   = '';
-        document.getElementById('proc-notes').value      = '';
-        document.getElementById('proc-qty').value        = '';
-        document.getElementById('proc-unit-price').value = '';
-        calcProcTotal();
-        renderProcurement();
-        notify(`✓ Purchase recorded: ${qty} ${unit} of ${item} — TSh ${total.toLocaleString()}`, 'success');
-    }
+// ════════════════════════════════════════════════
+//  DELETE (CEO ONLY)
+// ════════════════════════════════════════════════
+function delTx(id){if(CU.role!=='ceo')return;TX=TX.filter(t=>t.id!==id);cacheSave();post({type:'delete_transaction',id});renderAll();notify('🗑 Transaction deleted.','info')}
+function delPr(id){if(CU.role!=='ceo')return;PR=PR.filter(p=>p.id!==id);cacheSave();post({type:'delete_procurement',id});renderProc();renderCEO();notify('🗑 Procurement entry deleted.','info')}
+function showClear(){document.getElementById('cmodal').style.display='flex'}
+function hideClear(){document.getElementById('cmodal').style.display='none'}
+function clearAll(){
+  if(CU.role!=='ceo')return;
+  TX=[];PR=[];FB=[];cacheSave();
+  post({type:'clear_all'});
+  hideClear();renderAll();
+  notify('🗑 All data cleared by CEO across all devices.','info',7000);
+}
 
-    // ============================================================
-    // STAFF REPORTS
-    // ============================================================
-    function sendSuggestion() {
-        const text = document.getElementById('suggestion-input').value.trim();
-        if (!text) return;
-        feedbacks.unshift({ user: currentUser.name, text: text, time: new Date().toLocaleString() });
-        save();
-        document.getElementById('suggestion-input').value = '';
-        notify('✓ Report sent to Management.', 'info');
-    }
+// ════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════
+function fd(iso){const d=new Date(iso);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
+function renderAll(){renderRecent();renderLedger();renderProc();if(CU&&CU.role==='ceo')renderCEO()}
 
-    // ============================================================
-    // DELETE (CEO ONLY)
-    // ============================================================
-    function deleteTransaction(id) {
-        if (currentUser.role !== 'ceo') return;
-        transactions = transactions.filter(t => t.id !== id);
-        save();
-        renderAll();
-        notify('🗑 Transaction deleted.', 'info');
-    }
+function renderRecent(){
+  const today=new Date().toDateString();
+  const list=TX.filter(t=>new Date(t.date).toDateString()===today);
+  const el=document.getElementById('rentries');
+  if(!list.length){el.innerHTML='<div style="font-size:.78rem;color:var(--txt3);padding:.75rem 0" data-en="No entries today yet." data-sw="Bado hakuna ingizo la leo.">No entries today yet.</div>';return}
+  el.innerHTML=list.slice(0,6).map(t=>`
+    <div class="rentry">
+      <div class="re-inf"><div class="re-d">${t.desc}</div><div class="re-m">${t.user} · ${fd(t.date)}</div></div>
+      <div class="re-a">
+        ${t.receipt>0?`<span class="tag tg mn">+${t.receipt.toLocaleString()}</span>`:''}
+        ${t.payment>0?`<span class="tag tr mn">-${t.payment.toLocaleString()}</span>`:''}
+      </div>
+    </div>`).join('');
+}
 
-    function deleteProcurement(id) {
-        if (currentUser.role !== 'ceo') return;
-        procurements = procurements.filter(p => p.id !== id);
-        save();
-        renderProcurement();
-        renderCEOData();
-        notify('🗑 Procurement entry deleted.', 'info');
-    }
+function renderLedger(){
+  const tb=document.getElementById('ltbl'),ep=document.getElementById('lemp');
+  const isCEO=CU&&CU.role==='ceo';
+  let tI=0,tO=0;TX.forEach(t=>{tI+=t.receipt;tO+=t.payment});
+  document.getElementById('lti').textContent=tI.toLocaleString();
+  document.getElementById('lto').textContent=tO.toLocaleString();
+  const n=tI-tO,ne=document.getElementById('ltn');
+  ne.textContent=n.toLocaleString();ne.style.color=n>=0?'var(--green)':'var(--red)';
+  if(!TX.length){tb.innerHTML='';ep.style.display='block';return}
+  ep.style.display='none';
+  tb.innerHTML=TX.map(t=>`<tr>
+    <td class="dim mn" style="white-space:nowrap">${fd(t.date)}</td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.desc}</td>
+    <td class="r mn" style="color:var(--green)">${t.receipt>0?t.receipt.toLocaleString():'—'}</td>
+    <td class="r mn" style="color:var(--red)">${t.payment>0?t.payment.toLocaleString():'—'}</td>
+    <td class="r"><span class="tag ta">${t.user}</span></td>
+    ${isCEO?`<td class="r"><button class="btn-del" onclick="delTx('${t.id}')">del</button></td>`:''}
+  </tr>`).join('');
+}
 
-    function showClearModal() { document.getElementById('clear-modal').style.display = 'flex'; }
-    function hideClearModal() { document.getElementById('clear-modal').style.display = 'none'; }
+function renderProc(){
+  const tb=document.getElementById('ptbl'),ep=document.getElementById('pemp');
+  const isCEO=CU&&CU.role==='ceo';
+  if(!PR.length){tb.innerHTML='';ep.style.display='block';return}
+  ep.style.display='none';
+  tb.innerHTML=PR.map(p=>`<tr>
+    <td class="dim mn" style="white-space:nowrap;font-size:.7rem">${fd(p.date)}</td>
+    <td><div style="font-weight:500">${p.item}</div>
+        ${p.supplier?`<div style="font-size:.7rem;color:var(--txt3)">${p.supplier}</div>`:''}
+        ${p.notes?`<div style="font-size:.64rem;color:var(--txt3);font-style:italic">${p.notes}</div>`:''}</td>
+    <td class="c mn">${p.qty} ${p.unit}</td>
+    <td class="r mn" style="color:var(--txt2)">TSh ${p.unitPrice.toLocaleString()}</td>
+    <td class="r mn" style="color:var(--red);font-weight:700">TSh ${p.total.toLocaleString()}</td>
+    <td class="r"><span class="tag ta">${p.user}</span></td>
+    ${isCEO?`<td class="r"><button class="btn-del" onclick="delPr('${p.id}')">del</button></td>`:''}
+  </tr>`).join('');
+}
 
-    function clearAllData() {
-        if (currentUser.role !== 'ceo') return;
-        transactions = []; procurements = []; feedbacks = [];
-        save();
-        hideClearModal();
-        renderAll();
-        notify('🗑 All data has been cleared by CEO.', 'info', 6000);
-    }
-
-    // ============================================================
-    // RENDER FUNCTIONS
-    // ============================================================
-    function renderAll() {
-        renderRecentEntries();
-        renderLedger();
-        renderProcurement();
-        renderCEOData();
-    }
-
-    function fmtDate(iso) {
-        const d = new Date(iso);
-        return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) + ' ' +
-               d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-    }
-
-    function renderRecentEntries() {
-        const today = new Date().toDateString();
-        const todayEntries = transactions.filter(t => new Date(t.date).toDateString() === today);
-        const el = document.getElementById('recent-entries');
-        if (todayEntries.length === 0) {
-            el.innerHTML = `<div style="color:var(--text3); font-size:0.8rem; padding:1rem 0;">No entries today yet.</div>`;
-            return;
-        }
-        el.innerHTML = todayEntries.slice(0, 5).map(t => `
-            <div class="card p-4 flex items-center justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                    <div style="font-size:0.85rem; color:var(--text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.desc}</div>
-                    <div style="font-size:0.65rem; color:var(--text3); margin-top:2px;">${t.user} · ${fmtDate(t.date)}</div>
-                </div>
-                <div class="flex gap-3 items-center shrink-0">
-                    ${t.receipt > 0 ? `<span class="tag tag-green mono">+${t.receipt.toLocaleString()}</span>` : ''}
-                    ${t.payment > 0 ? `<span class="tag tag-red mono">-${t.payment.toLocaleString()}</span>` : ''}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function renderLedger() {
-        const tbody   = document.getElementById('ledger-body');
-        const empty   = document.getElementById('ledger-empty');
-        const isCEO   = currentUser && currentUser.role === 'ceo';
-        let totalIn=0, totalOut=0;
-
-        transactions.forEach(t => { totalIn += t.receipt; totalOut += t.payment; });
-        document.getElementById('ledger-total-in').innerText  = totalIn.toLocaleString();
-        document.getElementById('ledger-total-out').innerText = totalOut.toLocaleString();
-        const net = totalIn - totalOut;
-        const netEl = document.getElementById('ledger-total-net');
-        netEl.innerText = net.toLocaleString();
-        netEl.style.color = net >= 0 ? 'var(--green)' : 'var(--red)';
-
-        if (transactions.length === 0) {
-            tbody.innerHTML = '';
-            empty.style.display = 'block';
-            return;
-        }
-        empty.style.display = 'none';
-        tbody.innerHTML = transactions.map(t => `
-            <tr class="table-row">
-                <td class="px-5 py-4 mono" style="font-size:0.7rem; color:var(--text3); white-space:nowrap;">${fmtDate(t.date)}</td>
-                <td class="px-5 py-4" style="color:var(--text); max-width:200px;">${t.desc}</td>
-                <td class="px-5 py-4 text-right mono font-bold" style="color:var(--green);">${t.receipt > 0 ? t.receipt.toLocaleString() : '—'}</td>
-                <td class="px-5 py-4 text-right mono font-bold" style="color:var(--red);">${t.payment > 0 ? t.payment.toLocaleString() : '—'}</td>
-                <td class="px-5 py-4 text-right" style="font-size:0.7rem;"><span class="tag tag-gold">${t.user}</span></td>
-                ${isCEO ? `<td class="px-5 py-4 text-right"><button onclick="deleteTransaction('${t.id}')" class="btn-danger px-2 py-1 rounded-lg text-xs" style="font-size:0.65rem;">del</button></td>` : ''}
-            </tr>
-        `).join('');
-    }
-
-    function renderProcurement() {
-        const tbody  = document.getElementById('proc-body');
-        const empty  = document.getElementById('proc-empty');
-        const isCEO  = currentUser && currentUser.role === 'ceo';
-
-        if (procurements.length === 0) {
-            tbody.innerHTML = '';
-            empty.style.display = 'block';
-            return;
-        }
-        empty.style.display = 'none';
-        tbody.innerHTML = procurements.map(p => `
-            <tr class="table-row">
-                <td class="px-5 py-4 mono" style="font-size:0.7rem; color:var(--text3); white-space:nowrap;">${fmtDate(p.date)}</td>
-                <td class="px-5 py-4">
-                    <div style="color:var(--text); font-weight:500; font-size:0.85rem;">${p.item}</div>
-                    ${p.supplier ? `<div style="color:var(--text3); font-size:0.7rem;">${p.supplier}</div>` : ''}
-                    ${p.notes ? `<div style="color:var(--text3); font-size:0.65rem; font-style:italic;">${p.notes}</div>` : ''}
-                </td>
-                <td class="px-5 py-4 text-center mono" style="color:var(--text2); font-size:0.82rem;">${p.qty} ${p.unit}</td>
-                <td class="px-5 py-4 text-right mono" style="color:var(--text2); font-size:0.82rem;">TSh ${p.unitPrice.toLocaleString()}</td>
-                <td class="px-5 py-4 text-right mono font-bold" style="color:var(--red);">TSh ${p.total.toLocaleString()}</td>
-                <td class="px-5 py-4 text-right"><span class="tag tag-gold">${p.user}</span></td>
-                ${isCEO ? `<td class="px-5 py-4 text-right"><button onclick="deleteProcurement('${p.id}')" class="btn-danger px-2 py-1 rounded-lg" style="font-size:0.65rem;">del</button></td>` : ''}
-            </tr>
-        `).join('');
-    }
-
-    function renderCEOData() {
-        if (!currentUser || currentUser.role !== 'ceo') return;
-
-        let totalIn=0, totalOut=0, todayIn=0;
-        const today = new Date().toDateString();
-        transactions.forEach(t => {
-            totalIn  += t.receipt;
-            totalOut += t.payment;
-            if (new Date(t.date).toDateString() === today) todayIn += t.receipt;
-        });
-
-        let procTotal = 0;
-        procurements.forEach(p => procTotal += p.total);
-
-        const netReserve = totalIn - totalOut;
-        const grossMargin = totalIn > 0 ? (((totalIn - procTotal) / totalIn) * 100).toFixed(1) : 0;
-
-        document.getElementById('ceo-stats').innerHTML = `
-            <div class="stat-card">
-                <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); margin-bottom:0.5rem; font-weight:700;">Total Inflows</div>
-                <div class="mono font-bold" style="font-size:1.5rem; color:var(--green);">TSh ${totalIn.toLocaleString()}</div>
-            </div>
-            <div class="stat-card">
-                <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); margin-bottom:0.5rem; font-weight:700;">Total Expenses</div>
-                <div class="mono font-bold" style="font-size:1.5rem; color:var(--red);">TSh ${totalOut.toLocaleString()}</div>
-            </div>
-            <div class="stat-card" style="border-color:rgba(245,197,24,0.2);">
-                <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--gold); margin-bottom:0.5rem; font-weight:700;">Net Reserve</div>
-                <div class="mono font-bold" style="font-size:1.5rem; color:${netReserve >= 0 ? 'var(--green)' : 'var(--red)'};">TSh ${netReserve.toLocaleString()}</div>
-            </div>
-            <div class="stat-card">
-                <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--text3); margin-bottom:0.5rem; font-weight:700;">Procurement Spend</div>
-                <div class="mono font-bold" style="font-size:1.5rem; color:var(--blue);">TSh ${procTotal.toLocaleString()}</div>
-            </div>
-        `;
-
-        // Daily target
-        const pct = Math.min((todayIn / TARGET_DAILY) * 100, 100).toFixed(0);
-        document.getElementById('daily-progress').style.width = pct + '%';
-        document.getElementById('daily-pct').innerText = pct + '%';
-        document.getElementById('daily-amount').innerText = 'TSh ' + todayIn.toLocaleString() + ' today';
-        const remaining = TARGET_DAILY - todayIn;
-        document.getElementById('daily-status').innerText = remaining > 0
-            ? `TSh ${remaining.toLocaleString()} remaining to reach daily target`
-            : '🎯 Daily target reached!';
-
-        // CEO totals
-        document.getElementById('ceo-total-in').innerText  = totalIn.toLocaleString();
-        document.getElementById('ceo-total-out').innerText = totalOut.toLocaleString();
-
-        // Audit trail
-        const ceoBody  = document.getElementById('ceo-raw-body');
-        const ceoEmpty = document.getElementById('ceo-empty');
-        if (transactions.length === 0) {
-            ceoBody.innerHTML = '';
-            ceoEmpty.style.display = 'block';
-        } else {
-            ceoEmpty.style.display = 'none';
-            ceoBody.innerHTML = transactions.map(t => `
-                <tr style="border-bottom: 1px solid var(--border);">
-                    <td style="padding:0.75rem 1rem 0.75rem 0;"><span class="tag tag-gold">${t.user}</span></td>
-                    <td style="padding:0.75rem 1rem 0.75rem 0; color:var(--text2); font-size:0.75rem; max-width:140px;">${t.desc}</td>
-                    <td style="padding:0.75rem 1rem 0.75rem 0; text-align:right;" class="mono" style="color:var(--green);">${t.receipt > 0 ? t.receipt.toLocaleString() : '—'}</td>
-                    <td style="padding:0.75rem 1rem 0.75rem 0; text-align:right;" class="mono" style="color:var(--red);">${t.payment > 0 ? t.payment.toLocaleString() : '—'}</td>
-                    <td style="padding:0.75rem 0; text-align:right;">
-                        <button onclick="deleteTransaction('${t.id}')" class="btn-danger px-2 py-1 rounded-lg" style="font-size:0.65rem;">del</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Procurement summary (CEO)
-        const cpBody  = document.getElementById('ceo-proc-body');
-        const cpEmpty = document.getElementById('ceo-proc-empty');
-        if (procurements.length === 0) {
-            cpBody.innerHTML = '';
-            cpEmpty.style.display = 'block';
-        } else {
-            cpEmpty.style.display = 'none';
-            cpBody.innerHTML = procurements.map(p => `
-                <tr style="border-bottom: 1px solid var(--border);">
-                    <td style="padding:0.65rem 1rem 0.65rem 0; font-size:0.7rem;" class="mono" style="color:var(--text3); white-space:nowrap;">${fmtDate(p.date)}</td>
-                    <td style="padding:0.65rem 1rem 0.65rem 0; color:var(--text);">
-                        <div style="font-weight:500;">${p.item}</div>
-                        ${p.supplier ? `<div style="font-size:0.65rem; color:var(--text3);">${p.supplier}</div>` : ''}
-                    </td>
-                    <td style="padding:0.65rem 1rem 0.65rem 0; text-align:center;" class="mono" style="color:var(--text2);">${p.qty} ${p.unit}</td>
-                    <td style="padding:0.65rem 1rem 0.65rem 0; text-align:right;" class="mono" style="color:var(--text2);">TSh ${p.unitPrice.toLocaleString()}</td>
-                    <td style="padding:0.65rem 1rem 0.65rem 0; text-align:right; font-weight:700;" class="mono" style="color:var(--red);">TSh ${p.total.toLocaleString()}</td>
-                    <td style="padding:0.65rem 0; text-align:right;">
-                        <button onclick="deleteProcurement('${p.id}')" class="btn-danger px-2 py-1 rounded-lg" style="font-size:0.65rem;">del</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Staff feedback
-        const list       = document.getElementById('feedback-list');
-        const fbEmpty    = document.getElementById('feedback-empty');
-        if (feedbacks.length === 0) {
-            list.innerHTML = '';
-            fbEmpty.style.display = 'block';
-        } else {
-            fbEmpty.style.display = 'none';
-            list.innerHTML = feedbacks.map(f => `
-                <div class="card p-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="tag tag-gold">${f.user}</span>
-                        <span style="font-size:0.6rem; color:var(--text3);">${f.time}</span>
-                    </div>
-                    <p style="font-size:0.8rem; color:var(--text2); margin:0; line-height:1.5;">${f.text}</p>
-                </div>
-            `).join('');
-        }
-    }
-    </script>
+function renderCEO(){
+  if(!CU||CU.role!=='ceo')return;
+  let tI=0,tO=0,todI=0,ps=0;
+  const today=new Date().toDateString();
+  TX.forEach(t=>{tI+=t.receipt;tO+=t.payment;if(new Date(t.date).toDateString()===today)todI+=t.receipt});
+  PR.forEach(p=>ps+=p.total);
+  const net=tI-tO;
+  // KPI
+  document.getElementById('kpi').innerHTML=`
+    <div class="stat"><div class="stat-lbl">Total Inflows</div><div class="stat-v" style="color:var(--green)">TSh ${tI.toLocaleString()}</div></div>
+    <div class="stat"><div class="stat-lbl">Total Expenses</div><div class="stat-v" style="color:var(--red)">TSh ${tO.toLocaleString()}</div></div>
+    <div class="stat" style="border-color:rgba(245,197,24,.2)"><div class="stat-lbl" style="color:var(--gold)">Net Reserve</div><div class="stat-v" style="color:${net>=0?'var(--green)':'var(--red)'}">TSh ${net.toLocaleString()}</div></div>
+    <div class="stat"><div class="stat-lbl">Procurement Spend</div><div class="stat-v" style="color:var(--blue)">TSh ${ps.toLocaleString()}</div></div>`;
+  // Daily
+  const pct=Math.min((todI/DAILY)*100,100).toFixed(0);
+  document.getElementById('dprog').style.width=pct+'%';
+  document.getElementById('dpct').textContent=pct+'%';
+  document.getElementById('damt').textContent='TSh '+todI.toLocaleString()+' today';
+  const rem=DAILY-todI;
+  document.getElementById('dstat').textContent=rem>0?'TSh '+rem.toLocaleString()+' remaining to hit daily target':'🎯 Daily target reached!';
+  // Audit trail
+  const atb=document.getElementById('atbl');
+  document.getElementById('aemp').style.display=TX.length?'none':'block';
+  atb.innerHTML=TX.map(t=>`<tr>
+    <td style="padding:.55rem .5rem"><span class="tag ta">${t.user}</span></td>
+    <td style="padding:.55rem .5rem;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt2);font-size:.73rem">${t.desc}</td>
+    <td class="r mn" style="padding:.55rem .5rem;color:var(--green)">${t.receipt>0?t.receipt.toLocaleString():'—'}</td>
+    <td class="r mn" style="padding:.55rem .5rem;color:var(--red)">${t.payment>0?t.payment.toLocaleString():'—'}</td>
+    <td class="r" style="padding:.55rem .5rem"><button class="btn-del" onclick="delTx('${t.id}')">del</button></td>
+  </tr>`).join('');
+  // Procurement
+  const cptb=document.getElementById('cptbl');
+  document.getElementById('cpemp').style.display=PR.length?'none':'block';
+  document.getElementById('pspend').textContent='TSh '+ps.toLocaleString();
+  cptb.innerHTML=PR.map(p=>`<tr>
+    <td class="dim mn" style="white-space:nowrap;font-size:.69rem">${fd(p.date)}</td>
+    <td style="font-weight:500">${p.item}${p.supplier?`<div style="font-size:.65rem;color:var(--txt3)">${p.supplier}</div>`:''}</td>
+    <td class="c mn">${p.qty} ${p.unit}</td>
+    <td class="r mn">TSh ${p.unitPrice.toLocaleString()}</td>
+    <td class="r mn" style="color:var(--red);font-weight:700">TSh ${p.total.toLocaleString()}</td>
+    <td class="r"><button class="btn-del" onclick="delPr('${p.id}')">del</button></td>
+  </tr>`).join('');
+  // Feedback
+  const fl=document.getElementById('fblist');
+  document.getElementById('fbemp').style.display=FB.length?'none':'block';
+  fl.innerHTML=FB.map(f=>`
+    <div class="fbcard">
+      <div class="fbmeta"><span class="tag ta">${f.user}</span><span style="font-size:.6rem;color:var(--txt3)">${f.time}</span></div>
+      <div class="fbtext">${f.text}</div>
+    </div>`).join('');
+}
+</script>
 </body>
 </html>
