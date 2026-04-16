@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Charisma Distillers • Finance Vault v3</title>
-<!-- FAVICON: Charisma logo in browser tab -->
 <link rel="icon" type="image/png" href="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png">
 <link rel="apple-touch-icon" href="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -125,7 +124,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
 <div class="bglayer"><div class="blob bl1"></div><div class="blob bl2"></div></div>
 <div id="sb-overlay" class="sb-overlay" onclick="closeSB()"></div>
 
-<!-- LOGIN -->
 <div id="ls" class="lscreen">
   <div class="lbox">
     <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="ll" onerror="this.style.display='none'">
@@ -143,7 +141,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none;flex-direction:column;flex:1">
   <header class="hdr">
     <div class="hl">
@@ -184,7 +181,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
     <div id="na"></div>
     <div id="offb" class="offl" style="display:none">⚠️ Offline — showing cached data. Changes will sync when online.</div>
 
-    <!-- DASHBOARD -->
     <div id="page-dash" class="page on">
       <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.75rem">
         <div><div class="pt" data-i18n="dashboard">Dashboard</div><div class="ptsub" id="dsub">Welcome back.</div></div>
@@ -193,7 +189,7 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
       <div id="wbanner" class="wbanner reveal" style="display:none">
         <div class="wbav" id="wbav">O</div>
         <div style="flex:1"><div style="font-weight:700;font-size:.95rem;color:var(--gold)" id="wbname">Odria</div>
-          <div style="font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em"><span data-i18n="personal_view">Personal Performance View</span>/div></div>
+          <div style="font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em"><span data-i18n="personal_view">Personal Performance View</span></div></div>
         <div style="text-align:right"><div style="font-size:.6rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em">Today</div>
           <div class="mn" style="font-size:1.2rem;font-weight:700;color:var(--gold)" id="wbtoday">TSh 0</div></div>
       </div>
@@ -202,7 +198,7 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
         <div class="row rowjb" style="margin-bottom:.85rem">
           <div><div class="sec" data-i18n="daily_target">Daily Target Progress</div><div style="font-weight:700;font-size:.9rem" data-i18n="daily_target_sub">TSh 100,000 target/day</div></div>
           <div style="text-align:right"><div class="mn" style="font-size:1.55rem;font-weight:700;color:var(--gold);line-height:1" id="dpct">0%</div>
-            <div style="font-size:.68rem;color:var(--txt3);margin-top:2px" id="damt">TSh 0 today</div></div>
+          <div style="font-size:.68rem;color:var(--txt3);margin-top:2px" id="damt">TSh 0 today</div></div>
         </div>
         <div class="prog"><div class="pfill" id="dprog" style="width:0%"></div></div>
         <div style="font-size:.7rem;color:var(--txt3);margin-top:.45rem" id="dstat"></div>
@@ -219,7 +215,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
       <div id="rentries" class="stack reveal reveal-d4"></div>
     </div>
 
-    <!-- CASH BOOK -->
     <div id="page-cash" class="page">
       <div style="margin-bottom:1.5rem"><div class="pt" data-i18n="cash_entry" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</div>
         <div class="ptsub" data-en="Every shilling in. Every shilling out." data-sw="Kila shilingi inayoingia na kutoka.">Every shilling in. Every shilling out.</div></div>
@@ -238,7 +233,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
       <div class="sec" data-i18n="todays_entries">Today's Entries</div><div id="celist" class="stack"></div>
     </div>
 
-    <!-- PROCUREMENT -->
     <div id="page-proc" class="page">
       <div style="margin-bottom:1.5rem"><div class="pt" data-i18n="procurement">Procurement Log</div><div class="ptsub">Item → Quantity → Unit Price → Auto-Total</div></div>
       <div class="cardlg reveal" style="margin-bottom:1.5rem">
@@ -267,7 +261,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
       <div class="card" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">By</th><th id="pdth" class="r" style="display:none"></th></tr></thead><tbody id="ptbl"></tbody></table><div id="pemp" class="empty">No procurement records yet.</div></div></div>
     </div>
 
-    <!-- LEDGER -->
     <div id="page-ledg" class="page">
       <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.5rem">
         <div><div class="pt" data-i18n="full_ledger">Full Ledger</div><div class="ptsub">All transactions — unedited, timestamped.</div></div>
@@ -280,7 +273,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
       <div class="card reveal" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Time</th><th>Description</th><th class="r">In</th><th class="r">Out</th><th class="r">By</th><th id="ldth" class="r" style="display:none"></th></tr></thead><tbody id="ltbl"></tbody></table><div id="lemp" class="empty">No transactions yet.</div></div></div>
     </div>
 
-    <!-- CEO -->
     <div id="page-ceo" class="page">
       <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.75rem">
         <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:.3rem">⚜️ Executive Access</div><div class="pt">CEO Intelligence</div></div>
@@ -319,7 +311,6 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
   </footer>
 </div>
 
-<!-- CLEAR MODAL -->
 <div id="cmodal" class="mbg" style="display:none">
   <div class="mbox" style="text-align:center">
     <div style="font-size:2rem;margin-bottom:.6rem">⚠️</div>
@@ -344,7 +335,6 @@ const USERS={
   "odriatoto":{pass:"Tunaweza,2026",role:"worker",name:"Odria"},
   "berthatoto":{pass:"Tunaweza,2026",role:"worker",name:"Bertha"}
 };
-
 const PC={
   Collins:{bg:'rgba(96,165,250,.7)',bdr:'#60a5fa'},
   Odria:  {bg:'rgba(245,197,24,.7)',bdr:'#f5c518'},
@@ -353,7 +343,6 @@ const PC={
 
 // ═══════════ STATE ════════════════════════════════════════
 let CU=null,lang='en',TX=[],PR=[],FB=[],charts={};
-
 // ═══════════ CACHE ════════════════════════════════════════
 function cacheLoad(){try{TX=JSON.parse(localStorage.getItem(CK_T)||'[]');PR=JSON.parse(localStorage.getItem(CK_P)||'[]');FB=JSON.parse(localStorage.getItem(CK_F)||'[]')}catch(e){TX=[];PR=[];FB=[]}}
 function cacheSave(){try{localStorage.setItem(CK_T,JSON.stringify(TX));localStorage.setItem(CK_P,JSON.stringify(PR));localStorage.setItem(CK_F,JSON.stringify(FB))}catch(e){}}
@@ -416,7 +405,7 @@ function applyLang(){
     const k=el.getAttribute('data-i18n');
     const v=t(k);if(v)el.textContent=v;
   });
-  // Also handle legacy data-en/data-sw
+// Also handle legacy data-en/data-sw
   document.querySelectorAll('[data-en]').forEach(el=>{
     const v=el.getAttribute('data-'+lang);if(v)el.textContent=v;
   });
@@ -425,7 +414,7 @@ function toggleLang(){
   lang=lang==='en'?'sw':'en';
   document.getElementById('langbtn').textContent=lang==='en'?'SW':'EN';
   document.documentElement.setAttribute('lang',lang);
-  applyLang();
+applyLang();
   // Re-render dynamic content in correct language
   if(CU){updateKPI();renderRecent();renderLedger();renderProc();if(CU.role==='ceo')renderCEO()}
 }
@@ -433,24 +422,22 @@ function toggleLang(){
 // ═══════════ CLOCK ════════════════════════════════════════
 function tick(){const n=new Date();document.getElementById('clk').textContent=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});document.getElementById('cdt').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
 setInterval(tick,1000);tick();
-
 // ═══════════ NOTIFY ═══════════════════════════════════════
 function notify(msg,type,ms=4000){const a=document.getElementById('na'),d=document.createElement('div');d.className='al a'+type;d.innerHTML=msg;a.prepend(d);setTimeout(()=>d.remove(),ms)}
 
 // ═══════════ OFFLINE ══════════════════════════════════════
 window.addEventListener('online',()=>document.getElementById('offb').style.display='none');
 window.addEventListener('offline',()=>document.getElementById('offb').style.display='flex');
-
 // ═══════════ FETCH FROM SHEETS (with timeout) ═════════════
 async function fetchSheets(){
   setSS('sy','Loading…');
-  // Use Promise.race instead of AbortController to avoid postMessage cloning error
+// Use Promise.race instead of AbortController to avoid postMessage cloning error
   const fetchP = fetch(GS_URL+'?action=getAll',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
-  const timeoutP = new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout')),8000));
+const timeoutP = new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout')),8000));
   try{
     const d = await Promise.race([fetchP, timeoutP]);
     if(d.error) throw new Error(d.error);
-    if(Array.isArray(d.transactions))TX=d.transactions;
+if(Array.isArray(d.transactions))TX=d.transactions;
     if(Array.isArray(d.procurements))PR=d.procurements;
     if(Array.isArray(d.feedbacks))FB=d.feedbacks;
     cacheSave();setSS('','Synced');return true;
@@ -459,7 +446,7 @@ async function fetchSheets(){
     setSS('er','Offline');
     document.getElementById('offb').style.display='flex';
     return false;
-  }
+}
 }
 
 // ═══════════ POST TO SHEETS ═══════════════════════════════
@@ -472,13 +459,13 @@ function login(){
   const u=document.getElementById('un').value.trim().toLowerCase();
   const p=document.getElementById('pw').value.trim();
   const ae=document.getElementById('la');ae.innerHTML='';
-  if(!USERS[u]||USERS[u].pass!==p){ae.innerHTML='<div class="al aerr">❌ Access Denied: Invalid credentials.</div>';return}
+if(!USERS[u]||USERS[u].pass!==p){ae.innerHTML='<div class="al aerr">❌ Access Denied: Invalid credentials.</div>';return}
   CU=USERS[u];
   const btn=document.getElementById('loginbtn');btn.textContent='Loading…';btn.disabled=true;
   document.getElementById('ud').textContent='Auth: '+CU.name+' · '+CU.role.toUpperCase();
   if(CU.role==='ceo'){
     document.getElementById('nb-ceo').style.display='flex';
-    document.getElementById('wfbd').style.display='none';
+document.getElementById('wfbd').style.display='none';
     document.getElementById('wfb').style.display='none';
     document.getElementById('ldth').style.display='table-cell';
     document.getElementById('pdth').style.display='table-cell';
@@ -491,7 +478,7 @@ function login(){
   }
   cacheLoad();
   applyLang();
-  document.getElementById('ls').style.display='none';
+document.getElementById('ls').style.display='none';
   const app=document.getElementById('app');app.style.display='flex';
   showPage('dash');renderAll();
   notify('🔄 Connecting to cloud database…','info',5000);
@@ -519,7 +506,7 @@ function showPage(p){
   if(p==='ledg')renderLedger();
   if(p==='ceo')renderCEO();
   if(p==='proc')renderProc();
-  // Re-trigger scroll animations for new page
+// Re-trigger scroll animations for new page
   setTimeout(observeReveal, 60);
 }
 
@@ -529,12 +516,12 @@ function addTx(){
   const desc=document.getElementById('desc').value.trim();
   const rin=parseFloat(document.getElementById('ri').value)||0;
   const rout=parseFloat(document.getElementById('ro').value)||0;
-  if(!desc){notify('⚠️ Description is required.','err');return}
+if(!desc){notify('⚠️ Description is required.','err');return}
   if(!rin&&!rout){notify('⚠️ Enter at least one amount.','err');return}
   const e={id:Date.now().toString(),date:new Date().toISOString(),user:CU.name,desc,receipt:rin,payment:rout};
   TX.unshift(e);cacheSave();post({type:'transaction',...e});
   document.getElementById('desc').value='';document.getElementById('ri').value='';document.getElementById('ro').value='';
-  prevNet();renderAll();notify('✓ Entry saved: "'+desc+'"','ok');
+prevNet();renderAll();notify('✓ Entry saved: "'+desc+'"','ok');
 }
 
 // ═══════════ PROCUREMENT ══════════════════════════════════
@@ -542,7 +529,7 @@ function calcP(){const q=parseFloat(document.getElementById('pq').value)||0,p=pa
 function addProc(){
   const item=document.getElementById('pi').value.trim();
   const sup=document.getElementById('psup').value.trim();
-  const notes=document.getElementById('pnotes').value.trim();
+const notes=document.getElementById('pnotes').value.trim();
   const qty=parseFloat(document.getElementById('pq').value)||0;
   const unit=document.getElementById('pu').value;
   const up=parseFloat(document.getElementById('pp').value)||0;
@@ -550,7 +537,7 @@ function addProc(){
   if(qty<=0){notify('⚠️ Quantity must be > 0.','err');return}
   if(up<=0){notify('⚠️ Unit price must be > 0.','err');return}
   const e={id:Date.now().toString(),date:new Date().toISOString(),user:CU.name,item,supplier:sup,notes,qty,unit,unitPrice:up,total:qty*up};
-  PR.unshift(e);cacheSave();post({type:'procurement',...e});
+PR.unshift(e);cacheSave();post({type:'procurement',...e});
   ['pi','psup','pnotes','pq','pp'].forEach(id=>document.getElementById(id).value='');
   calcP();renderProc();notify('✓ Purchase: '+qty+' '+unit+' of '+item+' — TSh '+e.total.toLocaleString(),'ok');
 }
@@ -571,7 +558,7 @@ function doRefresh(){notify('🔄 Refreshing…','info',3000);fetchSheets().then
 // ═══════════════════════════════════════════════════════════
 function gcd(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
-  return{tc:dark?'#8888aa':'#4a4860',gc:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)',
+return{tc:dark?'#8888aa':'#4a4860',gc:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)',
          tb:dark?'rgba(13,13,34,.92)':'rgba(255,255,255,.96)',ttx:dark?'#eeeefc':'#18182e',tbdr:dark?'rgba(255,255,255,.1)':'rgba(0,0,0,.1)'}
 }
 function mkScales(fmt){const c=gcd();return{x:{ticks:{color:c.tc,font:{family:'Ubuntu',size:10}},grid:{color:c.gc},border:{color:'transparent'}},y:{ticks:{color:c.tc,font:{family:'Ubuntu',size:10},callback:v=>fmt?'TSh '+(v>=1000?(v/1000).toFixed(0)+'k':v):v},grid:{color:c.gc},border:{color:'transparent'}}}}
@@ -580,7 +567,7 @@ function dChart(k){if(charts[k]){charts[k].destroy();charts[k]=null}}
 
 function buildCharts(){
   buildWeekly();buildPerson();
-  if(CU&&CU.role==='ceo'){document.getElementById('ch-row2').style.display='grid';buildMonthly();build3M()}
+if(CU&&CU.role==='ceo'){document.getElementById('ch-row2').style.display='grid';buildMonthly();build3M()}
   updateKPI();renderRecent();
 }
 
@@ -589,13 +576,13 @@ function buildWeekly(){
   const ctx=document.getElementById('ch-weekly').getContext('2d');
   const labels=[],rev=[],exp=[];
   const uf=CU.role==='ceo'?null:CU.name;
-  for(let i=6;i>=0;i--){
+for(let i=6;i>=0;i--){
     const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();
     const dtx=TX.filter(t=>new Date(t.date).toDateString()===ds&&(!uf||t.user===uf));
     labels.push(d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric'}));
     rev.push(dtx.reduce((s,t)=>s+(t.receipt||0),0));
     exp.push(dtx.reduce((s,t)=>s+(t.payment||0),0));
-  }
+}
   charts.weekly=new Chart(ctx,{type:'line',data:{labels,datasets:[
     {label:'Revenue',data:rev,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.12)',fill:true,tension:.4,pointRadius:4,pointHoverRadius:6},
     {label:'Expenses',data:exp,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,.12)',fill:true,tension:.4,pointRadius:4,pointHoverRadius:6}
@@ -605,7 +592,7 @@ function buildWeekly(){
 function buildPerson(){
   dChart('person');
   const ctx=document.getElementById('ch-person').getContext('2d');
-  const people=['Collins','Odria','Bertha'];
+const people=['Collins','Odria','Bertha'];
   const sales=people.map(n=>TX.filter(t=>t.user===n).reduce((s,t)=>s+(t.receipt||0),0));
   const exps=people.map(n=>TX.filter(t=>t.user===n).reduce((s,t)=>s+(t.payment||0),0));
   charts.person=new Chart(ctx,{type:'bar',data:{labels:people,datasets:[
@@ -621,7 +608,7 @@ function buildMonthly(){
   for(let i=29;i>=0;i--){
     const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();
     const dtx=TX.filter(t=>new Date(t.date).toDateString()===ds);
-    const r=dtx.reduce((s,t)=>s+(t.receipt||0),0),e=dtx.reduce((s,t)=>s+(t.payment||0),0);
+const r=dtx.reduce((s,t)=>s+(t.receipt||0),0),e=dtx.reduce((s,t)=>s+(t.payment||0),0);
     if(i%3===0||i===0){labels.push(d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));rev.push(r);net.push(r-e)}
   }
   charts.monthly=new Chart(ctx,{type:'bar',data:{labels,datasets:[
@@ -637,12 +624,12 @@ function build3M(){
   for(let w=11;w>=0;w--){
     const ws=new Date();ws.setDate(ws.getDate()-(w*7+6));
     const we=new Date();we.setDate(we.getDate()-(w*7));
-    const wtx=TX.filter(t=>{const td=new Date(t.date);return td>=ws&&td<=we});
+const wtx=TX.filter(t=>{const td=new Date(t.date);return td>=ws&&td<=we});
     labels.push('Wk '+(12-w));
     cd.push(wtx.filter(t=>t.user==='Collins').reduce((s,t)=>s+(t.receipt||0),0));
     od.push(wtx.filter(t=>t.user==='Odria').reduce((s,t)=>s+(t.receipt||0),0));
     bd.push(wtx.filter(t=>t.user==='Bertha').reduce((s,t)=>s+(t.receipt||0),0));
-  }
+}
   charts['3m']=new Chart(ctx,{type:'bar',data:{labels,datasets:[
     {label:'Collins',data:cd,backgroundColor:'rgba(96,165,250,.7)',borderRadius:4},
     {label:'Odria',data:od,backgroundColor:'rgba(245,197,24,.7)',borderRadius:4},
@@ -659,7 +646,7 @@ function updateKPI(){
   const uf=CU.role==='ceo'?null:CU.name;
   const myTX=uf?TX.filter(t=>t.user===uf):TX;
   const todayTX=myTX.filter(t=>new Date(t.date).toDateString()===today);
-  const tIn=myTX.reduce((s,t)=>s+(t.receipt||0),0);
+const tIn=myTX.reduce((s,t)=>s+(t.receipt||0),0);
   const tOut=myTX.reduce((s,t)=>s+(t.payment||0),0);
   const todIn=todayTX.reduce((s,t)=>s+(t.receipt||0),0);
   const todOut=todayTX.reduce((s,t)=>s+(t.payment||0),0);
@@ -669,12 +656,12 @@ function updateKPI(){
   document.getElementById('dprog').style.width=pct+'%';
   document.getElementById('dpct').textContent=pct+'%';
   document.getElementById('damt').textContent='TSh '+todIn.toLocaleString()+' today';
-  const rem=TARGET-todIn;
+const rem=TARGET-todIn;
   document.getElementById('dstat').textContent=rem>0?'TSh '+rem.toLocaleString()+' '+(lang==='sw'?'zimebaki kufikia lengo':'remaining to reach daily target'):'🎯 '+(lang==='sw'?'Lengo limefikiwa!':'Daily target reached!');
   const h=new Date().getHours();
-  const g=h<12?'Good morning, ':h<17?'Good afternoon, ':'Good evening, ';
+const g=h<12?'Good morning, ':h<17?'Good afternoon, ':'Good evening, ';
   document.getElementById('dsub').textContent=g+CU.name+'. Here is your financial overview.';
-  document.getElementById('kpi').innerHTML=`
+document.getElementById('kpi').innerHTML=`
     <div class="stat"><div class="slbl">${uf?'My ':'All-Team '}Today Sales</div><div class="sv" style="color:var(--green)">TSh ${todIn.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:var(--txt3)">${todayTX.length} transaction${todayTX.length!==1?'s':''}</div></div>
     <div class="stat"><div class="slbl">${uf?'My ':'All-Team '}Today Expenses</div><div class="sv" style="color:var(--red)">TSh ${todOut.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:${todIn-todOut>=0?'var(--green)':'var(--red)'}">Net: TSh ${(todIn-todOut).toLocaleString()}</div></div>
     <div class="stat" style="border-color:rgba(245,197,24,.2)"><div class="slbl" style="color:var(--gold)">Total Net Reserve</div><div class="sv" style="color:${net>=0?'var(--green)':'var(--red)'}">TSh ${net.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:var(--txt3)">All time</div></div>
@@ -690,7 +677,7 @@ function renderAll(){
   updateKPI();
   if(document.getElementById('page-dash').classList.contains('on')){buildCharts();renderRecent()}
   renderLedger();renderProc();
-  if(CU&&CU.role==='ceo')renderCEO();
+if(CU&&CU.role==='ceo')renderCEO();
   // Re-observe new DOM after render
   setTimeout(observeReveal, 80);
 }
@@ -700,7 +687,7 @@ function observeReveal(){
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}});
   },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 }
 // Run once on page load
 if(document.readyState==='complete')observeReveal();
@@ -710,10 +697,10 @@ function renderRecent(){
   const today=new Date().toDateString();
   const uf=CU&&CU.role==='ceo'?null:CU?.name;
   const list=(uf?TX.filter(t=>t.user===uf):TX).filter(t=>new Date(t.date).toDateString()===today);
-  const el=document.getElementById('rentries');
+const el=document.getElementById('rentries');
   if(!list.length){el.innerHTML='<div style="font-size:.76rem;color:var(--txt3);padding:.75rem 0">No activity today yet.</div>';return}
   el.innerHTML=list.slice(0,8).map(t=>`<div class="re"><div class="ri"><div class="rd">${t.desc}</div><div class="rm">${t.user} · ${fd(t.date)}</div></div><div class="ra">${t.receipt>0?`<span class="tag tg mn">+${t.receipt.toLocaleString()}</span>`:''}${t.payment>0?`<span class="tag tr mn">-${t.payment.toLocaleString()}</span>`:''}</div></div>`).join('');
-  // Also show in cash book today list
+// Also show in cash book today list
   const ce=document.getElementById('celist');if(ce)ce.innerHTML=el.innerHTML;
 }
 
@@ -721,7 +708,7 @@ function renderLedger(){
   const tb=document.getElementById('ltbl'),ep=document.getElementById('lemp');
   const isCEO=CU&&CU.role==='ceo';
   let tI=0,tO=0;TX.forEach(t=>{tI+=t.receipt||0;tO+=t.payment||0});
-  document.getElementById('lti').textContent=tI.toLocaleString();
+document.getElementById('lti').textContent=tI.toLocaleString();
   document.getElementById('lto').textContent=tO.toLocaleString();
   const n=tI-tO,ne=document.getElementById('ltn');ne.textContent=n.toLocaleString();ne.style.color=n>=0?'var(--green)':'var(--red)';
   if(!TX.length){tb.innerHTML='';ep.style.display='block';ep.textContent=t('no_tx');return}ep.style.display='none';
@@ -740,7 +727,7 @@ function renderCEO(){
   const people=['Collins','Odria','Bertha'];
   const pcolors={Collins:'96,165,250',Odria:'245,197,24',Bertha:'192,132,252'};
   const pnames={Collins:'CEO',Odria:'Seller',Bertha:'Production'};
-  document.getElementById('teamcards').innerHTML=people.map(name=>{
+document.getElementById('teamcards').innerHTML=people.map(name=>{
     const ptx=TX.filter(t=>t.user===name);
     const tin=ptx.reduce((s,t)=>s+(t.receipt||0),0);
     const tout=ptx.reduce((s,t)=>s+(t.payment||0),0);
@@ -750,18 +737,16 @@ function renderCEO(){
     const todIn=ptx.filter(t=>new Date(t.date).toDateString()===today).reduce((s,t)=>s+(t.receipt||0),0);
     const cc=pcolors[name];
     return`<div class="stat" style="border-color:rgba(${cc},.2)"><div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem"><div style="width:40px;height:40px;border-radius:50%;background:rgba(${cc},.8);display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:.9rem;flex-shrink:0">${name[0]}</div><div><div style="font-weight:700;font-size:.9rem;color:rgba(${cc},1)">${name}</div><div style="font-size:.6rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em">${pnames[name]}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Today</div><div class="mn" style="color:var(--green);font-weight:700;font-size:.9rem">TSh ${todIn.toLocaleString()}</div></div><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">All-Time In</div><div class="mn" style="color:var(--txt);font-weight:700;font-size:.9rem">TSh ${tin.toLocaleString()}</div></div><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Expenses</div><div class="mn" style="color:var(--red);font-weight:700;font-size:.9rem">TSh ${tout.toLocaleString()}</div></div><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Procurement</div><div class="mn" style="color:var(--blue);font-weight:700;font-size:.9rem">TSh ${psp.toLocaleString()}</div></div></div></div>`;
-  }).join('');
+}).join('');
 
   const atb=document.getElementById('atbl');document.getElementById('aemp').style.display=TX.length?'none':'block';
   atb.innerHTML=TX.map(t=>`<tr><td style="padding:.5rem .5rem">${pb(t.user)}</td><td style="padding:.5rem .5rem;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt2);font-size:.72rem">${t.desc}</td><td class="r mn" style="padding:.5rem .5rem;color:var(--green);font-size:.72rem">${t.receipt>0?t.receipt.toLocaleString():'—'}</td><td class="r mn" style="padding:.5rem .5rem;color:var(--red);font-size:.72rem">${t.payment>0?t.payment.toLocaleString():'—'}</td><td class="r" style="padding:.5rem .5rem"><button class="bdel" onclick="delTx('${t.id}')">del</button></td></tr>`).join('');
-
-  const cptb=document.getElementById('cptbl');
+const cptb=document.getElementById('cptbl');
   let ps=0;PR.forEach(p=>ps+=p.total||0);
   document.getElementById('pspend').textContent='TSh '+ps.toLocaleString();
   document.getElementById('cpemp').style.display=PR.length?'none':'block';
   cptb.innerHTML=PR.map(p=>`<tr><td class="dim mn" style="white-space:nowrap;font-size:.68rem">${fd(p.date)}</td><td style="font-weight:500">${p.item}${p.supplier?`<div style="font-size:.64rem;color:var(--txt3)">${p.supplier}</div>`:''}</td><td class="c mn">${p.qty} ${p.unit}</td><td class="r mn">TSh ${(p.unitPrice||0).toLocaleString()}</td><td class="r mn" style="color:var(--red);font-weight:700">TSh ${(p.total||0).toLocaleString()}</td><td class="r">${pb(p.user)}</td><td class="r"><button class="bdel" onclick="delPr('${p.id}')">del</button></td></tr>`).join('');
-
-  const fl=document.getElementById('fblist');document.getElementById('fbemp').textContent=t('no_reports');document.getElementById('fbemp').style.display=FB.length?'none':'block';
+const fl=document.getElementById('fblist');document.getElementById('fbemp').textContent=t('no_reports');document.getElementById('fbemp').style.display=FB.length?'none':'block';
   fl.innerHTML=FB.map(f=>`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:.9rem;padding:.85rem 1rem"><div style="display:flex;justify-content:space-between;margin-bottom:.35rem">${pb(f.user)}<span style="font-size:.58rem;color:var(--txt3)">${f.time}</span></div><div style="font-size:.76rem;color:var(--txt2);line-height:1.5">${f.text}</div></div>`).join('');
 }
 </script>
