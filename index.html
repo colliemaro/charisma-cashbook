@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Charisma Distillers • Finance Vault v3</title>
+<!-- FAVICON: Charisma logo in browser tab -->
+<link rel="icon" type="image/png" href="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png">
+<link rel="apple-touch-icon" href="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png">
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -105,10 +108,22 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:9999px}
 @media(max-width:960px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g21{grid-template-columns:1fr}}
 @media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}.hh{display:none!important}.g21{grid-template-columns:1fr}}
+/* ══ SIDEBAR OVERLAY ══════════════════════════════════════ */
+.sb-overlay{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.38);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:none;cursor:pointer}
+.sb-overlay.show{display:block;animation:fadeov .22s ease}
+@keyframes fadeov{from{opacity:0}to{opacity:1}}
+/* ══ SCROLL-REVEAL LIQUID MORPH ══════════════════════════ */
+.reveal{opacity:0;transform:translateY(26px) scale(0.976);filter:blur(3px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1),filter .5s ease}
+.reveal.vis{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.reveal-d1{transition-delay:.04s}.reveal-d2{transition-delay:.1s}.reveal-d3{transition-delay:.16s}.reveal-d4{transition-delay:.22s}.reveal-d5{transition-delay:.28s}.reveal-d6{transition-delay:.34s}
+.card,.cardlg,.stat,.chwrap{position:relative;overflow:hidden}
+.card::after,.cardlg::after,.stat::after,.chwrap::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(245,197,24,.05) 50%,transparent 60%);transform:translateX(-100%);transition:transform .55s ease;pointer-events:none}
+.card:hover::after,.cardlg:hover::after,.stat:hover::after,.chwrap:hover::after{transform:translateX(100%)}
 </style>
 </head>
 <body>
 <div class="bglayer"><div class="blob bl1"></div><div class="blob bl2"></div></div>
+<div id="sb-overlay" class="sb-overlay" onclick="closeSB()"></div>
 
 <!-- LOGIN -->
 <div id="ls" class="lscreen">
@@ -148,20 +163,20 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
 
   <aside class="sidebar" id="sidebar">
     <div class="sbh"><span style="font-size:.56rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700">Menu</span><button class="sbx" onclick="toggleSB()">×</button></div>
-    <div class="nsec">Overview</div>
-    <button class="nl" id="nb-dash" onclick="showPage('dash')">📊 Dashboard</button>
-    <div class="nsec">Finance</div>
+    <div class="nsec" data-i18n="overview">Overview</div>
+    <button class="nl" id="nb-dash" onclick="showPage('dash')">📊 <span data-i18n="dashboard">Dashboard</span></button>
+    <div class="nsec" data-i18n="finance">Finance</div>
     <button class="nl" id="nb-cash" onclick="showPage('cash')">📖 <span data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</span></button>
     <button class="nl" id="nb-proc" onclick="showPage('proc')">🛒 <span data-en="Procurement" data-sw="Ununuzi">Procurement</span></button>
     <button class="nl" id="nb-ledg" onclick="showPage('ledg')">📋 <span data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</span></button>
     <button class="nl" id="nb-ceo" style="display:none;border:1px solid rgba(245,197,24,.3)" onclick="showPage('ceo')">⚜️ <span data-en="CEO Intelligence" data-sw="Dashibodi ya CEO">CEO Intelligence</span></button>
     <div id="wfbd" class="div"></div>
     <div id="wfb">
-      <div class="sec">Report to Management</div>
+      <div class="sec" data-i18n="report_mgmt">Report to Management</div>
       <textarea id="sug" class="inp" rows="3" style="font-size:.76rem" placeholder="Write a note to Collins..."></textarea>
-      <button onclick="sendReport()" class="brep">Submit Report</button>
+      <button onclick="sendReport()" class="brep"><span data-i18n="submit_report">Submit Report</span></button>
     </div>
-    <div class="sbft"><div class="uname" id="ud"></div><button onclick="location.reload()" class="bso">Sign Out</button></div>
+    <div class="sbft"><div class="uname" id="ud"></div><button onclick="location.reload()" class="bso"><span data-i18n="sign_out">Sign Out</span></button></div>
   </aside>
 
   <main style="flex:1;padding:1.75rem 1.5rem">
@@ -172,43 +187,43 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
     <!-- DASHBOARD -->
     <div id="page-dash" class="page on">
       <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.75rem">
-        <div><div class="pt">Dashboard</div><div class="ptsub" id="dsub">Welcome back.</div></div>
-        <button onclick="doRefresh()" class="bgh">🔄 Refresh</button>
+        <div><div class="pt" data-i18n="dashboard">Dashboard</div><div class="ptsub" id="dsub">Welcome back.</div></div>
+        <button onclick="doRefresh()" class="bgh">🔄 <span data-i18n="refresh">Refresh</span>/button>
       </div>
-      <div id="wbanner" class="wbanner" style="display:none">
+      <div id="wbanner" class="wbanner reveal" style="display:none">
         <div class="wbav" id="wbav">O</div>
         <div style="flex:1"><div style="font-weight:700;font-size:.95rem;color:var(--gold)" id="wbname">Odria</div>
-          <div style="font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em">Personal Performance View</div></div>
+          <div style="font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em"><span data-i18n="personal_view">Personal Performance View</span>/div></div>
         <div style="text-align:right"><div style="font-size:.6rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em">Today</div>
           <div class="mn" style="font-size:1.2rem;font-weight:700;color:var(--gold)" id="wbtoday">TSh 0</div></div>
       </div>
-      <div class="g4" id="kpi" style="margin-bottom:1.5rem"></div>
-      <div class="card" style="margin-bottom:1.5rem">
+      <div class="g4 reveal" id="kpi" style="margin-bottom:1.5rem"></div>
+      <div class="card reveal reveal-d1" style="margin-bottom:1.5rem">
         <div class="row rowjb" style="margin-bottom:.85rem">
-          <div><div class="sec">Daily Target Progress</div><div style="font-weight:700;font-size:.9rem">TSh 100,000 target/day</div></div>
+          <div><div class="sec" data-i18n="daily_target">Daily Target Progress</div><div style="font-weight:700;font-size:.9rem" data-i18n="daily_target_sub">TSh 100,000 target/day</div></div>
           <div style="text-align:right"><div class="mn" style="font-size:1.55rem;font-weight:700;color:var(--gold);line-height:1" id="dpct">0%</div>
             <div style="font-size:.68rem;color:var(--txt3);margin-top:2px" id="damt">TSh 0 today</div></div>
         </div>
         <div class="prog"><div class="pfill" id="dprog" style="width:0%"></div></div>
         <div style="font-size:.7rem;color:var(--txt3);margin-top:.45rem" id="dstat"></div>
       </div>
-      <div class="g2" style="margin-bottom:1.25rem">
+      <div class="g2 reveal reveal-d2" style="margin-bottom:1.25rem">
         <div class="chwrap"><div class="chtitle">📈 Revenue vs Expenses — Last 7 Days</div><div class="chcanv"><canvas id="ch-weekly"></canvas></div></div>
         <div class="chwrap"><div class="chtitle">👥 Per-Person Sales Performance</div><div class="chcanv"><canvas id="ch-person"></canvas></div></div>
       </div>
-      <div id="ch-row2" class="g2" style="margin-bottom:1.25rem;display:none">
+      <div id="ch-row2" class="g2 reveal reveal-d3" style="margin-bottom:1.25rem;display:none">
         <div class="chwrap"><div class="chtitle">📅 Monthly Revenue Trend (30 Days)</div><div class="chcanv"><canvas id="ch-monthly"></canvas></div></div>
         <div class="chwrap"><div class="chtitle">📊 3-Month Team Overview (by Week)</div><div class="chcanv"><canvas id="ch-3m"></canvas></div></div>
       </div>
-      <div class="sec">Today's Activity</div>
-      <div id="rentries" class="stack"></div>
+      <div class="sec" data-i18n="today_activity">Today's Activity</div>
+      <div id="rentries" class="stack reveal reveal-d4"></div>
     </div>
 
     <!-- CASH BOOK -->
     <div id="page-cash" class="page">
-      <div style="margin-bottom:1.5rem"><div class="pt" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</div>
+      <div style="margin-bottom:1.5rem"><div class="pt" data-i18n="cash_entry" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</div>
         <div class="ptsub" data-en="Every shilling in. Every shilling out." data-sw="Kila shilingi inayoingia na kutoka.">Every shilling in. Every shilling out.</div></div>
-      <div class="cardlg" style="margin-bottom:1.5rem">
+      <div class="cardlg reveal" style="margin-bottom:1.5rem">
         <div class="g2">
           <div><label class="fl" data-en="Transaction Description" data-sw="Maelezo ya Muamala">Transaction Description</label>
             <textarea id="desc" class="inp" rows="5" placeholder="e.g. Juice sales — Tegeta Market, morning shift..."></textarea></div>
@@ -218,15 +233,15 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
             <div class="netrow"><span class="netlbl">Net this entry</span><span class="mn" id="netp" style="font-size:1rem;font-weight:700;color:var(--gold)">TSh 0</span></div>
           </div>
         </div>
-        <button onclick="addTx()" class="btng">✓ Commit to Ledger</button>
+        <button onclick="addTx()" class="btng"><span data-i18n="commit">✓ Commit to Ledger</span>/button>
       </div>
-      <div class="sec">Today's Entries</div><div id="celist" class="stack"></div>
+      <div class="sec" data-i18n="todays_entries">Today's Entries</div><div id="celist" class="stack"></div>
     </div>
 
     <!-- PROCUREMENT -->
     <div id="page-proc" class="page">
-      <div style="margin-bottom:1.5rem"><div class="pt">Procurement Log</div><div class="ptsub">Item → Quantity → Unit Price → Auto-Total</div></div>
-      <div class="cardlg" style="margin-bottom:1.5rem">
+      <div style="margin-bottom:1.5rem"><div class="pt" data-i18n="procurement">Procurement Log</div><div class="ptsub">Item → Quantity → Unit Price → Auto-Total</div></div>
+      <div class="cardlg reveal" style="margin-bottom:1.5rem">
         <div class="g2">
           <div class="stack">
             <div><label class="fl">Item Name</label><input type="text" id="pi" class="inp" placeholder="e.g. Mangoes, Pineapples, Bottles..."></div>
@@ -246,7 +261,7 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
             </div>
           </div>
         </div>
-        <button onclick="addProc()" class="btng">🛒 Record Purchase</button>
+        <button onclick="addProc()" class="btng"><span data-i18n="record_purchase">🛒 Record Purchase</span>/button>
       </div>
       <div class="sec">Procurement History</div>
       <div class="card" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">By</th><th id="pdth" class="r" style="display:none"></th></tr></thead><tbody id="ptbl"></tbody></table><div id="pemp" class="empty">No procurement records yet.</div></div></div>
@@ -255,39 +270,39 @@ select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2
     <!-- LEDGER -->
     <div id="page-ledg" class="page">
       <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.5rem">
-        <div><div class="pt">Full Ledger</div><div class="ptsub">All transactions — unedited, timestamped.</div></div>
+        <div><div class="pt" data-i18n="full_ledger">Full Ledger</div><div class="ptsub">All transactions — unedited, timestamped.</div></div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
           <span class="tag tg">IN <span id="lti" class="mn" style="margin-left:.2rem">0</span></span>
           <span class="tag tr">OUT <span id="lto" class="mn" style="margin-left:.2rem">0</span></span>
           <span class="tag ta">NET <span id="ltn" class="mn" style="margin-left:.2rem">0</span></span>
         </div>
       </div>
-      <div class="card" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Time</th><th>Description</th><th class="r">In</th><th class="r">Out</th><th class="r">By</th><th id="ldth" class="r" style="display:none"></th></tr></thead><tbody id="ltbl"></tbody></table><div id="lemp" class="empty">No transactions yet.</div></div></div>
+      <div class="card reveal" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Time</th><th>Description</th><th class="r">In</th><th class="r">Out</th><th class="r">By</th><th id="ldth" class="r" style="display:none"></th></tr></thead><tbody id="ltbl"></tbody></table><div id="lemp" class="empty">No transactions yet.</div></div></div>
     </div>
 
     <!-- CEO -->
     <div id="page-ceo" class="page">
       <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.75rem">
         <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:.3rem">⚜️ Executive Access</div><div class="pt">CEO Intelligence</div></div>
-        <button onclick="showClearModal()" class="bdanger">🗑 Clear All Data</button>
+        <button onclick="showClearModal()" class="bdanger"><span data-i18n="clear_all">🗑 Clear All Data</span>/button>
       </div>
-      <div class="sec">Team Performance — All Time</div>
-      <div class="g3" id="teamcards" style="margin-bottom:1.5rem"></div>
-      <div class="g21" style="margin-bottom:1.25rem">
+      <div class="sec" data-i18n="team_perf">Team Performance — All Time</div>
+      <div class="g3 reveal" id="teamcards" style="margin-bottom:1.5rem"></div>
+      <div class="g21 reveal reveal-d1" style="margin-bottom:1.25rem">
         <div class="card" style="padding:1.2rem">
-          <div class="sec">Staff Reports</div>
+          <div class="sec" data-i18n="staff_reports">Staff Reports</div>
           <div id="fblist" class="stack" style="max-height:320px;overflow-y:auto"></div>
           <div id="fbemp" class="empty" style="font-size:.76rem">No staff reports yet.</div>
         </div>
         <div class="card" style="padding:1.2rem;overflow:hidden">
-          <div class="sec">Master Audit Trail (CEO can delete)</div>
+          <div class="sec" data-i18n="audit_trail">Master Audit Trail (CEO can delete)</div>
           <div class="tw" style="max-height:320px;overflow-y:auto"><table class="tbl" style="font-size:.73rem"><thead><tr><th>Staff</th><th>Desc</th><th class="r">In</th><th class="r">Out</th><th class="r">Del</th></tr></thead><tbody id="atbl"></tbody></table>
           <div id="aemp" class="empty" style="font-size:.73rem">No transactions.</div></div>
         </div>
       </div>
-      <div class="card" style="padding:1.2rem;overflow:hidden">
+      <div class="card reveal reveal-d2" style="padding:1.2rem;overflow:hidden">
         <div class="row rowjb" style="margin-bottom:.85rem">
-          <div class="sec">Procurement — Full Control</div>
+          <div class="sec" data-i18n="proc_control">Procurement — Full Control</div>
           <span class="tag tr">Total Spend: <span id="pspend" class="mn" style="margin-left:.2rem">TSh 0</span></span>
         </div>
         <div class="tw"><table class="tbl" style="font-size:.74rem"><thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">By</th><th class="r">Del</th></tr></thead><tbody id="cptbl"></tbody></table>
@@ -351,7 +366,69 @@ function setSS(st,txt){const d=document.getElementById('sdot'),l=document.getEle
 function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('ch3_th',n);if(CU)setTimeout(buildCharts,50)}
 
 // ═══════════ LANGUAGE ══════════════════════════════════════
-function toggleLang(){lang=lang==='en'?'sw':'en';document.getElementById('langbtn').textContent=lang==='en'?'SW':'EN';document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+lang);if(v)el.textContent=v})}
+// Full translation dictionary
+const I18N={
+  en:{
+    dashboard:'Dashboard',cash_entry:'Cash Book Entry',procurement:'Procurement',
+    full_ledger:'Full Ledger',ceo_intel:'CEO Intelligence',
+    overview:'OVERVIEW',finance:'FINANCE',
+    report_mgmt:'Report to Management',submit_report:'Submit Report',sign_out:'Sign Out',
+    refresh:'Refresh',commit:'✓ Commit to Ledger',record_purchase:'🛒 Record Purchase',
+    tx_desc:'Transaction Description',cash_in:'💰 Cash In (TSh)',cash_out:'💸 Cash Out (TSh)',
+    net_entry:'Net this entry',todays_entries:"Today's Entries",
+    item_name:'Item Name',supplier:'Supplier / Source',notes:'Notes (optional)',
+    qty:'Quantity',unit:'Unit',price_per_unit:'@ Price per Unit (TSh)',
+    today_activity:"Today's Activity",
+    daily_target:'Daily Target Progress',daily_target_sub:'TSh 100,000 target/day',
+    all_time:'All Time',staff_reports:'Staff Reports',audit_trail:'Master Audit Trail (CEO can delete)',
+    proc_control:'Procurement — Full Control',team_perf:'Team Performance — All Time',
+    clear_all:'🗑 Clear All Data',offline:'Offline — showing cached data.',
+    time:'Time',description:'Description',by:'By',date:'Date',total:'Total',
+    unit_price:'Unit Price',no_tx:'No transactions yet.',no_proc:'No procurement records yet.',
+    no_reports:'No staff reports yet.',personal_view:'Personal Performance View',
+    today:'Today'
+  },
+  sw:{
+    dashboard:'Dashibodi',cash_entry:'Ingizo la Fedha',procurement:'Ununuzi',
+    full_ledger:'Daftari Kuu',ceo_intel:'Dashibodi ya CEO',
+    overview:'MUHTASARI',finance:'FEDHA',
+    report_mgmt:'Ripoti kwa Usimamizi',submit_report:'Tuma Ripoti',sign_out:'Toka',
+    refresh:'Onyesha upya',commit:'✓ Hifadhi Kwenye Daftari',record_purchase:'🛒 Hifadhi Ununuzi',
+    tx_desc:'Maelezo ya Muamala',cash_in:'💰 Pesa Inayoingia (TSh)',cash_out:'💸 Pesa Inayotoka (TSh)',
+    net_entry:'Jumla ya Ingizo',todays_entries:'Ingizo la Leo',
+    item_name:'Jina la Bidhaa',supplier:'Muuzaji / Chanzo',notes:'Maelezo zaidi',
+    qty:'Kiasi',unit:'Kipimo',price_per_unit:'@ Bei kwa Kipimo (TSh)',
+    today_activity:'Shughuli za Leo',
+    daily_target:'Maendeleo ya Lengo la Kila Siku',daily_target_sub:'Lengo TSh 100,000/siku',
+    all_time:'Wakati Wote',staff_reports:'Ripoti za Wafanyakazi',audit_trail:'Mkondo wa Ukaguzi (Unaoharirwa)',
+    proc_control:'Ununuzi — Udhibiti Kamili',team_perf:'Utendaji wa Timu — Wakati Wote',
+    clear_all:'🗑 Futa Data Yote',offline:'Nje ya mtandao — data ya cache.',
+    time:'Wakati',description:'Maelezo',by:'Na',date:'Tarehe',total:'Jumla',
+    unit_price:'Bei/Kipimo',no_tx:'Bado hakuna miamala.',no_proc:'Bado hakuna rekodi za ununuzi.',
+    no_reports:'Bado hakuna ripoti za wafanyakazi.',personal_view:'Muonekano wa Utendaji Wako',
+    today:'Leo'
+  }
+};
+function t(k){return(I18N[lang]||I18N.en)[k]||k}
+function applyLang(){
+  // Apply to all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    const v=t(k);if(v)el.textContent=v;
+  });
+  // Also handle legacy data-en/data-sw
+  document.querySelectorAll('[data-en]').forEach(el=>{
+    const v=el.getAttribute('data-'+lang);if(v)el.textContent=v;
+  });
+}
+function toggleLang(){
+  lang=lang==='en'?'sw':'en';
+  document.getElementById('langbtn').textContent=lang==='en'?'SW':'EN';
+  document.documentElement.setAttribute('lang',lang);
+  applyLang();
+  // Re-render dynamic content in correct language
+  if(CU){updateKPI();renderRecent();renderLedger();renderProc();if(CU.role==='ceo')renderCEO()}
+}
 
 // ═══════════ CLOCK ════════════════════════════════════════
 function tick(){const n=new Date();document.getElementById('clk').textContent=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});document.getElementById('cdt').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
@@ -367,19 +444,22 @@ window.addEventListener('offline',()=>document.getElementById('offb').style.disp
 // ═══════════ FETCH FROM SHEETS (with timeout) ═════════════
 async function fetchSheets(){
   setSS('sy','Loading…');
-  const ctrl=new AbortController();
-  const timer=setTimeout(()=>ctrl.abort(),8000);
+  // Use Promise.race instead of AbortController to avoid postMessage cloning error
+  const fetchP = fetch(GS_URL+'?action=getAll',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()});
+  const timeoutP = new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout')),8000));
   try{
-    const r=await fetch(GS_URL+'?action=getAll',{cache:'no-store',signal:ctrl.signal});
-    clearTimeout(timer);
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    if(d.error)throw new Error(d.error);
+    const d = await Promise.race([fetchP, timeoutP]);
+    if(d.error) throw new Error(d.error);
     if(Array.isArray(d.transactions))TX=d.transactions;
     if(Array.isArray(d.procurements))PR=d.procurements;
     if(Array.isArray(d.feedbacks))FB=d.feedbacks;
     cacheSave();setSS('','Synced');return true;
-  }catch(e){clearTimeout(timer);console.warn('[Charisma]',e.message);setSS('er','Offline');document.getElementById('offb').style.display='flex';return false}
+  }catch(e){
+    console.warn('[Charisma] Sync:',e.message);
+    setSS('er','Offline');
+    document.getElementById('offb').style.display='flex';
+    return false;
+  }
 }
 
 // ═══════════ POST TO SHEETS ═══════════════════════════════
@@ -410,6 +490,7 @@ function login(){
     document.getElementById('wbav').style.background=c[CU.name]||'var(--gold)';
   }
   cacheLoad();
+  applyLang();
   document.getElementById('ls').style.display='none';
   const app=document.getElementById('app');app.style.display='flex';
   showPage('dash');renderAll();
@@ -419,17 +500,27 @@ function login(){
 document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
 
 // ═══════════ NAVIGATION ═══════════════════════════════════
-function toggleSB(){document.getElementById('sidebar').classList.toggle('open')}
+function openSB(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('show')}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('show')}
+function toggleSB(){document.getElementById('sidebar').classList.contains('open')?closeSB():openSB()}
+// Auto-close sidebar when user focuses any form input in main content
+document.addEventListener('focusin',function(e){
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')){
+    if(!e.target.closest('.sidebar'))closeSB();
+  }
+});
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   document.getElementById('page-'+p).classList.add('on');
   document.querySelectorAll('.nl').forEach(x=>x.classList.remove('on'));
   const nb=document.getElementById('nb-'+p);if(nb)nb.classList.add('on');
-  if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');
+  if(window.innerWidth<768)closeSB();
   if(p==='dash'){buildCharts();renderRecent()}
   if(p==='ledg')renderLedger();
   if(p==='ceo')renderCEO();
   if(p==='proc')renderProc();
+  // Re-trigger scroll animations for new page
+  setTimeout(observeReveal, 60);
 }
 
 // ═══════════ CASH BOOK ════════════════════════════════════
@@ -579,7 +670,7 @@ function updateKPI(){
   document.getElementById('dpct').textContent=pct+'%';
   document.getElementById('damt').textContent='TSh '+todIn.toLocaleString()+' today';
   const rem=TARGET-todIn;
-  document.getElementById('dstat').textContent=rem>0?'TSh '+rem.toLocaleString()+' remaining to reach daily target':'🎯 Daily target reached!';
+  document.getElementById('dstat').textContent=rem>0?'TSh '+rem.toLocaleString()+' '+(lang==='sw'?'zimebaki kufikia lengo':'remaining to reach daily target'):'🎯 '+(lang==='sw'?'Lengo limefikiwa!':'Daily target reached!');
   const h=new Date().getHours();
   const g=h<12?'Good morning, ':h<17?'Good afternoon, ':'Good evening, ';
   document.getElementById('dsub').textContent=g+CU.name+'. Here is your financial overview.';
@@ -595,7 +686,25 @@ function updateKPI(){
 // ═══════════════════════════════════════════════════════════
 function fd(iso){const d=new Date(iso);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
 function pb(name){const cls={Collins:'pbc',Odria:'pbo',Bertha:'pbb'}[name]||'ta';return`<span class="pbadge ${cls}">${name}</span>`}
-function renderAll(){updateKPI();if(document.getElementById('page-dash').classList.contains('on')){buildCharts();renderRecent()}renderLedger();renderProc();if(CU&&CU.role==='ceo')renderCEO()}
+function renderAll(){
+  updateKPI();
+  if(document.getElementById('page-dash').classList.contains('on')){buildCharts();renderRecent()}
+  renderLedger();renderProc();
+  if(CU&&CU.role==='ceo')renderCEO();
+  // Re-observe new DOM after render
+  setTimeout(observeReveal, 80);
+}
+
+// ── SCROLL-REVEAL / LIQUID MORPH OBSERVER ──────────────────
+function observeReveal(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target)}});
+  },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+// Run once on page load
+if(document.readyState==='complete')observeReveal();
+else window.addEventListener('load',observeReveal);
 
 function renderRecent(){
   const today=new Date().toDateString();
@@ -615,14 +724,14 @@ function renderLedger(){
   document.getElementById('lti').textContent=tI.toLocaleString();
   document.getElementById('lto').textContent=tO.toLocaleString();
   const n=tI-tO,ne=document.getElementById('ltn');ne.textContent=n.toLocaleString();ne.style.color=n>=0?'var(--green)':'var(--red)';
-  if(!TX.length){tb.innerHTML='';ep.style.display='block';return}ep.style.display='none';
+  if(!TX.length){tb.innerHTML='';ep.style.display='block';ep.textContent=t('no_tx');return}ep.style.display='none';
   tb.innerHTML=TX.map(t=>`<tr><td class="dim mn" style="white-space:nowrap">${fd(t.date)}</td><td><div class="ell">${t.desc}</div></td><td class="r mn" style="color:var(--green)">${t.receipt>0?t.receipt.toLocaleString():'—'}</td><td class="r mn" style="color:var(--red)">${t.payment>0?t.payment.toLocaleString():'—'}</td><td class="r">${pb(t.user)}</td>${isCEO?`<td class="r"><button class="bdel" onclick="delTx('${t.id}')">del</button></td>`:''}</tr>`).join('');
 }
 
 function renderProc(){
   const tb=document.getElementById('ptbl'),ep=document.getElementById('pemp');
   const isCEO=CU&&CU.role==='ceo';
-  if(!PR.length){tb.innerHTML='';ep.style.display='block';return}ep.style.display='none';
+  if(!PR.length){tb.innerHTML='';ep.style.display='block';ep.textContent=t('no_proc');return}ep.style.display='none';
   tb.innerHTML=PR.map(p=>`<tr><td class="dim mn" style="white-space:nowrap;font-size:.68rem">${fd(p.date)}</td><td><div style="font-weight:500">${p.item}</div>${p.supplier?`<div style="font-size:.68rem;color:var(--txt3)">${p.supplier}</div>`:''}${p.notes?`<div style="font-size:.62rem;color:var(--txt3);font-style:italic">${p.notes}</div>`:''}</td><td class="c mn">${p.qty} ${p.unit}</td><td class="r mn" style="color:var(--txt2)">TSh ${(p.unitPrice||0).toLocaleString()}</td><td class="r mn" style="color:var(--red);font-weight:700">TSh ${(p.total||0).toLocaleString()}</td><td class="r">${pb(p.user)}</td>${isCEO?`<td class="r"><button class="bdel" onclick="delPr('${p.id}')">del</button></td>`:''}</tr>`).join('');
 }
 
@@ -652,7 +761,7 @@ function renderCEO(){
   document.getElementById('cpemp').style.display=PR.length?'none':'block';
   cptb.innerHTML=PR.map(p=>`<tr><td class="dim mn" style="white-space:nowrap;font-size:.68rem">${fd(p.date)}</td><td style="font-weight:500">${p.item}${p.supplier?`<div style="font-size:.64rem;color:var(--txt3)">${p.supplier}</div>`:''}</td><td class="c mn">${p.qty} ${p.unit}</td><td class="r mn">TSh ${(p.unitPrice||0).toLocaleString()}</td><td class="r mn" style="color:var(--red);font-weight:700">TSh ${(p.total||0).toLocaleString()}</td><td class="r">${pb(p.user)}</td><td class="r"><button class="bdel" onclick="delPr('${p.id}')">del</button></td></tr>`).join('');
 
-  const fl=document.getElementById('fblist');document.getElementById('fbemp').style.display=FB.length?'none':'block';
+  const fl=document.getElementById('fblist');document.getElementById('fbemp').textContent=t('no_reports');document.getElementById('fbemp').style.display=FB.length?'none':'block';
   fl.innerHTML=FB.map(f=>`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:.9rem;padding:.85rem 1rem"><div style="display:flex;justify-content:space-between;margin-bottom:.35rem">${pb(f.user)}<span style="font-size:.58rem;color:var(--txt3)">${f.time}</span></div><div style="font-size:.76rem;color:var(--txt2);line-height:1.5">${f.text}</div></div>`).join('');
 }
 </script>
