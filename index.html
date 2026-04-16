@@ -3,462 +3,304 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Charisma Distillers • Finance Vault</title>
+<title>Charisma Distillers • Finance Vault v3</title>
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ══ TOKENS ══════════════════════════════════════ */
-:root[data-theme="dark"]{
-  --bg:#06060f;--bg2:#0d0d1f;--bg3:#13131f;
-  --surf:rgba(255,255,255,.04);--surf2:rgba(255,255,255,.07);
-  --bdr:rgba(255,255,255,.09);--bdr2:rgba(255,255,255,.16);
-  --txt:#f0f0f5;--txt2:#9090a8;--txt3:#50506a;
-  --gold:#f5c518;--gold2:#d4a800;--glow:rgba(245,197,24,.18);
-  --green:#22c55e;--green-bg:rgba(34,197,94,.12);
-  --red:#ef4444;--red-bg:rgba(239,68,68,.12);
-  --blue:#60a5fa;--blue-bg:rgba(96,165,250,.12);
-  --inp:rgba(0,0,0,.55);--inp-bdr:rgba(255,255,255,.12);
-  --header-bg:rgba(6,6,15,.93);
-  --b1:rgba(245,197,24,.09);--b2:rgba(79,70,229,.06)
-}
-:root[data-theme="light"]{
-  --bg:#f2ede1;--bg2:#e8e2d4;--bg3:#ddd7c8;
-  --surf:rgba(255,255,255,.75);--surf2:rgba(255,255,255,.92);
-  --bdr:rgba(0,0,0,.09);--bdr2:rgba(0,0,0,.16);
-  --txt:#1a1830;--txt2:#4a485e;--txt3:#8a8a9e;
-  --gold:#8a6200;--gold2:#6e4e00;--glow:rgba(138,98,0,.15);
-  --green:#166534;--green-bg:rgba(22,101,52,.1);
-  --red:#991b1b;--red-bg:rgba(153,27,27,.1);
-  --blue:#1d4ed8;--blue-bg:rgba(29,78,216,.1);
-  --inp:rgba(255,255,255,.9);--inp-bdr:rgba(0,0,0,.14);
-  --header-bg:rgba(242,237,225,.95);
-  --b1:rgba(138,98,0,.1);--b2:rgba(79,70,229,.05)
-}
-/* ══ RESET ══════════════════════════════════════ */
+:root[data-theme="dark"]{--bg:#07071a;--bg2:#0d0d22;--surf:rgba(255,255,255,.04);--surf2:rgba(255,255,255,.07);--bdr:rgba(255,255,255,.08);--bdr2:rgba(255,255,255,.15);--txt:#eeeefc;--txt2:#8888aa;--txt3:#44445a;--gold:#f5c518;--gold2:#c9a000;--glow:rgba(245,197,24,.2);--green:#22c55e;--grbg:rgba(34,197,94,.12);--red:#f87171;--rdbg:rgba(248,113,113,.12);--blue:#60a5fa;--blbg:rgba(96,165,250,.12);--purple:#c084fc;--pubg:rgba(192,132,252,.12);--inp:rgba(0,0,0,.5);--inpbdr:rgba(255,255,255,.1);--hdr:rgba(7,7,26,.94);--sdbg:#09091f;--ctxt:#8888aa;--cgrd:rgba(255,255,255,.05);--b1:rgba(245,197,24,.08);--b2:rgba(79,70,229,.06)}
+:root[data-theme="light"]{--bg:#f4f0e6;--bg2:#ece7da;--surf:rgba(255,255,255,.7);--surf2:rgba(255,255,255,.92);--bdr:rgba(0,0,0,.08);--bdr2:rgba(0,0,0,.15);--txt:#18182e;--txt2:#4a4860;--txt3:#9090a6;--gold:#7a5500;--gold2:#5e4000;--glow:rgba(122,85,0,.15);--green:#166534;--grbg:rgba(22,101,52,.1);--red:#991b1b;--rdbg:rgba(153,27,27,.1);--blue:#1d4ed8;--blbg:rgba(29,78,216,.1);--purple:#7e22ce;--pubg:rgba(126,34,206,.1);--inp:rgba(255,255,255,.9);--inpbdr:rgba(0,0,0,.12);--hdr:rgba(244,240,230,.95);--sdbg:#ede8da;--ctxt:#4a4860;--cgrd:rgba(0,0,0,.06);--b1:rgba(122,85,0,.08);--b2:rgba(79,70,229,.05)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Ubuntu',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;line-height:1.5}
+body{font-family:'Ubuntu',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;line-height:1.5;overflow-x:hidden}
 button{cursor:pointer;font-family:'Ubuntu',sans-serif;border:none;background:none}
 input,select,textarea{font-family:'Ubuntu',sans-serif}
 img{display:block}
-/* ══ BG BLOBS ══════════════════════════════════ */
-.bg{position:fixed;inset:0;z-index:-1;background:var(--bg);overflow:hidden}
-.blob{position:absolute;border-radius:50%;filter:blur(110px);animation:blob 28s ease-in-out infinite alternate}
-.b1{width:900px;height:900px;background:radial-gradient(circle,var(--b1) 0%,var(--b2) 40%,transparent 70%);top:-200px;left:-200px}
-.b2{width:700px;height:700px;background:radial-gradient(circle,var(--b2) 0%,var(--b1) 50%,transparent 70%);bottom:-200px;right:-200px;animation-duration:34s;animation-direction:alternate-reverse}
-@keyframes blob{0%{transform:translate(0,0)}100%{transform:translate(30px,20px) scale(1.04)}}
-/* ══ HEADER ══════════════════════════════════════ */
-.header{position:sticky;top:0;z-index:50;background:var(--header-bg);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-bottom:1px solid var(--bdr);padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.h-left{display:flex;align-items:center;gap:.85rem}
-.h-right{display:flex;align-items:center;gap:.7rem}
-.hbg{width:40px;height:40px;background:var(--surf);border:1px solid var(--bdr);border-radius:.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.hbl{width:18px;height:2px;background:var(--gold);border-radius:2px}
-.hbl:nth-child(2){width:13px}
-.logo{height:38px;object-fit:contain}
-.bname{font-size:.92rem;font-weight:700;color:var(--gold);letter-spacing:-.02em;line-height:1.1}
-.bsub{font-size:.54rem;color:var(--txt3);letter-spacing:.3em;text-transform:uppercase;margin-top:1px}
-/* ══ SYNC DOT ══════════════════════════════════ */
-.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;transition:background .3s}
-.sdot.syncing{background:var(--gold);animation:pulse .9s ease-in-out infinite}
-.sdot.err{background:var(--red)}
+.bglayer{position:fixed;inset:0;z-index:-1;background:var(--bg);overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px);animation:bm 30s ease-in-out infinite alternate}
+.bl1{width:900px;height:900px;background:radial-gradient(circle,var(--b1),var(--b2) 50%,transparent 70%);top:-250px;left:-250px}
+.bl2{width:700px;height:700px;background:radial-gradient(circle,var(--b2),var(--b1) 50%,transparent 70%);bottom:-200px;right:-200px;animation-duration:38s;animation-direction:alternate-reverse}
+@keyframes bm{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,20px) scale(1.05)}}
+.hdr{position:sticky;top:0;z-index:50;background:var(--hdr);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-bottom:1px solid var(--bdr);padding:.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.hl{display:flex;align-items:center;gap:.85rem}.hr{display:flex;align-items:center;gap:.7rem}
+.hbg{width:40px;height:40px;background:var(--surf);border:1px solid var(--bdr);border-radius:.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color .2s}
+.hbg:hover{border-color:var(--gold)}.hbl{width:18px;height:2px;background:var(--gold);border-radius:2px}.hbl:nth-child(2){width:13px}
+.logo{height:38px;object-fit:contain}.bn{font-size:.9rem;font-weight:700;color:var(--gold);letter-spacing:-.02em;line-height:1.1}.bs{font-size:.53rem;color:var(--txt3);letter-spacing:.3em;text-transform:uppercase;margin-top:1px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);transition:background .3s}.sdot.sy{background:var(--gold);animation:pulse .9s ease-in-out infinite}.sdot.er{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* ══ THEME TOGGLE ══════════════════════════════ */
-.tog{width:50px;height:27px;background:var(--surf);border:1px solid var(--bdr);border-radius:9999px;position:relative;cursor:pointer}
-.tok{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:var(--gold);transition:transform .3s}
-[data-theme="light"] .tok{transform:translateX(23px)}
-/* ══ LANG BTN ══════════════════════════════════ */
-.lbtn{padding:.35rem .75rem;background:var(--surf);border:1px solid var(--bdr);border-radius:.6rem;font-size:.7rem;font-weight:700;color:var(--txt2);letter-spacing:.05em;transition:all .2s}
+.tog{width:48px;height:26px;background:var(--surf);border:1px solid var(--bdr);border-radius:9999px;position:relative;cursor:pointer;flex-shrink:0}
+.tok{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--gold);transition:transform .3s}
+[data-theme="light"] .tok{transform:translateX(22px)}
+.lbtn{padding:.32rem .7rem;background:var(--surf);border:1px solid var(--bdr);border-radius:.55rem;font-size:.68rem;font-weight:700;color:var(--txt2);transition:all .2s}
 .lbtn:hover{border-color:var(--gold);color:var(--gold)}
-/* ══ CLOCK ══════════════════════════════════════ */
-.clk{font-family:'Ubuntu Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--gold);line-height:1}
-.cdt{font-size:.58rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
-/* ══ SIDEBAR ══════════════════════════════════ */
-.sidebar{position:fixed;top:0;left:0;height:100%;width:278px;background:var(--bg2);border-right:1px solid var(--bdr);z-index:100;display:flex;flex-direction:column;padding:1.25rem;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.sidebar.open{transform:translateX(0)}
-.sb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
-.sb-close{font-size:1.6rem;color:var(--txt3);line-height:1;transition:color .2s}
-.sb-close:hover{color:var(--txt)}
-.nav-sec{font-size:.58rem;text-transform:uppercase;letter-spacing:.2em;color:var(--txt3);font-weight:700;margin:1.1rem 0 .5rem}
-.nl{width:100%;text-align:left;padding:.7rem 1rem;border-radius:.8rem;font-size:.85rem;font-weight:500;color:var(--txt2);display:flex;align-items:center;gap:.7rem;border:1px solid transparent;transition:all .18s}
+.clk{font-family:'Ubuntu Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--gold);line-height:1}.cdt{font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+.sidebar{position:fixed;top:0;left:0;height:100%;width:272px;background:var(--sdbg);border-right:1px solid var(--bdr);z-index:100;display:flex;flex-direction:column;padding:1.2rem;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.sidebar.open{transform:translateX(0)}.sbh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.6rem}
+.sbx{font-size:1.5rem;color:var(--txt3);line-height:1;transition:color .2s}.sbx:hover{color:var(--txt)}
+.nsec{font-size:.56rem;text-transform:uppercase;letter-spacing:.2em;color:var(--txt3);font-weight:700;margin:.9rem 0 .45rem}
+.nl{width:100%;text-align:left;padding:.68rem .9rem;border-radius:.75rem;font-size:.83rem;font-weight:500;color:var(--txt2);display:flex;align-items:center;gap:.65rem;border:1px solid transparent;transition:all .18s}
 .nl:hover,.nl.on{background:var(--gold)!important;color:#000!important;border-color:transparent!important}
-.sb-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--bdr)}
-.uname{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--txt3);margin-bottom:.75rem}
-/* ══ FORM ══════════════════════════════════════ */
-.flabel{display:block;font-size:.59rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--txt3);margin-bottom:.42rem}
-.flabel.g{color:var(--green)}.flabel.r{color:var(--red)}.flabel.au{color:var(--gold)}
-.inp{width:100%;background:var(--inp);border:1px solid var(--inp-bdr);border-radius:.9rem;padding:.78rem 1.1rem;font-size:.9rem;color:var(--txt);outline:none;transition:border-color .2s,box-shadow .2s}
-.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}
-.inp.big{font-family:'Ubuntu Mono',monospace;font-size:1.2rem}
-.inp::placeholder{color:var(--txt3)}
-select.inp{appearance:none;-webkit-appearance:none;cursor:pointer}
-select.inp option{background:var(--bg2);color:var(--txt)}
-textarea.inp{resize:vertical;min-height:80px}
-/* ══ BUTTONS ══════════════════════════════════ */
-.btn-main{width:100%;background:var(--gold);color:#000;font-weight:700;padding:1.05rem;border-radius:1rem;font-size:.88rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border:none;font-family:'Ubuntu',sans-serif;transition:all .2s;margin-top:1rem}
-.btn-main:hover{background:var(--gold2);box-shadow:0 6px 24px var(--glow);transform:translateY(-1px)}
-.btn-ghost{background:var(--surf);border:1px solid var(--bdr);border-radius:.8rem;padding:.6rem 1rem;font-size:.75rem;font-weight:700;color:var(--txt2);cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
-.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
-.btn-del{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);color:var(--red);padding:.35rem .7rem;font-size:.66rem;border-radius:.55rem;font-weight:700;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
-.btn-del:hover{background:var(--red);color:#fff}
-.btn-danger-lg{background:var(--red-bg);border:1px solid rgba(239,68,68,.3);color:var(--red);padding:.72rem 1.2rem;border-radius:.8rem;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
-.btn-danger-lg:hover{background:var(--red);color:#fff}
-.btn-so{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);color:var(--red);width:100%;padding:.72rem;border-radius:.8rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
-.btn-so:hover{background:var(--red);color:#fff}
-.btn-rep{background:var(--surf);border:1px solid var(--bdr);color:var(--txt2);width:100%;padding:.62rem;border-radius:.72rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s;margin-top:.5rem}
-.btn-rep:hover{border-color:var(--gold);color:var(--gold)}
-.btn-cancel{background:var(--surf);border:1px solid var(--bdr2);padding:.65rem 1rem;border-radius:.8rem;font-size:.75rem;font-weight:700;color:var(--txt2);cursor:pointer;font-family:'Ubuntu',sans-serif;flex:1;transition:all .2s}
-.btn-cancel:hover{background:var(--surf2)}
-/* ══ CARDS ══════════════════════════════════════ */
-.card{background:var(--surf);border:1px solid var(--bdr);border-radius:1.25rem;padding:1.25rem 1.5rem}
-.card-lg{background:var(--surf);border:1px solid var(--bdr);border-radius:2rem;padding:1.75rem}
-.stat{background:var(--surf);border:1px solid var(--bdr);border-radius:1.25rem;padding:1.2rem 1.6rem}
-.stat-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--txt3);margin-bottom:.35rem}
-.stat-v{font-family:'Ubuntu Mono',monospace;font-size:1.55rem;font-weight:700;line-height:1.1}
-/* ══ TAGS ══════════════════════════════════════ */
-.tag{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:9999px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
-.tg{background:var(--green-bg);color:var(--green)}
-.tr{background:var(--red-bg);color:var(--red)}
-.ta{background:rgba(245,197,24,.12);color:var(--gold)}
-.tb{background:var(--blue-bg);color:var(--blue)}
-/* ══ TABLE ══════════════════════════════════════ */
-.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tbl{width:100%;border-collapse:collapse;font-size:.79rem}
-.tbl th{padding:.7rem 1rem;text-align:left;font-size:.57rem;text-transform:uppercase;letter-spacing:.16em;color:var(--txt3);font-weight:700;border-bottom:1px solid var(--bdr)}
-.tbl th.r,.tbl td.r{text-align:right}.tbl th.c,.tbl td.c{text-align:center}
-.tbl td{padding:.72rem 1rem;border-bottom:1px solid var(--bdr);vertical-align:middle}
-.tbl tr:hover td{background:var(--surf2)}
-.tbl tr:last-child td{border-bottom:none}
-.dim{color:var(--txt3);font-size:.7rem}.mn{font-family:'Ubuntu Mono',monospace}
-/* ══ ALERTS ══════════════════════════════════ */
-.al{padding:.85rem 1.1rem;border-radius:.9rem;font-size:.82rem;margin-bottom:.7rem;animation:fup .28s ease}
-.al-ok{background:var(--green-bg);border:1px solid rgba(34,197,94,.25);color:var(--green)}
-.al-err{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);color:var(--red)}
-.al-info{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold)}
-.al-warn{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:#b45309}
-@keyframes fup{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-/* ══ LAYOUT HELPERS ══════════════════════════ */
-.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 1.5rem}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-.flex{display:flex}.flex-col{flex-direction:column}.aic{align-items:center}.jb{justify-content:space-between}.je{justify-content:flex-end}.gap1{gap:.35rem}.gap2{gap:.65rem}.gap3{gap:1rem}.gap4{gap:1.5rem}.fw{flex-wrap:wrap}.f1{flex:1}.s0{flex-shrink:0}.mw0{min-width:0}
-.stack>*+*{margin-top:.85rem}
-.divider{height:1px;background:var(--bdr);margin:1.1rem 0}
-/* ══ PAGE ══════════════════════════════════════ */
-.page{display:none}.page.on{display:block}
-.pt{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;line-height:1}
-.ps{font-size:.82rem;color:var(--txt2);margin-top:.3rem}
-.sec{font-size:.59rem;text-transform:uppercase;letter-spacing:.2em;font-weight:700;color:var(--txt3);margin-bottom:.7rem}
-/* ══ PROGRESS ══════════════════════════════════ */
-.prog{height:8px;border-radius:9999px;background:var(--bdr);overflow:hidden}
-.pfill{height:100%;border-radius:9999px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .6s ease}
-/* ══ NET PREVIEW ══════════════════════════════ */
-.net-row{display:flex;align-items:center;justify-content:space-between;padding:.82rem 1.1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:1rem;margin-top:.5rem}
-.net-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;color:var(--txt3);font-weight:700}
-.net-v{font-family:'Ubuntu Mono',monospace;font-size:1rem;font-weight:700}
-/* ══ CALC BOX ══════════════════════════════════ */
-.cbox{background:var(--surf);border:1px solid var(--bdr);border-radius:1.25rem;padding:1.1rem 1.25rem}
-.crow{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--bdr)}
-.crow:last-child{border-bottom:none;padding-top:.7rem}
-.ck{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--txt3);font-weight:700}
-.cv{font-family:'Ubuntu Mono',monospace;color:var(--txt2)}
-/* ══ RECENT ENTRIES ══════════════════════════ */
-.rentry{display:flex;align-items:center;gap:1rem;padding:.82rem 1.1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:1rem}
-.re-inf{flex:1;min-width:0}
-.re-d{font-size:.84rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.re-m{font-size:.64rem;color:var(--txt3);margin-top:2px}
-.re-a{display:flex;gap:.45rem;align-items:center;flex-shrink:0}
-/* ══ MODAL ══════════════════════════════════════ */
-.mbg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem}
-.mbox{background:var(--bg2);border:1px solid var(--bdr2);border-radius:1.75rem;padding:2.25rem;width:100%;max-width:420px;animation:fup .3s ease}
-/* ══ LOGIN ══════════════════════════════════════ */
+.sbft{margin-top:auto;padding-top:1rem;border-top:1px solid var(--bdr)}.uname{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--txt3);margin-bottom:.7rem}
+.fl{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--txt3);margin-bottom:.4rem}.fl.g{color:var(--green)}.fl.r{color:var(--red)}.fl.au{color:var(--gold)}
+.inp{width:100%;background:var(--inp);border:1px solid var(--inpbdr);border-radius:.85rem;padding:.75rem 1rem;font-size:.88rem;color:var(--txt);outline:none;transition:border-color .2s,box-shadow .2s}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}.inp.big{font-family:'Ubuntu Mono',monospace;font-size:1.15rem}.inp::placeholder{color:var(--txt3)}
+select.inp{appearance:none;cursor:pointer}select.inp option{background:var(--bg2);color:var(--txt)}textarea.inp{resize:vertical;min-height:76px}
+.btng{width:100%;background:var(--gold);color:#000;font-weight:700;padding:1rem;border-radius:.9rem;font-size:.88rem;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border:none;font-family:'Ubuntu',sans-serif;transition:all .2s;margin-top:1rem}
+.btng:hover{background:var(--gold2);box-shadow:0 6px 24px var(--glow);transform:translateY(-1px)}.btng:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.bgh{background:var(--surf);border:1px solid var(--bdr);border-radius:.75rem;padding:.58rem .95rem;font-size:.74rem;font-weight:700;color:var(--txt2);cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.bgh:hover{border-color:var(--gold);color:var(--gold)}
+.bdel{background:var(--rdbg);border:1px solid rgba(248,113,113,.2);color:var(--red);padding:.3rem .65rem;font-size:.64rem;border-radius:.5rem;font-weight:700;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.bdel:hover{background:var(--red);color:#fff}
+.bdanger{background:var(--rdbg);border:1px solid rgba(248,113,113,.3);color:var(--red);padding:.68rem 1.1rem;border-radius:.75rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.bdanger:hover{background:var(--red);color:#fff}
+.bso{background:var(--rdbg);border:1px solid rgba(248,113,113,.2);color:var(--red);width:100%;padding:.68rem;border-radius:.75rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s}
+.bso:hover{background:var(--red);color:#fff}
+.brep{background:var(--surf);border:1px solid var(--bdr);color:var(--txt2);width:100%;padding:.6rem;border-radius:.7rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;font-family:'Ubuntu',sans-serif;transition:all .2s;margin-top:.5rem}
+.brep:hover{border-color:var(--gold);color:var(--gold)}
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:1.2rem;padding:1.2rem 1.4rem}
+.cardlg{background:var(--surf);border:1px solid var(--bdr);border-radius:1.75rem;padding:1.6rem}
+.stat{background:var(--surf);border:1px solid var(--bdr);border-radius:1.2rem;padding:1.1rem 1.5rem;transition:transform .2s,box-shadow .2s}
+.stat:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.15)}
+.slbl{font-size:.56rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700;color:var(--txt3);margin-bottom:.3rem}.sv{font-family:'Ubuntu Mono',monospace;font-size:1.5rem;font-weight:700;line-height:1.1}
+.tag{display:inline-flex;align-items:center;padding:.18rem .52rem;border-radius:9999px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.tg{background:var(--grbg);color:var(--green)}.tr{background:var(--rdbg);color:var(--red)}.ta{background:rgba(245,197,24,.12);color:var(--gold)}.tb{background:var(--blbg);color:var(--blue)}.tp{background:var(--pubg);color:var(--purple)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem}
+.tbl th{padding:.65rem .95rem;text-align:left;font-size:.56rem;text-transform:uppercase;letter-spacing:.16em;color:var(--txt3);font-weight:700;border-bottom:1px solid var(--bdr)}
+.tbl td{padding:.68rem .95rem;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:var(--surf2)}.tbl th.r,.tbl td.r{text-align:right}.tbl th.c,.tbl td.c{text-align:center}
+.mn{font-family:'Ubuntu Mono',monospace}.dim{color:var(--txt3);font-size:.68rem}.ell{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.al{padding:.82rem 1.1rem;border-radius:.85rem;font-size:.8rem;margin-bottom:.65rem;animation:fup .25s ease}
+.aok{background:var(--grbg);border:1px solid rgba(34,197,94,.25);color:var(--green)}.aerr{background:var(--rdbg);border:1px solid rgba(248,113,113,.25);color:var(--red)}.ainfo{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2);color:var(--gold)}.awarn{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:#b45309}
+@keyframes fup{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding:0 1.5rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}.g21{display:grid;grid-template-columns:1fr 2fr;gap:1.2rem}
+.row{display:flex;align-items:center;gap:.75rem}.rowjb{justify-content:space-between}.rowfw{flex-wrap:wrap}
+.f1{flex:1}.s0{flex-shrink:0}.stack>*+*{margin-top:.82rem}
+.div{height:1px;background:var(--bdr);margin:1rem 0}
+.prog{height:10px;border-radius:9999px;background:var(--bdr);overflow:hidden}.pfill{height:100%;border-radius:9999px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .7s ease}
+.netrow{display:flex;align-items:center;justify-content:space-between;padding:.78rem 1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:.9rem}
+.netlbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:var(--txt3);font-weight:700}
+.cb{background:var(--surf);border:1px solid var(--bdr);border-radius:1.2rem;padding:1rem 1.2rem}
+.crow{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--bdr)}.crow:last-child{border-bottom:none;padding-top:.65rem}
+.ck{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--txt3);font-weight:700}.cv{font-family:'Ubuntu Mono',monospace;color:var(--txt2)}
+.re{display:flex;align-items:center;gap:.9rem;padding:.78rem 1rem;background:var(--surf);border:1px solid var(--bdr);border-radius:.9rem}
+.ri{flex:1;min-width:0}.rd{font-size:.82rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rm{font-size:.62rem;color:var(--txt3);margin-top:1px}.ra{display:flex;gap:.4rem;flex-shrink:0}
+.pbadge{display:inline-flex;align-items:center;padding:.22rem .6rem;border-radius:9999px;font-size:.62rem;font-weight:700}
+.pbc{background:var(--blbg);color:var(--blue)}.pbo{background:rgba(245,197,24,.12);color:var(--gold)}.pbb{background:var(--pubg);color:var(--purple)}
+.mbg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.mbox{background:var(--bg2);border:1px solid var(--bdr2);border-radius:1.7rem;padding:2.1rem;width:100%;max-width:420px;animation:fup .3s ease}
 .lscreen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(0,0,0,.97)}
-.lbox{background:var(--bg2);border:1px solid rgba(245,197,24,.15);border-radius:2rem;padding:2.5rem;width:100%;max-width:390px;text-align:center}
-.l-logo{height:90px;margin:0 auto 1.25rem}
-.l-eye{font-size:.59rem;text-transform:uppercase;letter-spacing:.35em;color:var(--gold);margin-bottom:.35rem}
-.l-title{font-size:1.55rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.25rem}
-.l-sub{font-size:.75rem;color:var(--txt3);margin-bottom:1.75rem}
-.l-fields{text-align:left;display:flex;flex-direction:column;gap:1rem}
-/* ══ OFFLINE BANNER ══════════════════════════ */
-.offl{background:var(--red-bg);border:1px solid rgba(239,68,68,.25);border-radius:.75rem;padding:.62rem 1rem;font-size:.75rem;color:var(--red);display:flex;align-items:center;gap:.5rem;margin-bottom:.9rem}
-/* ══ FEEDBACK CARD ══════════════════════════ */
-.fbcard{background:var(--surf);border:1px solid var(--bdr);border-radius:1rem;padding:.88rem 1.1rem}
-.fbmeta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem}
-.fbtext{font-size:.78rem;color:var(--txt2);line-height:1.5}
-/* ══ FOOTER ══════════════════════════════════ */
-footer{text-align:center;padding:2rem;border-top:1px solid var(--bdr);background:var(--surf)}
-/* ══ SCROLLBAR ══════════════════════════════ */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:9999px}
-/* ══ RESPONSIVE ══════════════════════════════ */
-@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
-@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}.hd-hide{display:none!important}}
+.lbox{background:var(--bg2);border:1px solid rgba(245,197,24,.14);border-radius:2rem;padding:2.5rem;width:100%;max-width:380px;text-align:center}
+.ll{height:88px;margin:0 auto 1.2rem}.ley{font-size:.58rem;text-transform:uppercase;letter-spacing:.35em;color:var(--gold);margin-bottom:.3rem}
+.lt{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.2rem}.ls2{font-size:.73rem;color:var(--txt3);margin-bottom:1.6rem}.lf{text-align:left;display:flex;flex-direction:column;gap:.95rem}
+.offl{background:var(--rdbg);border:1px solid rgba(248,113,113,.2);border-radius:.75rem;padding:.6rem 1rem;font-size:.74rem;color:var(--red);display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
+.sec{font-size:.58rem;text-transform:uppercase;letter-spacing:.2em;font-weight:700;color:var(--txt3);margin-bottom:.7rem}
+.pt{font-size:1.7rem;font-weight:700;letter-spacing:-.03em;line-height:1}.ptsub{font-size:.8rem;color:var(--txt2);margin-top:.25rem}
+.empty{padding:2.25rem;text-align:center;font-size:.78rem;color:var(--txt3)}
+.page{display:none}.page.on{display:block}
+.chwrap{position:relative;background:var(--surf);border:1px solid var(--bdr);border-radius:1.2rem;padding:1.2rem 1.4rem}
+.chtitle{font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;font-weight:700;color:var(--txt3);margin-bottom:.9rem}
+.chcanv{position:relative;height:210px}
+.wbanner{background:linear-gradient(135deg,rgba(245,197,24,.08),rgba(245,197,24,.03));border:1px solid rgba(245,197,24,.2);border-radius:1.2rem;padding:1rem 1.4rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.wbav{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#000;flex-shrink:0}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:9999px}
+@media(max-width:960px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g21{grid-template-columns:1fr}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}.hh{display:none!important}.g21{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div class="bglayer"><div class="blob bl1"></div><div class="blob bl2"></div></div>
 
-<div class="bg"><div class="blob b1"></div><div class="blob b2"></div></div>
-
-<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="ls" class="lscreen">
   <div class="lbox">
-    <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="l-logo" onerror="this.style.display='none'">
-    <div class="l-eye">Secure Access</div>
-    <div class="l-title">Finance Vault</div>
-    <div class="l-sub">Charisma Distillers Tz Limited · 2026</div>
+    <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="ll" onerror="this.style.display='none'">
+    <div class="ley">Secure Access</div>
+    <div class="lt">Finance Vault</div>
+    <div class="ls2">Charisma Distillers Tz Limited · 2026</div>
     <div id="la"></div>
-    <div class="l-fields">
-      <div><label class="flabel">Authorized ID</label>
+    <div class="lf">
+      <div><label class="fl">Authorized ID</label>
         <input type="text" id="un" class="inp" placeholder="Enter your ID" autocomplete="off"></div>
-      <div><label class="flabel">Access Code</label>
-        <input type="password" id="pw" class="inp" placeholder="••••••••••" onkeydown="if(event.key==='Enter')login()"></div>
-      <button onclick="login()" class="btn-main" style="margin-top:.5rem">Enter Vault</button>
+      <div><label class="fl">Access Code</label>
+        <input type="password" id="pw" class="inp" placeholder="••••••••••"></div>
+      <button id="loginbtn" onclick="login()" class="btng" style="margin-top:.5rem">Enter Vault</button>
     </div>
   </div>
 </div>
 
-<!-- ══ APP ════════════════════════════════════════════════ -->
+<!-- APP -->
 <div id="app" style="display:none;flex-direction:column;flex:1">
-
-  <!-- HEADER -->
-  <header class="header">
-    <div class="h-left">
-      <button class="hbg" onclick="toggleSidebar()">
-        <div class="hbl"></div><div class="hbl"></div><div class="hbl"></div>
-      </button>
+  <header class="hdr">
+    <div class="hl">
+      <button class="hbg" onclick="toggleSB()"><div class="hbl"></div><div class="hbl"></div><div class="hbl"></div></button>
       <img src="https://i.ibb.co/604LgYYS/Charisma-Distillers-logo-design.png" class="logo" onerror="this.style.display='none'">
-      <div class="hd-hide">
-        <div class="bname">CHARISMA DISTILLERS</div>
-        <div class="bsub">Finance Vault 2026</div>
-      </div>
+      <div class="hh"><div class="bn">CHARISMA DISTILLERS</div><div class="bs">Finance Vault v3</div></div>
     </div>
-    <div class="h-right">
-      <div class="flex aic gap1" style="font-size:.64rem;color:var(--txt3)">
-        <span class="sdot" id="sdot"></span>
-        <span id="slbl" class="hd-hide">Synced</span>
-      </div>
-      <span class="hd-hide" style="font-size:.75rem;color:var(--txt3)">🌙</span>
+    <div class="hr">
+      <div style="display:flex;align-items:center;gap:.35rem;font-size:.62rem;color:var(--txt3)"><span class="sdot" id="sdot"></span><span id="slbl" class="hh">Synced</span></div>
+      <span class="hh" style="font-size:.72rem;color:var(--txt3)">🌙</span>
       <div class="tog" onclick="toggleTheme()"><div class="tok"></div></div>
-      <span class="hd-hide" style="font-size:.75rem;color:var(--txt3)">☀️</span>
-      <button class="lbtn" onclick="toggleLang()" id="lbtn">SW</button>
-      <div class="hd-hide">
-        <div class="clk" id="clk">00:00</div>
-        <div class="cdt" id="cdt"></div>
-      </div>
+      <span class="hh" style="font-size:.72rem;color:var(--txt3)">☀️</span>
+      <button class="lbtn" onclick="toggleLang()" id="langbtn">SW</button>
+      <div class="hh"><div class="clk" id="clk">00:00</div><div class="cdt" id="cdt"></div></div>
     </div>
   </header>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sb-head">
-      <div style="font-size:.58rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700">Navigation</div>
-      <button class="sb-close" onclick="toggleSidebar()">×</button>
-    </div>
-    <div class="nav-sec" data-en="Financial" data-sw="Fedha">Financial</div>
+    <div class="sbh"><span style="font-size:.56rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700">Menu</span><button class="sbx" onclick="toggleSB()">×</button></div>
+    <div class="nsec">Overview</div>
+    <button class="nl" id="nb-dash" onclick="showPage('dash')">📊 Dashboard</button>
+    <div class="nsec">Finance</div>
     <button class="nl" id="nb-cash" onclick="showPage('cash')">📖 <span data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</span></button>
-    <button class="nl" id="nb-proc" onclick="showPage('proc')">🛒 <span data-en="Procurement / Buying" data-sw="Ununuzi wa Bidhaa">Procurement / Buying</span></button>
+    <button class="nl" id="nb-proc" onclick="showPage('proc')">🛒 <span data-en="Procurement" data-sw="Ununuzi">Procurement</span></button>
     <button class="nl" id="nb-ledg" onclick="showPage('ledg')">📋 <span data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</span></button>
-    <button class="nl" id="nb-ceo" style="display:none;border:1px solid rgba(245,197,24,.3)" onclick="showPage('ceo')">⚜️ <span data-en="CEO Intelligence" data-sw="Usimamizi wa CEO">CEO Intelligence</span></button>
-    <!-- Staff report -->
-    <div id="wfb" class="divider" style="display:block"></div>
-    <div id="wfb2">
-      <div class="sec" data-en="Report to Management" data-sw="Ripoti kwa Usimamizi">Report to Management</div>
-      <textarea id="sug" class="inp" rows="3" style="font-size:.78rem" placeholder="Write a note to Collins..."></textarea>
-      <button onclick="sendReport()" class="btn-rep"><span data-en="Submit Report" data-sw="Tuma Ripoti">Submit Report</span></button>
+    <button class="nl" id="nb-ceo" style="display:none;border:1px solid rgba(245,197,24,.3)" onclick="showPage('ceo')">⚜️ <span data-en="CEO Intelligence" data-sw="Dashibodi ya CEO">CEO Intelligence</span></button>
+    <div id="wfbd" class="div"></div>
+    <div id="wfb">
+      <div class="sec">Report to Management</div>
+      <textarea id="sug" class="inp" rows="3" style="font-size:.76rem" placeholder="Write a note to Collins..."></textarea>
+      <button onclick="sendReport()" class="brep">Submit Report</button>
     </div>
-    <div class="sb-footer">
-      <div class="uname" id="ud"></div>
-      <button onclick="location.reload()" class="btn-so">Sign Out</button>
-    </div>
+    <div class="sbft"><div class="uname" id="ud"></div><button onclick="location.reload()" class="bso">Sign Out</button></div>
   </aside>
 
-  <!-- MAIN -->
-  <main style="flex:1;padding:2rem 1.5rem">
+  <main style="flex:1;padding:1.75rem 1.5rem">
   <div class="wrap">
-    <div id="na"></div><!-- notifications -->
-    <div id="offb" class="offl" style="display:none">⚠️ <span data-en="Offline — showing cached data. Changes will sync when back online." data-sw="Nje ya mtandao — data ya cache. Mabadiliko yatasawazishwa.">Offline — showing cached data.</span></div>
+    <div id="na"></div>
+    <div id="offb" class="offl" style="display:none">⚠️ Offline — showing cached data. Changes will sync when online.</div>
 
-    <!-- ══ CASH BOOK ══════════════════════════════════ -->
-    <div id="page-cash" class="page on">
-      <div style="margin-bottom:1.75rem">
-        <div class="pt" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</div>
-        <div class="ps" data-en="Every shilling in. Every shilling out. No gaps." data-sw="Kila shilingi inayoingia na kutoka. Bila mapungufu.">Every shilling in. Every shilling out. No gaps.</div>
+    <!-- DASHBOARD -->
+    <div id="page-dash" class="page on">
+      <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.75rem">
+        <div><div class="pt">Dashboard</div><div class="ptsub" id="dsub">Welcome back.</div></div>
+        <button onclick="doRefresh()" class="bgh">🔄 Refresh</button>
       </div>
-      <div class="card-lg" style="margin-bottom:1.75rem">
-        <div class="g2">
-          <div>
-            <label class="flabel" data-en="Transaction Description" data-sw="Maelezo ya Muamala">Transaction Description</label>
-            <textarea id="desc" class="inp" rows="5" placeholder="e.g. Sales from Tegeta Market, morning shift..."></textarea>
-          </div>
-          <div class="stack">
-            <div>
-              <label class="flabel g" data-en="💰 Cash In (TSh)" data-sw="💰 Pesa Inayoingia (TSh)">💰 Cash In (TSh)</label>
-              <input type="number" id="recpt" class="inp big" style="color:var(--green)" placeholder="0" min="0" oninput="previewNet()">
-            </div>
-            <div>
-              <label class="flabel r" data-en="💸 Cash Out (TSh)" data-sw="💸 Pesa Inayotoka (TSh)">💸 Cash Out (TSh)</label>
-              <input type="number" id="paym" class="inp big" style="color:var(--red)" placeholder="0" min="0" oninput="previewNet()">
-            </div>
-            <div class="net-row">
-              <span class="net-lbl" data-en="Net this entry" data-sw="Jumla ya Ingizo">Net this entry</span>
-              <span class="net-v" id="netp" style="color:var(--gold)">TSh 0</span>
-            </div>
-          </div>
+      <div id="wbanner" class="wbanner" style="display:none">
+        <div class="wbav" id="wbav">O</div>
+        <div style="flex:1"><div style="font-weight:700;font-size:.95rem;color:var(--gold)" id="wbname">Odria</div>
+          <div style="font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em">Personal Performance View</div></div>
+        <div style="text-align:right"><div style="font-size:.6rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em">Today</div>
+          <div class="mn" style="font-size:1.2rem;font-weight:700;color:var(--gold)" id="wbtoday">TSh 0</div></div>
+      </div>
+      <div class="g4" id="kpi" style="margin-bottom:1.5rem"></div>
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="row rowjb" style="margin-bottom:.85rem">
+          <div><div class="sec">Daily Target Progress</div><div style="font-weight:700;font-size:.9rem">TSh 100,000 target/day</div></div>
+          <div style="text-align:right"><div class="mn" style="font-size:1.55rem;font-weight:700;color:var(--gold);line-height:1" id="dpct">0%</div>
+            <div style="font-size:.68rem;color:var(--txt3);margin-top:2px" id="damt">TSh 0 today</div></div>
         </div>
-        <button onclick="addTx()" class="btn-main" data-en="✓ Commit to Ledger" data-sw="✓ Hifadhi Kwenye Daftari">✓ Commit to Ledger</button>
+        <div class="prog"><div class="pfill" id="dprog" style="width:0%"></div></div>
+        <div style="font-size:.7rem;color:var(--txt3);margin-top:.45rem" id="dstat"></div>
       </div>
-      <div class="sec" data-en="Today's Entries" data-sw="Ingizo la Leo">Today's Entries</div>
+      <div class="g2" style="margin-bottom:1.25rem">
+        <div class="chwrap"><div class="chtitle">📈 Revenue vs Expenses — Last 7 Days</div><div class="chcanv"><canvas id="ch-weekly"></canvas></div></div>
+        <div class="chwrap"><div class="chtitle">👥 Per-Person Sales Performance</div><div class="chcanv"><canvas id="ch-person"></canvas></div></div>
+      </div>
+      <div id="ch-row2" class="g2" style="margin-bottom:1.25rem;display:none">
+        <div class="chwrap"><div class="chtitle">📅 Monthly Revenue Trend (30 Days)</div><div class="chcanv"><canvas id="ch-monthly"></canvas></div></div>
+        <div class="chwrap"><div class="chtitle">📊 3-Month Team Overview (by Week)</div><div class="chcanv"><canvas id="ch-3m"></canvas></div></div>
+      </div>
+      <div class="sec">Today's Activity</div>
       <div id="rentries" class="stack"></div>
     </div>
 
-    <!-- ══ PROCUREMENT ═══════════════════════════════ -->
-    <div id="page-proc" class="page">
-      <div style="margin-bottom:1.75rem">
-        <div class="pt" data-en="Procurement Log" data-sw="Kumbukumbu ya Ununuzi">Procurement Log</div>
-        <div class="ps" data-en="Track every purchase: item, quantity, unit price → auto-total." data-sw="Fuatilia kila ununuzi: bidhaa, kiasi, bei → jumla moja kwa moja.">Track every purchase: item, quantity, unit price → auto-total.</div>
+    <!-- CASH BOOK -->
+    <div id="page-cash" class="page">
+      <div style="margin-bottom:1.5rem"><div class="pt" data-en="Cash Book Entry" data-sw="Ingizo la Fedha">Cash Book Entry</div>
+        <div class="ptsub" data-en="Every shilling in. Every shilling out." data-sw="Kila shilingi inayoingia na kutoka.">Every shilling in. Every shilling out.</div></div>
+      <div class="cardlg" style="margin-bottom:1.5rem">
+        <div class="g2">
+          <div><label class="fl" data-en="Transaction Description" data-sw="Maelezo ya Muamala">Transaction Description</label>
+            <textarea id="desc" class="inp" rows="5" placeholder="e.g. Juice sales — Tegeta Market, morning shift..."></textarea></div>
+          <div class="stack">
+            <div><label class="fl g">💰 Cash In (TSh)</label><input type="number" id="ri" class="inp big" style="color:var(--green)" placeholder="0" min="0" oninput="prevNet()"></div>
+            <div><label class="fl r">💸 Cash Out (TSh)</label><input type="number" id="ro" class="inp big" style="color:var(--red)" placeholder="0" min="0" oninput="prevNet()"></div>
+            <div class="netrow"><span class="netlbl">Net this entry</span><span class="mn" id="netp" style="font-size:1rem;font-weight:700;color:var(--gold)">TSh 0</span></div>
+          </div>
+        </div>
+        <button onclick="addTx()" class="btng">✓ Commit to Ledger</button>
       </div>
-      <div class="card-lg" style="margin-bottom:1.75rem">
+      <div class="sec">Today's Entries</div><div id="celist" class="stack"></div>
+    </div>
+
+    <!-- PROCUREMENT -->
+    <div id="page-proc" class="page">
+      <div style="margin-bottom:1.5rem"><div class="pt">Procurement Log</div><div class="ptsub">Item → Quantity → Unit Price → Auto-Total</div></div>
+      <div class="cardlg" style="margin-bottom:1.5rem">
         <div class="g2">
           <div class="stack">
-            <div><label class="flabel" data-en="Item Name" data-sw="Jina la Bidhaa">Item Name</label>
-              <input type="text" id="pi" class="inp" placeholder="e.g. Mangoes, Pineapples, Bottles..."></div>
-            <div><label class="flabel" data-en="Supplier / Source" data-sw="Muuzaji / Chanzo">Supplier / Source</label>
-              <input type="text" id="ps" class="inp" placeholder="e.g. Tegeta Market, Kariakoo..."></div>
-            <div><label class="flabel" data-en="Notes (optional)" data-sw="Maelezo zaidi">Notes (optional)</label>
-              <textarea id="pn" class="inp" rows="2" placeholder="Any extra details..."></textarea></div>
+            <div><label class="fl">Item Name</label><input type="text" id="pi" class="inp" placeholder="e.g. Mangoes, Pineapples, Bottles..."></div>
+            <div><label class="fl">Supplier / Source</label><input type="text" id="psup" class="inp" placeholder="e.g. Tegeta Market, Kariakoo..."></div>
+            <div><label class="fl">Notes (optional)</label><textarea id="pnotes" class="inp" rows="2" placeholder="Any extra details..."></textarea></div>
           </div>
           <div class="stack">
             <div class="g2">
-              <div><label class="flabel" data-en="Quantity" data-sw="Kiasi">Quantity</label>
-                <input type="number" id="pq" class="inp" placeholder="0" min="0" step="0.1" oninput="calcProc()"></div>
-              <div><label class="flabel" data-en="Unit" data-sw="Kipimo">Unit</label>
-                <select id="pu" class="inp" onchange="calcProc()">
-                  <option>kg</option><option>pcs</option><option>L</option>
-                  <option>bunches</option><option>bags</option>
-                  <option>boxes</option><option>bottles</option><option>crates</option><option>other</option>
-                </select></div>
+              <div><label class="fl">Quantity</label><input type="number" id="pq" class="inp" placeholder="0" min="0" step="0.1" oninput="calcP()"></div>
+              <div><label class="fl">Unit</label><select id="pu" class="inp" onchange="calcP()"><option>kg</option><option>pcs</option><option>L</option><option>bunches</option><option>bags</option><option>boxes</option><option>bottles</option><option>crates</option><option>other</option></select></div>
             </div>
-            <div><label class="flabel au" data-en="@ Price per Unit (TSh)" data-sw="@ Bei kwa Kipimo (TSh)">@ Price per Unit (TSh)</label>
-              <input type="number" id="pp" class="inp big" placeholder="0" min="0" oninput="calcProc()"></div>
-            <div class="cbox">
-              <div class="crow"><span class="ck" data-en="Quantity" data-sw="Kiasi">Quantity</span><span class="cv" id="cq">0</span></div>
-              <div class="crow"><span class="ck" data-en="Unit Price" data-sw="Bei/Kipimo">Unit Price</span><span class="cv" id="cup">TSh 0</span></div>
-              <div class="crow"><span class="ck" style="color:var(--red)" data-en="TOTAL COST" data-sw="JUMLA">TOTAL COST</span><span class="cv" id="ctot" style="color:var(--red);font-size:1.3rem">TSh 0</span></div>
+            <div><label class="fl au">@ Price per Unit (TSh)</label><input type="number" id="pp" class="inp big" placeholder="0" min="0" oninput="calcP()"></div>
+            <div class="cb">
+              <div class="crow"><span class="ck">Quantity</span><span class="cv" id="cq">0</span></div>
+              <div class="crow"><span class="ck">Unit Price</span><span class="cv" id="cu">TSh 0</span></div>
+              <div class="crow"><span class="ck" style="color:var(--red)">TOTAL COST</span><span class="cv" id="ct" style="color:var(--red);font-size:1.3rem">TSh 0</span></div>
             </div>
           </div>
         </div>
-        <button onclick="addProc()" class="btn-main" data-en="🛒 Record Purchase" data-sw="🛒 Hifadhi Ununuzi">🛒 Record Purchase</button>
+        <button onclick="addProc()" class="btng">🛒 Record Purchase</button>
       </div>
-      <div class="sec" data-en="Procurement History" data-sw="Historia ya Ununuzi">Procurement History</div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <div class="twrap"><table class="tbl">
-          <thead><tr>
-            <th data-en="Date" data-sw="Tarehe">Date</th>
-            <th data-en="Item" data-sw="Bidhaa">Item</th>
-            <th class="c" data-en="Qty" data-sw="Kiasi">Qty</th>
-            <th class="r" data-en="Unit Price" data-sw="Bei/Kipimo">Unit Price</th>
-            <th class="r" data-en="Total" data-sw="Jumla">Total</th>
-            <th class="r" data-en="By" data-sw="Na">By</th>
-            <th id="pdelth" class="r" style="display:none"></th>
-          </tr></thead>
-          <tbody id="ptbl"></tbody>
-        </table>
-        <div id="pemp" style="padding:2.25rem;text-align:center;font-size:.8rem;color:var(--txt3)" data-en="No procurement records yet." data-sw="Bado hakuna rekodi za ununuzi.">No procurement records yet.</div></div>
-      </div>
+      <div class="sec">Procurement History</div>
+      <div class="card" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">By</th><th id="pdth" class="r" style="display:none"></th></tr></thead><tbody id="ptbl"></tbody></table><div id="pemp" class="empty">No procurement records yet.</div></div></div>
     </div>
 
-    <!-- ══ LEDGER ═════════════════════════════════════ -->
+    <!-- LEDGER -->
     <div id="page-ledg" class="page">
-      <div style="margin-bottom:1.75rem" class="flex aic jb fw gap2">
-        <div>
-          <div class="pt" data-en="Full Ledger" data-sw="Daftari Kuu">Full Ledger</div>
-          <div class="ps" data-en="All transactions — complete and unedited." data-sw="Miamala yote — kamili na bila kubadilika.">All transactions — complete and unedited.</div>
-        </div>
-        <div class="flex gap2 fw">
-          <span class="tag tg">IN <span id="lti" class="mn" style="margin-left:.25rem">0</span></span>
-          <span class="tag tr">OUT <span id="lto" class="mn" style="margin-left:.25rem">0</span></span>
-          <span class="tag ta">NET <span id="ltn" class="mn" style="margin-left:.25rem">0</span></span>
+      <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.5rem">
+        <div><div class="pt">Full Ledger</div><div class="ptsub">All transactions — unedited, timestamped.</div></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <span class="tag tg">IN <span id="lti" class="mn" style="margin-left:.2rem">0</span></span>
+          <span class="tag tr">OUT <span id="lto" class="mn" style="margin-left:.2rem">0</span></span>
+          <span class="tag ta">NET <span id="ltn" class="mn" style="margin-left:.2rem">0</span></span>
         </div>
       </div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <div class="twrap"><table class="tbl">
-          <thead><tr>
-            <th data-en="Time" data-sw="Wakati">Time</th>
-            <th data-en="Description" data-sw="Maelezo">Description</th>
-            <th class="r" data-en="In" data-sw="Inayoingia">In</th>
-            <th class="r" data-en="Out" data-sw="Inayotoka">Out</th>
-            <th class="r" data-en="By" data-sw="Na">By</th>
-            <th id="ldelth" class="r" style="display:none"></th>
-          </tr></thead>
-          <tbody id="ltbl"></tbody>
-        </table>
-        <div id="lemp" style="padding:2.25rem;text-align:center;font-size:.8rem;color:var(--txt3)" data-en="No transactions yet." data-sw="Bado hakuna miamala.">No transactions yet.</div></div>
-      </div>
+      <div class="card" style="padding:0;overflow:hidden"><div class="tw"><table class="tbl"><thead><tr><th>Time</th><th>Description</th><th class="r">In</th><th class="r">Out</th><th class="r">By</th><th id="ldth" class="r" style="display:none"></th></tr></thead><tbody id="ltbl"></tbody></table><div id="lemp" class="empty">No transactions yet.</div></div></div>
     </div>
 
-    <!-- ══ CEO ════════════════════════════════════════ -->
+    <!-- CEO -->
     <div id="page-ceo" class="page">
-      <div style="margin-bottom:1.75rem" class="flex aic jb fw gap2">
-        <div>
-          <div style="font-size:.62rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:.3rem">⚜️ Executive View</div>
-          <div class="pt">CEO Intelligence</div>
-        </div>
-        <button onclick="showClear()" class="btn-danger-lg">🗑 Clear All Data</button>
+      <div class="row rowjb rowfw" style="margin-bottom:1.5rem;gap:.75rem">
+        <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:.3rem">⚜️ Executive Access</div><div class="pt">CEO Intelligence</div></div>
+        <button onclick="showClearModal()" class="bdanger">🗑 Clear All Data</button>
       </div>
-      <!-- KPI -->
-      <div class="g4" id="kpi" style="margin-bottom:1.5rem"></div>
-      <!-- Daily target -->
-      <div class="card" style="margin-bottom:1.5rem">
-        <div class="flex aic jb" style="margin-bottom:.85rem">
-          <div>
-            <div class="sec" data-en="Daily Revenue Target" data-sw="Lengo la Mapato">Daily Revenue Target</div>
-            <div style="font-weight:700;font-size:.95rem" data-en="TSh 100,000 / day" data-sw="TSh 100,000 / siku">TSh 100,000 / day</div>
-          </div>
-          <div style="text-align:right">
-            <div class="mn" style="font-size:1.5rem;font-weight:700;color:var(--gold);line-height:1" id="dpct">0%</div>
-            <div style="font-size:.7rem;color:var(--txt3);margin-top:2px" id="damt">TSh 0 today</div>
-          </div>
+      <div class="sec">Team Performance — All Time</div>
+      <div class="g3" id="teamcards" style="margin-bottom:1.5rem"></div>
+      <div class="g21" style="margin-bottom:1.25rem">
+        <div class="card" style="padding:1.2rem">
+          <div class="sec">Staff Reports</div>
+          <div id="fblist" class="stack" style="max-height:320px;overflow-y:auto"></div>
+          <div id="fbemp" class="empty" style="font-size:.76rem">No staff reports yet.</div>
         </div>
-        <div class="prog"><div class="pfill" id="dprog" style="width:0%"></div></div>
-        <div style="font-size:.72rem;color:var(--txt3);margin-top:.5rem" id="dstat"></div>
-      </div>
-      <!-- Staff + Audit -->
-      <div class="g2" style="margin-bottom:1.25rem">
-        <div class="card" style="padding:1.25rem">
-          <div class="sec" data-en="Staff Reports" data-sw="Ripoti za Wafanyakazi">Staff Reports</div>
-          <div id="fblist" class="stack" style="max-height:340px;overflow-y:auto"></div>
-          <div id="fbemp" style="padding:2rem;text-align:center;font-size:.78rem;color:var(--txt3)" data-en="No staff reports yet." data-sw="Bado hakuna ripoti.">No staff reports yet.</div>
-        </div>
-        <div class="card" style="padding:1.25rem;overflow:hidden">
-          <div class="sec" data-en="Audit Trail" data-sw="Mkondo wa Ukaguzi">Audit Trail</div>
-          <div class="twrap" style="max-height:340px;overflow-y:auto"><table class="tbl" style="font-size:.74rem">
-            <thead><tr><th>Staff</th><th>Desc</th><th class="r">In</th><th class="r">Out</th><th class="r">Del</th></tr></thead>
-            <tbody id="atbl"></tbody>
-          </table>
-          <div id="aemp" style="padding:2rem;text-align:center;font-size:.74rem;color:var(--txt3)">No transactions yet.</div>
-          </div>
+        <div class="card" style="padding:1.2rem;overflow:hidden">
+          <div class="sec">Master Audit Trail (CEO can delete)</div>
+          <div class="tw" style="max-height:320px;overflow-y:auto"><table class="tbl" style="font-size:.73rem"><thead><tr><th>Staff</th><th>Desc</th><th class="r">In</th><th class="r">Out</th><th class="r">Del</th></tr></thead><tbody id="atbl"></tbody></table>
+          <div id="aemp" class="empty" style="font-size:.73rem">No transactions.</div></div>
         </div>
       </div>
-      <!-- Procurement summary -->
-      <div class="card" style="padding:1.25rem;overflow:hidden">
-        <div class="flex aic jb" style="margin-bottom:.85rem">
-          <div class="sec" data-en="Procurement Summary" data-sw="Muhtasari wa Ununuzi">Procurement Summary</div>
-          <span class="tag tr">Total Spend: <span id="pspend" class="mn" style="margin-left:.25rem">TSh 0</span></span>
+      <div class="card" style="padding:1.2rem;overflow:hidden">
+        <div class="row rowjb" style="margin-bottom:.85rem">
+          <div class="sec">Procurement — Full Control</div>
+          <span class="tag tr">Total Spend: <span id="pspend" class="mn" style="margin-left:.2rem">TSh 0</span></span>
         </div>
-        <div class="twrap"><table class="tbl" style="font-size:.75rem">
-          <thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">Del</th></tr></thead>
-          <tbody id="cptbl"></tbody>
-        </table>
-        <div id="cpemp" style="padding:2rem;text-align:center;font-size:.75rem;color:var(--txt3)">No procurement records.</div></div>
+        <div class="tw"><table class="tbl" style="font-size:.74rem"><thead><tr><th>Date</th><th>Item</th><th class="c">Qty</th><th class="r">Unit Price</th><th class="r">Total</th><th class="r">By</th><th class="r">Del</th></tr></thead><tbody id="cptbl"></tbody></table>
+        <div id="cpemp" class="empty" style="font-size:.74rem">No procurement records.</div></div>
       </div>
     </div>
 
-  </div><!-- /wrap -->
-  </main>
+  </div></main>
 
-  <footer>
-    <div style="font-weight:700;color:var(--gold);font-size:1.05rem;letter-spacing:-.02em">Charisma Distillers Tz Limited</div>
-    <div style="font-size:.58rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.4em;margin:.45rem 0">"Eternal Taste"</div>
-    <div style="font-size:.65rem;color:var(--txt3)">© 2026 All rights reserved.</div>
+  <footer style="text-align:center;padding:1.75rem;border-top:1px solid var(--bdr);background:var(--surf)">
+    <div style="font-weight:700;color:var(--gold);font-size:1rem;letter-spacing:-.02em">Charisma Distillers Tz Limited</div>
+    <div style="font-size:.56rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.4em;margin:.4rem 0">"Eternal Taste"</div>
+    <div style="font-size:.62rem;color:var(--txt3)">© 2026 All rights reserved.</div>
   </footer>
 </div>
 
@@ -466,376 +308,352 @@ footer{text-align:center;padding:2rem;border-top:1px solid var(--bdr);background
 <div id="cmodal" class="mbg" style="display:none">
   <div class="mbox" style="text-align:center">
     <div style="font-size:2rem;margin-bottom:.6rem">⚠️</div>
-    <div style="font-weight:700;color:var(--red);font-size:1.15rem;margin-bottom:.5rem">Clear All Data</div>
-    <p style="font-size:.82rem;color:var(--txt2);margin-bottom:1.75rem">This permanently deletes ALL transactions, procurement records and staff reports from <strong>every device</strong>. CEO action only. Cannot be undone.</p>
-    <div class="flex gap3">
-      <button onclick="hideClear()" class="btn-cancel">Cancel</button>
-      <button onclick="clearAll()" class="btn-danger-lg" style="flex:1">Yes, Delete Everything</button>
+    <div style="font-weight:700;color:var(--red);font-size:1.1rem;margin-bottom:.4rem">Clear All Data</div>
+    <p style="font-size:.8rem;color:var(--txt2);margin-bottom:1.6rem">Permanently deletes ALL transactions, procurement records and staff reports from every device. Cannot be undone.</p>
+    <div style="display:flex;gap:.75rem">
+      <button onclick="hideClearModal()" class="bgh" style="flex:1">Cancel</button>
+      <button onclick="clearAll()" class="bdanger" style="flex:1">Yes, Delete Everything</button>
     </div>
   </div>
 </div>
 
 <script>
-// ════════════════════════════════════════════════
-//  CONFIG
-// ════════════════════════════════════════════════
-// ⬇ IMPORTANT: Replace this URL with your new Google Apps Script URL
-// after deploying the updated script (see charisma-apps-script.js)
-const GS_URL = "https://script.google.com/macros/s/AKfycbwohPFYGyTaJ3ENALgLNtnusJQVoiaeYgFhXqNyrexLENb_4YIh4o8X1wx33QNPUU9w/exec";
-const DAILY  = 100000;
-const CK_T   = 'ch_tx';
-const CK_P   = 'ch_pr';
-const CK_F   = 'ch_fb';
+// ═══════════ CONFIG ═══════════════════════════════════════
+// STEP: After deploying charisma-apps-script-v3.js, replace this URL
+const GS_URL = "https://script.google.com/macros/s/AKfycbwnkgEBgTnZg0JF8r5JRjH6Qo_ZoMsysd9LQ-UphExcttwx-gAnf2VjH03CQyqNTPwndg/exec";
+const TARGET = 100000;
+const CK_T='ch3_tx',CK_P='ch3_pr',CK_F='ch3_fb';
 
-const USERS = {
-  "charisma_ceo":{ pass:"Tunaweza,2026", role:"ceo",    name:"Collins" },
-  "odriatoto":   { pass:"Tunaweza,2026", role:"worker", name:"Odria"   },
-  "berthatoto":  { pass:"Tunaweza,2026", role:"worker", name:"Bertha"  }
+const USERS={
+  "charisma_ceo":{pass:"Tunaweza,2026",role:"ceo",name:"Collins"},
+  "odriatoto":{pass:"Tunaweza,2026",role:"worker",name:"Odria"},
+  "berthatoto":{pass:"Tunaweza,2026",role:"worker",name:"Bertha"}
 };
 
-// ════════════════════════════════════════════════
-//  STATE
-// ════════════════════════════════════════════════
-let CU = null;          // current user
-let lang = 'en';
-let TX = [], PR = [], FB = [];
+const PC={
+  Collins:{bg:'rgba(96,165,250,.7)',bdr:'#60a5fa'},
+  Odria:  {bg:'rgba(245,197,24,.7)',bdr:'#f5c518'},
+  Bertha: {bg:'rgba(192,132,252,.7)',bdr:'#c084fc'}
+};
 
-// ════════════════════════════════════════════════
-//  CACHE  (localStorage as fast local mirror)
-// ════════════════════════════════════════════════
-function cacheLoad(){
-  try{TX=JSON.parse(localStorage.getItem(CK_T)||'[]');PR=JSON.parse(localStorage.getItem(CK_P)||'[]');FB=JSON.parse(localStorage.getItem(CK_F)||'[]')}
-  catch(e){TX=[];PR=[];FB=[]}
-}
-function cacheSave(){
-  try{localStorage.setItem(CK_T,JSON.stringify(TX));localStorage.setItem(CK_P,JSON.stringify(PR));localStorage.setItem(CK_F,JSON.stringify(FB))}catch(e){}
-}
+// ═══════════ STATE ════════════════════════════════════════
+let CU=null,lang='en',TX=[],PR=[],FB=[],charts={};
 
-// ════════════════════════════════════════════════
-//  SYNC STATUS
-// ════════════════════════════════════════════════
-function ss(state,txt){
-  const d=document.getElementById('sdot'),l=document.getElementById('slbl');
-  d.className='sdot'+(state==='syncing'?' syncing':state==='err'?' err':'');
-  if(l)l.textContent=txt;
-}
+// ═══════════ CACHE ════════════════════════════════════════
+function cacheLoad(){try{TX=JSON.parse(localStorage.getItem(CK_T)||'[]');PR=JSON.parse(localStorage.getItem(CK_P)||'[]');FB=JSON.parse(localStorage.getItem(CK_F)||'[]')}catch(e){TX=[];PR=[];FB=[]}}
+function cacheSave(){try{localStorage.setItem(CK_T,JSON.stringify(TX));localStorage.setItem(CK_P,JSON.stringify(PR));localStorage.setItem(CK_F,JSON.stringify(FB))}catch(e){}}
 
-// ════════════════════════════════════════════════
-//  THEME
-// ════════════════════════════════════════════════
-(function(){const t=localStorage.getItem('ch_theme')||'dark';document.documentElement.setAttribute('data-theme',t)})();
-function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('ch_theme',n)}
+// ═══════════ SYNC STATUS ══════════════════════════════════
+function setSS(st,txt){const d=document.getElementById('sdot'),l=document.getElementById('slbl');d.className='sdot'+(st==='sy'?' sy':st==='er'?' er':'');if(l)l.textContent=txt}
 
-// ════════════════════════════════════════════════
-//  LANGUAGE
-// ════════════════════════════════════════════════
-function toggleLang(){
-  lang=lang==='en'?'sw':'en';
-  document.getElementById('lbtn').textContent=lang==='en'?'SW':'EN';
-  document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+lang);if(v)el.textContent=v});
-}
+// ═══════════ THEME ════════════════════════════════════════
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('ch3_th')||'dark')})();
+function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('ch3_th',n);if(CU)setTimeout(buildCharts,50)}
 
-// ════════════════════════════════════════════════
-//  CLOCK
-// ════════════════════════════════════════════════
+// ═══════════ LANGUAGE ══════════════════════════════════════
+function toggleLang(){lang=lang==='en'?'sw':'en';document.getElementById('langbtn').textContent=lang==='en'?'SW':'EN';document.querySelectorAll('[data-en]').forEach(el=>{const v=el.getAttribute('data-'+lang);if(v)el.textContent=v})}
+
+// ═══════════ CLOCK ════════════════════════════════════════
 function tick(){const n=new Date();document.getElementById('clk').textContent=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});document.getElementById('cdt').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
 setInterval(tick,1000);tick();
 
-// ════════════════════════════════════════════════
-//  NOTIFY
-// ════════════════════════════════════════════════
-function notify(msg,type,ms=4200){
-  const a=document.getElementById('na'),d=document.createElement('div');
-  d.className='al al-'+type;d.innerHTML=msg;a.prepend(d);setTimeout(()=>d.remove(),ms);
-}
+// ═══════════ NOTIFY ═══════════════════════════════════════
+function notify(msg,type,ms=4000){const a=document.getElementById('na'),d=document.createElement('div');d.className='al a'+type;d.innerHTML=msg;a.prepend(d);setTimeout(()=>d.remove(),ms)}
 
-// ════════════════════════════════════════════════
-//  OFFLINE WATCH
-// ════════════════════════════════════════════════
-window.addEventListener('online', ()=>{document.getElementById('offb').style.display='none'});
-window.addEventListener('offline',()=>{document.getElementById('offb').style.display='flex'});
+// ═══════════ OFFLINE ══════════════════════════════════════
+window.addEventListener('online',()=>document.getElementById('offb').style.display='none');
+window.addEventListener('offline',()=>document.getElementById('offb').style.display='flex');
 
-// ════════════════════════════════════════════════
-//  GOOGLE SHEETS — FETCH ALL
-//  Reads live data from Sheets so all devices stay in sync
-// ════════════════════════════════════════════════
-async function fetchFromSheets(){
-  ss('syncing','Loading…');
+// ═══════════ FETCH FROM SHEETS (with timeout) ═════════════
+async function fetchSheets(){
+  setSS('sy','Loading…');
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),8000);
   try{
-    const r=await fetch(GS_URL+'?action=getAll',{cache:'no-store'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
+    const r=await fetch(GS_URL+'?action=getAll',{cache:'no-store',signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const d=await r.json();
-    if(Array.isArray(d.transactions)) TX=d.transactions;
-    if(Array.isArray(d.procurements)) PR=d.procurements;
-    if(Array.isArray(d.feedbacks))    FB=d.feedbacks;
-    cacheSave();
-    ss('','Synced');
-    return true;
-  }catch(e){
-    console.warn('[Charisma] Sheets GET failed:',e.message);
-    ss('err','Offline');
-    document.getElementById('offb').style.display='flex';
-    return false;
-  }
+    if(d.error)throw new Error(d.error);
+    if(Array.isArray(d.transactions))TX=d.transactions;
+    if(Array.isArray(d.procurements))PR=d.procurements;
+    if(Array.isArray(d.feedbacks))FB=d.feedbacks;
+    cacheSave();setSS('','Synced');return true;
+  }catch(e){clearTimeout(timer);console.warn('[Charisma]',e.message);setSS('er','Offline');document.getElementById('offb').style.display='flex';return false}
 }
 
-// ════════════════════════════════════════════════
-//  GOOGLE SHEETS — POST COMMAND
-// ════════════════════════════════════════════════
-function post(payload){
-  ss('syncing','Saving…');
-  fetch(GS_URL,{method:'POST',body:JSON.stringify(payload)})
-    .then(r=>r.json())
-    .then(()=>ss('','Synced'))
-    .catch(e=>{console.warn('[Charisma] POST failed:',e.message);ss('err','Sync failed')});
-}
+// ═══════════ POST TO SHEETS ═══════════════════════════════
+function post(p){setSS('sy','Saving…');fetch(GS_URL,{method:'POST',body:JSON.stringify(p)}).then(r=>r.json()).then(()=>setSS('','Synced')).catch(e=>{console.warn('[Charisma]',e.message);setSS('er','Sync failed')})}
 
-// ════════════════════════════════════════════════
-//  LOGIN
-// ════════════════════════════════════════════════
-async function login(){
+// ═══════════ LOGIN — INSTANT, NEVER HANGS ════════════════
+// Validates credentials client-side immediately.
+// App shows RIGHT AWAY. Sheets sync happens in background.
+function login(){
   const u=document.getElementById('un').value.trim().toLowerCase();
   const p=document.getElementById('pw').value.trim();
   const ae=document.getElementById('la');ae.innerHTML='';
-  if(!USERS[u]||USERS[u].pass!==p){ae.innerHTML='<div class="al al-err">Access Denied: Invalid credentials.</div>';return}
+  if(!USERS[u]||USERS[u].pass!==p){ae.innerHTML='<div class="al aerr">❌ Access Denied: Invalid credentials.</div>';return}
   CU=USERS[u];
-
-  document.getElementById('ls').style.display='none';
-  const app=document.getElementById('app');app.style.display='flex';
-  document.getElementById('ud').textContent=`Auth: ${CU.name} · ${CU.role.toUpperCase()}`;
+  const btn=document.getElementById('loginbtn');btn.textContent='Loading…';btn.disabled=true;
+  document.getElementById('ud').textContent='Auth: '+CU.name+' · '+CU.role.toUpperCase();
   if(CU.role==='ceo'){
     document.getElementById('nb-ceo').style.display='flex';
+    document.getElementById('wfbd').style.display='none';
     document.getElementById('wfb').style.display='none';
-    document.getElementById('wfb2').style.display='none';
-    document.getElementById('ldelth').style.display='table-cell';
-    document.getElementById('pdelth').style.display='table-cell';
+    document.getElementById('ldth').style.display='table-cell';
+    document.getElementById('pdth').style.display='table-cell';
+  } else {
+    document.getElementById('wbanner').style.display='flex';
+    document.getElementById('wbav').textContent=CU.name[0];
+    document.getElementById('wbname').textContent=CU.name;
+    const c={Collins:'#60a5fa',Odria:'#f5c518',Bertha:'#c084fc'};
+    document.getElementById('wbav').style.background=c[CU.name]||'var(--gold)';
   }
-  // Render cache immediately so UI isn't blank
-  cacheLoad(); showPage('cash'); renderAll();
-  // Then fetch live data from Google Sheets
-  notify('🔄 Connecting to cloud database…','info',6000);
-  const ok=await fetchFromSheets();
-  renderAll();
-  if(ok) notify('✓ Data loaded from cloud. All devices in sync.','ok');
-  else   notify('⚠️ Could not reach cloud — showing cached data.','warn',7000);
+  cacheLoad();
+  document.getElementById('ls').style.display='none';
+  const app=document.getElementById('app');app.style.display='flex';
+  showPage('dash');renderAll();
+  notify('🔄 Connecting to cloud database…','info',5000);
+  fetchSheets().then(ok=>{renderAll();if(ok)notify('✓ All data loaded. Every device is in sync.','ok');else notify('⚠️ Cloud unavailable — showing cached data.','warn',6000)});
 }
 document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
 
-// ════════════════════════════════════════════════
-//  SIDEBAR / PAGES
-// ════════════════════════════════════════════════
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+// ═══════════ NAVIGATION ═══════════════════════════════════
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open')}
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   document.getElementById('page-'+p).classList.add('on');
   document.querySelectorAll('.nl').forEach(x=>x.classList.remove('on'));
   const nb=document.getElementById('nb-'+p);if(nb)nb.classList.add('on');
   if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');
+  if(p==='dash'){buildCharts();renderRecent()}
   if(p==='ledg')renderLedger();
   if(p==='ceo')renderCEO();
   if(p==='proc')renderProc();
 }
 
-// ════════════════════════════════════════════════
-//  NET PREVIEW
-// ════════════════════════════════════════════════
-function previewNet(){
-  const i=parseFloat(document.getElementById('recpt').value)||0;
-  const o=parseFloat(document.getElementById('paym').value)||0;
-  const n=i-o,el=document.getElementById('netp');
-  el.textContent='TSh '+n.toLocaleString();
-  el.style.color=n>=0?'var(--green)':'var(--red)';
-}
-
-// ════════════════════════════════════════════════
-//  ADD TRANSACTION
-// ════════════════════════════════════════════════
+// ═══════════ CASH BOOK ════════════════════════════════════
+function prevNet(){const i=parseFloat(document.getElementById('ri').value)||0,o=parseFloat(document.getElementById('ro').value)||0,n=i-o,el=document.getElementById('netp');el.textContent='TSh '+n.toLocaleString();el.style.color=n>=0?'var(--green)':'var(--red)'}
 function addTx(){
   const desc=document.getElementById('desc').value.trim();
-  const rin=parseFloat(document.getElementById('recpt').value)||0;
-  const rout=parseFloat(document.getElementById('paym').value)||0;
+  const rin=parseFloat(document.getElementById('ri').value)||0;
+  const rout=parseFloat(document.getElementById('ro').value)||0;
   if(!desc){notify('⚠️ Description is required.','err');return}
   if(!rin&&!rout){notify('⚠️ Enter at least one amount.','err');return}
   const e={id:Date.now().toString(),date:new Date().toISOString(),user:CU.name,desc,receipt:rin,payment:rout};
-  TX.unshift(e); cacheSave(); post({type:'transaction',...e});
-  document.getElementById('desc').value='';
-  document.getElementById('recpt').value='';
-  document.getElementById('paym').value='';
-  previewNet(); renderRecent();
-  if(document.getElementById('page-ledg').classList.contains('on'))renderLedger();
-  if(document.getElementById('page-ceo').classList.contains('on'))renderCEO();
-  notify('✓ Entry saved: "'+desc+'"','ok');
+  TX.unshift(e);cacheSave();post({type:'transaction',...e});
+  document.getElementById('desc').value='';document.getElementById('ri').value='';document.getElementById('ro').value='';
+  prevNet();renderAll();notify('✓ Entry saved: "'+desc+'"','ok');
 }
 
-// ════════════════════════════════════════════════
-//  PROCUREMENT CALC
-// ════════════════════════════════════════════════
-function calcProc(){
-  const q=parseFloat(document.getElementById('pq').value)||0;
-  const p=parseFloat(document.getElementById('pp').value)||0;
-  const u=document.getElementById('pu').value;
-  document.getElementById('cq').textContent=q+' '+u;
-  document.getElementById('cup').textContent='TSh '+p.toLocaleString();
-  document.getElementById('ctot').textContent='TSh '+(q*p).toLocaleString();
-}
-
-// ════════════════════════════════════════════════
-//  ADD PROCUREMENT
-// ════════════════════════════════════════════════
+// ═══════════ PROCUREMENT ══════════════════════════════════
+function calcP(){const q=parseFloat(document.getElementById('pq').value)||0,p=parseFloat(document.getElementById('pp').value)||0,u=document.getElementById('pu').value;document.getElementById('cq').textContent=q+' '+u;document.getElementById('cu').textContent='TSh '+p.toLocaleString();document.getElementById('ct').textContent='TSh '+(q*p).toLocaleString()}
 function addProc(){
   const item=document.getElementById('pi').value.trim();
-  const sup=document.getElementById('ps').value.trim();
-  const notes=document.getElementById('pn').value.trim();
+  const sup=document.getElementById('psup').value.trim();
+  const notes=document.getElementById('pnotes').value.trim();
   const qty=parseFloat(document.getElementById('pq').value)||0;
   const unit=document.getElementById('pu').value;
   const up=parseFloat(document.getElementById('pp').value)||0;
-  if(!item){notify('⚠️ Item name is required.','err');return}
+  if(!item){notify('⚠️ Item name required.','err');return}
   if(qty<=0){notify('⚠️ Quantity must be > 0.','err');return}
   if(up<=0){notify('⚠️ Unit price must be > 0.','err');return}
   const e={id:Date.now().toString(),date:new Date().toISOString(),user:CU.name,item,supplier:sup,notes,qty,unit,unitPrice:up,total:qty*up};
-  PR.unshift(e); cacheSave(); post({type:'procurement',...e});
-  document.getElementById('pi').value='';document.getElementById('ps').value='';
-  document.getElementById('pn').value='';document.getElementById('pq').value='';
-  document.getElementById('pp').value='';calcProc();renderProc();
-  if(document.getElementById('page-ceo').classList.contains('on'))renderCEO();
-  notify('✓ Purchase recorded: '+qty+' '+unit+' of '+item+' — TSh '+e.total.toLocaleString(),'ok');
+  PR.unshift(e);cacheSave();post({type:'procurement',...e});
+  ['pi','psup','pnotes','pq','pp'].forEach(id=>document.getElementById(id).value='');
+  calcP();renderProc();notify('✓ Purchase: '+qty+' '+unit+' of '+item+' — TSh '+e.total.toLocaleString(),'ok');
 }
 
-// ════════════════════════════════════════════════
-//  STAFF REPORT
-// ════════════════════════════════════════════════
-function sendReport(){
-  const txt=document.getElementById('sug').value.trim();if(!txt)return;
-  const e={user:CU.name,text:txt,time:new Date().toLocaleString()};
-  FB.unshift(e);cacheSave();post({type:'feedback',...e});
-  document.getElementById('sug').value='';
-  notify('✓ Report sent to Management.','info');
-}
+// ═══════════ STAFF REPORT ═════════════════════════════════
+function sendReport(){const txt=document.getElementById('sug').value.trim();if(!txt)return;const e={id:Date.now().toString(),user:CU.name,text:txt,time:new Date().toLocaleString()};FB.unshift(e);cacheSave();post({type:'feedback',...e});document.getElementById('sug').value='';notify('✓ Report sent to Management.','info')}
 
-// ════════════════════════════════════════════════
-//  DELETE (CEO ONLY)
-// ════════════════════════════════════════════════
+// ═══════════ DELETE / CLEAR (CEO ONLY) ════════════════════
 function delTx(id){if(CU.role!=='ceo')return;TX=TX.filter(t=>t.id!==id);cacheSave();post({type:'delete_transaction',id});renderAll();notify('🗑 Transaction deleted.','info')}
-function delPr(id){if(CU.role!=='ceo')return;PR=PR.filter(p=>p.id!==id);cacheSave();post({type:'delete_procurement',id});renderProc();renderCEO();notify('🗑 Procurement entry deleted.','info')}
-function showClear(){document.getElementById('cmodal').style.display='flex'}
-function hideClear(){document.getElementById('cmodal').style.display='none'}
-function clearAll(){
-  if(CU.role!=='ceo')return;
-  TX=[];PR=[];FB=[];cacheSave();
-  post({type:'clear_all'});
-  hideClear();renderAll();
-  notify('🗑 All data cleared by CEO across all devices.','info',7000);
+function delPr(id){if(CU.role!=='ceo')return;PR=PR.filter(p=>p.id!==id);cacheSave();post({type:'delete_procurement',id});renderProc();renderCEO();notify('🗑 Procurement deleted.','info')}
+function showClearModal(){document.getElementById('cmodal').style.display='flex'}
+function hideClearModal(){document.getElementById('cmodal').style.display='none'}
+function clearAll(){if(CU.role!=='ceo')return;TX=[];PR=[];FB=[];cacheSave();post({type:'clear_all'});hideClearModal();renderAll();notify('🗑 All data cleared by CEO.','info',6000)}
+function doRefresh(){notify('🔄 Refreshing…','info',3000);fetchSheets().then(ok=>{renderAll();if(ok)notify('✓ Refreshed.','ok')})}
+
+// ═══════════════════════════════════════════════════════════
+//  CHARTS
+// ═══════════════════════════════════════════════════════════
+function gcd(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  return{tc:dark?'#8888aa':'#4a4860',gc:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)',
+         tb:dark?'rgba(13,13,34,.92)':'rgba(255,255,255,.96)',ttx:dark?'#eeeefc':'#18182e',tbdr:dark?'rgba(255,255,255,.1)':'rgba(0,0,0,.1)'}
+}
+function mkScales(fmt){const c=gcd();return{x:{ticks:{color:c.tc,font:{family:'Ubuntu',size:10}},grid:{color:c.gc},border:{color:'transparent'}},y:{ticks:{color:c.tc,font:{family:'Ubuntu',size:10},callback:v=>fmt?'TSh '+(v>=1000?(v/1000).toFixed(0)+'k':v):v},grid:{color:c.gc},border:{color:'transparent'}}}}
+function mkTip(){const c=gcd();return{backgroundColor:c.tb,titleColor:c.tc,bodyColor:c.ttx,borderColor:c.tbdr,borderWidth:1,padding:10,callbacks:{label:ctx=>' TSh '+Math.round(ctx.parsed.y).toLocaleString()}}}
+function dChart(k){if(charts[k]){charts[k].destroy();charts[k]=null}}
+
+function buildCharts(){
+  buildWeekly();buildPerson();
+  if(CU&&CU.role==='ceo'){document.getElementById('ch-row2').style.display='grid';buildMonthly();build3M()}
+  updateKPI();renderRecent();
 }
 
-// ════════════════════════════════════════════════
+function buildWeekly(){
+  dChart('weekly');
+  const ctx=document.getElementById('ch-weekly').getContext('2d');
+  const labels=[],rev=[],exp=[];
+  const uf=CU.role==='ceo'?null:CU.name;
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();
+    const dtx=TX.filter(t=>new Date(t.date).toDateString()===ds&&(!uf||t.user===uf));
+    labels.push(d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric'}));
+    rev.push(dtx.reduce((s,t)=>s+(t.receipt||0),0));
+    exp.push(dtx.reduce((s,t)=>s+(t.payment||0),0));
+  }
+  charts.weekly=new Chart(ctx,{type:'line',data:{labels,datasets:[
+    {label:'Revenue',data:rev,borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.12)',fill:true,tension:.4,pointRadius:4,pointHoverRadius:6},
+    {label:'Expenses',data:exp,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,.12)',fill:true,tension:.4,pointRadius:4,pointHoverRadius:6}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:gcd().tc,font:{family:'Ubuntu',size:11}}},tooltip:mkTip()},scales:mkScales(true),interaction:{mode:'index',intersect:false}}});
+}
+
+function buildPerson(){
+  dChart('person');
+  const ctx=document.getElementById('ch-person').getContext('2d');
+  const people=['Collins','Odria','Bertha'];
+  const sales=people.map(n=>TX.filter(t=>t.user===n).reduce((s,t)=>s+(t.receipt||0),0));
+  const exps=people.map(n=>TX.filter(t=>t.user===n).reduce((s,t)=>s+(t.payment||0),0));
+  charts.person=new Chart(ctx,{type:'bar',data:{labels:people,datasets:[
+    {label:'Sales',data:sales,backgroundColor:people.map(n=>PC[n]?.bg||'rgba(200,200,200,.6)'),borderColor:people.map(n=>PC[n]?.bdr||'#ccc'),borderWidth:2,borderRadius:6},
+    {label:'Expenses',data:exps,backgroundColor:'rgba(248,113,113,.5)',borderColor:'#f87171',borderWidth:2,borderRadius:6}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:gcd().tc,font:{family:'Ubuntu',size:11}}},tooltip:mkTip()},scales:mkScales(true)}});
+}
+
+function buildMonthly(){
+  dChart('monthly');
+  const ctx=document.getElementById('ch-monthly').getContext('2d');
+  const labels=[],rev=[],net=[];
+  for(let i=29;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();
+    const dtx=TX.filter(t=>new Date(t.date).toDateString()===ds);
+    const r=dtx.reduce((s,t)=>s+(t.receipt||0),0),e=dtx.reduce((s,t)=>s+(t.payment||0),0);
+    if(i%3===0||i===0){labels.push(d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}));rev.push(r);net.push(r-e)}
+  }
+  charts.monthly=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'Revenue',data:rev,backgroundColor:'rgba(245,197,24,.65)',borderColor:'#f5c518',borderWidth:1,borderRadius:4},
+    {label:'Net',data:net,type:'line',borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.1)',fill:true,tension:.4,pointRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:gcd().tc,font:{family:'Ubuntu',size:11}}},tooltip:mkTip()},scales:mkScales(true)}});
+}
+
+function build3M(){
+  dChart('3m');
+  const ctx=document.getElementById('ch-3m').getContext('2d');
+  const labels=[],cd=[],od=[],bd=[];
+  for(let w=11;w>=0;w--){
+    const ws=new Date();ws.setDate(ws.getDate()-(w*7+6));
+    const we=new Date();we.setDate(we.getDate()-(w*7));
+    const wtx=TX.filter(t=>{const td=new Date(t.date);return td>=ws&&td<=we});
+    labels.push('Wk '+(12-w));
+    cd.push(wtx.filter(t=>t.user==='Collins').reduce((s,t)=>s+(t.receipt||0),0));
+    od.push(wtx.filter(t=>t.user==='Odria').reduce((s,t)=>s+(t.receipt||0),0));
+    bd.push(wtx.filter(t=>t.user==='Bertha').reduce((s,t)=>s+(t.receipt||0),0));
+  }
+  charts['3m']=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'Collins',data:cd,backgroundColor:'rgba(96,165,250,.7)',borderRadius:4},
+    {label:'Odria',data:od,backgroundColor:'rgba(245,197,24,.7)',borderRadius:4},
+    {label:'Bertha',data:bd,backgroundColor:'rgba(192,132,252,.7)',borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:gcd().tc,font:{family:'Ubuntu',size:11}}},tooltip:mkTip()},scales:{...mkScales(true),x:{...mkScales(true).x,stacked:true},y:{...mkScales(true).y,stacked:true}}}});
+}
+
+// ═══════════════════════════════════════════════════════════
+//  KPI CARDS
+// ═══════════════════════════════════════════════════════════
+function updateKPI(){
+  if(!CU)return;
+  const today=new Date().toDateString();
+  const uf=CU.role==='ceo'?null:CU.name;
+  const myTX=uf?TX.filter(t=>t.user===uf):TX;
+  const todayTX=myTX.filter(t=>new Date(t.date).toDateString()===today);
+  const tIn=myTX.reduce((s,t)=>s+(t.receipt||0),0);
+  const tOut=myTX.reduce((s,t)=>s+(t.payment||0),0);
+  const todIn=todayTX.reduce((s,t)=>s+(t.receipt||0),0);
+  const todOut=todayTX.reduce((s,t)=>s+(t.payment||0),0);
+  const net=tIn-tOut;
+  if(CU.role!=='ceo')document.getElementById('wbtoday').textContent='TSh '+todIn.toLocaleString();
+  const pct=Math.min((todIn/TARGET)*100,100).toFixed(0);
+  document.getElementById('dprog').style.width=pct+'%';
+  document.getElementById('dpct').textContent=pct+'%';
+  document.getElementById('damt').textContent='TSh '+todIn.toLocaleString()+' today';
+  const rem=TARGET-todIn;
+  document.getElementById('dstat').textContent=rem>0?'TSh '+rem.toLocaleString()+' remaining to reach daily target':'🎯 Daily target reached!';
+  const h=new Date().getHours();
+  const g=h<12?'Good morning, ':h<17?'Good afternoon, ':'Good evening, ';
+  document.getElementById('dsub').textContent=g+CU.name+'. Here is your financial overview.';
+  document.getElementById('kpi').innerHTML=`
+    <div class="stat"><div class="slbl">${uf?'My ':'All-Team '}Today Sales</div><div class="sv" style="color:var(--green)">TSh ${todIn.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:var(--txt3)">${todayTX.length} transaction${todayTX.length!==1?'s':''}</div></div>
+    <div class="stat"><div class="slbl">${uf?'My ':'All-Team '}Today Expenses</div><div class="sv" style="color:var(--red)">TSh ${todOut.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:${todIn-todOut>=0?'var(--green)':'var(--red)'}">Net: TSh ${(todIn-todOut).toLocaleString()}</div></div>
+    <div class="stat" style="border-color:rgba(245,197,24,.2)"><div class="slbl" style="color:var(--gold)">Total Net Reserve</div><div class="sv" style="color:${net>=0?'var(--green)':'var(--red)'}">TSh ${net.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:var(--txt3)">All time</div></div>
+    <div class="stat"><div class="slbl">Total Inflows</div><div class="sv" style="color:var(--blue)">TSh ${tIn.toLocaleString()}</div><div style="font-size:.7rem;margin-top:.3rem;color:var(--txt3)">${myTX.length} total entries</div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
 //  RENDER
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 function fd(iso){const d=new Date(iso);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
-function renderAll(){renderRecent();renderLedger();renderProc();if(CU&&CU.role==='ceo')renderCEO()}
+function pb(name){const cls={Collins:'pbc',Odria:'pbo',Bertha:'pbb'}[name]||'ta';return`<span class="pbadge ${cls}">${name}</span>`}
+function renderAll(){updateKPI();if(document.getElementById('page-dash').classList.contains('on')){buildCharts();renderRecent()}renderLedger();renderProc();if(CU&&CU.role==='ceo')renderCEO()}
 
 function renderRecent(){
   const today=new Date().toDateString();
-  const list=TX.filter(t=>new Date(t.date).toDateString()===today);
+  const uf=CU&&CU.role==='ceo'?null:CU?.name;
+  const list=(uf?TX.filter(t=>t.user===uf):TX).filter(t=>new Date(t.date).toDateString()===today);
   const el=document.getElementById('rentries');
-  if(!list.length){el.innerHTML='<div style="font-size:.78rem;color:var(--txt3);padding:.75rem 0" data-en="No entries today yet." data-sw="Bado hakuna ingizo la leo.">No entries today yet.</div>';return}
-  el.innerHTML=list.slice(0,6).map(t=>`
-    <div class="rentry">
-      <div class="re-inf"><div class="re-d">${t.desc}</div><div class="re-m">${t.user} · ${fd(t.date)}</div></div>
-      <div class="re-a">
-        ${t.receipt>0?`<span class="tag tg mn">+${t.receipt.toLocaleString()}</span>`:''}
-        ${t.payment>0?`<span class="tag tr mn">-${t.payment.toLocaleString()}</span>`:''}
-      </div>
-    </div>`).join('');
+  if(!list.length){el.innerHTML='<div style="font-size:.76rem;color:var(--txt3);padding:.75rem 0">No activity today yet.</div>';return}
+  el.innerHTML=list.slice(0,8).map(t=>`<div class="re"><div class="ri"><div class="rd">${t.desc}</div><div class="rm">${t.user} · ${fd(t.date)}</div></div><div class="ra">${t.receipt>0?`<span class="tag tg mn">+${t.receipt.toLocaleString()}</span>`:''}${t.payment>0?`<span class="tag tr mn">-${t.payment.toLocaleString()}</span>`:''}</div></div>`).join('');
+  // Also show in cash book today list
+  const ce=document.getElementById('celist');if(ce)ce.innerHTML=el.innerHTML;
 }
 
 function renderLedger(){
   const tb=document.getElementById('ltbl'),ep=document.getElementById('lemp');
   const isCEO=CU&&CU.role==='ceo';
-  let tI=0,tO=0;TX.forEach(t=>{tI+=t.receipt;tO+=t.payment});
+  let tI=0,tO=0;TX.forEach(t=>{tI+=t.receipt||0;tO+=t.payment||0});
   document.getElementById('lti').textContent=tI.toLocaleString();
   document.getElementById('lto').textContent=tO.toLocaleString();
-  const n=tI-tO,ne=document.getElementById('ltn');
-  ne.textContent=n.toLocaleString();ne.style.color=n>=0?'var(--green)':'var(--red)';
-  if(!TX.length){tb.innerHTML='';ep.style.display='block';return}
-  ep.style.display='none';
-  tb.innerHTML=TX.map(t=>`<tr>
-    <td class="dim mn" style="white-space:nowrap">${fd(t.date)}</td>
-    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.desc}</td>
-    <td class="r mn" style="color:var(--green)">${t.receipt>0?t.receipt.toLocaleString():'—'}</td>
-    <td class="r mn" style="color:var(--red)">${t.payment>0?t.payment.toLocaleString():'—'}</td>
-    <td class="r"><span class="tag ta">${t.user}</span></td>
-    ${isCEO?`<td class="r"><button class="btn-del" onclick="delTx('${t.id}')">del</button></td>`:''}
-  </tr>`).join('');
+  const n=tI-tO,ne=document.getElementById('ltn');ne.textContent=n.toLocaleString();ne.style.color=n>=0?'var(--green)':'var(--red)';
+  if(!TX.length){tb.innerHTML='';ep.style.display='block';return}ep.style.display='none';
+  tb.innerHTML=TX.map(t=>`<tr><td class="dim mn" style="white-space:nowrap">${fd(t.date)}</td><td><div class="ell">${t.desc}</div></td><td class="r mn" style="color:var(--green)">${t.receipt>0?t.receipt.toLocaleString():'—'}</td><td class="r mn" style="color:var(--red)">${t.payment>0?t.payment.toLocaleString():'—'}</td><td class="r">${pb(t.user)}</td>${isCEO?`<td class="r"><button class="bdel" onclick="delTx('${t.id}')">del</button></td>`:''}</tr>`).join('');
 }
 
 function renderProc(){
   const tb=document.getElementById('ptbl'),ep=document.getElementById('pemp');
   const isCEO=CU&&CU.role==='ceo';
-  if(!PR.length){tb.innerHTML='';ep.style.display='block';return}
-  ep.style.display='none';
-  tb.innerHTML=PR.map(p=>`<tr>
-    <td class="dim mn" style="white-space:nowrap;font-size:.7rem">${fd(p.date)}</td>
-    <td><div style="font-weight:500">${p.item}</div>
-        ${p.supplier?`<div style="font-size:.7rem;color:var(--txt3)">${p.supplier}</div>`:''}
-        ${p.notes?`<div style="font-size:.64rem;color:var(--txt3);font-style:italic">${p.notes}</div>`:''}</td>
-    <td class="c mn">${p.qty} ${p.unit}</td>
-    <td class="r mn" style="color:var(--txt2)">TSh ${p.unitPrice.toLocaleString()}</td>
-    <td class="r mn" style="color:var(--red);font-weight:700">TSh ${p.total.toLocaleString()}</td>
-    <td class="r"><span class="tag ta">${p.user}</span></td>
-    ${isCEO?`<td class="r"><button class="btn-del" onclick="delPr('${p.id}')">del</button></td>`:''}
-  </tr>`).join('');
+  if(!PR.length){tb.innerHTML='';ep.style.display='block';return}ep.style.display='none';
+  tb.innerHTML=PR.map(p=>`<tr><td class="dim mn" style="white-space:nowrap;font-size:.68rem">${fd(p.date)}</td><td><div style="font-weight:500">${p.item}</div>${p.supplier?`<div style="font-size:.68rem;color:var(--txt3)">${p.supplier}</div>`:''}${p.notes?`<div style="font-size:.62rem;color:var(--txt3);font-style:italic">${p.notes}</div>`:''}</td><td class="c mn">${p.qty} ${p.unit}</td><td class="r mn" style="color:var(--txt2)">TSh ${(p.unitPrice||0).toLocaleString()}</td><td class="r mn" style="color:var(--red);font-weight:700">TSh ${(p.total||0).toLocaleString()}</td><td class="r">${pb(p.user)}</td>${isCEO?`<td class="r"><button class="bdel" onclick="delPr('${p.id}')">del</button></td>`:''}</tr>`).join('');
 }
 
 function renderCEO(){
   if(!CU||CU.role!=='ceo')return;
-  let tI=0,tO=0,todI=0,ps=0;
-  const today=new Date().toDateString();
-  TX.forEach(t=>{tI+=t.receipt;tO+=t.payment;if(new Date(t.date).toDateString()===today)todI+=t.receipt});
-  PR.forEach(p=>ps+=p.total);
-  const net=tI-tO;
-  // KPI
-  document.getElementById('kpi').innerHTML=`
-    <div class="stat"><div class="stat-lbl">Total Inflows</div><div class="stat-v" style="color:var(--green)">TSh ${tI.toLocaleString()}</div></div>
-    <div class="stat"><div class="stat-lbl">Total Expenses</div><div class="stat-v" style="color:var(--red)">TSh ${tO.toLocaleString()}</div></div>
-    <div class="stat" style="border-color:rgba(245,197,24,.2)"><div class="stat-lbl" style="color:var(--gold)">Net Reserve</div><div class="stat-v" style="color:${net>=0?'var(--green)':'var(--red)'}">TSh ${net.toLocaleString()}</div></div>
-    <div class="stat"><div class="stat-lbl">Procurement Spend</div><div class="stat-v" style="color:var(--blue)">TSh ${ps.toLocaleString()}</div></div>`;
-  // Daily
-  const pct=Math.min((todI/DAILY)*100,100).toFixed(0);
-  document.getElementById('dprog').style.width=pct+'%';
-  document.getElementById('dpct').textContent=pct+'%';
-  document.getElementById('damt').textContent='TSh '+todI.toLocaleString()+' today';
-  const rem=DAILY-todI;
-  document.getElementById('dstat').textContent=rem>0?'TSh '+rem.toLocaleString()+' remaining to hit daily target':'🎯 Daily target reached!';
-  // Audit trail
-  const atb=document.getElementById('atbl');
-  document.getElementById('aemp').style.display=TX.length?'none':'block';
-  atb.innerHTML=TX.map(t=>`<tr>
-    <td style="padding:.55rem .5rem"><span class="tag ta">${t.user}</span></td>
-    <td style="padding:.55rem .5rem;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt2);font-size:.73rem">${t.desc}</td>
-    <td class="r mn" style="padding:.55rem .5rem;color:var(--green)">${t.receipt>0?t.receipt.toLocaleString():'—'}</td>
-    <td class="r mn" style="padding:.55rem .5rem;color:var(--red)">${t.payment>0?t.payment.toLocaleString():'—'}</td>
-    <td class="r" style="padding:.55rem .5rem"><button class="btn-del" onclick="delTx('${t.id}')">del</button></td>
-  </tr>`).join('');
-  // Procurement
+  const people=['Collins','Odria','Bertha'];
+  const pcolors={Collins:'96,165,250',Odria:'245,197,24',Bertha:'192,132,252'};
+  const pnames={Collins:'CEO',Odria:'Seller',Bertha:'Production'};
+  document.getElementById('teamcards').innerHTML=people.map(name=>{
+    const ptx=TX.filter(t=>t.user===name);
+    const tin=ptx.reduce((s,t)=>s+(t.receipt||0),0);
+    const tout=ptx.reduce((s,t)=>s+(t.payment||0),0);
+    const ppr=PR.filter(p=>p.user===name);
+    const psp=ppr.reduce((s,p)=>s+(p.total||0),0);
+    const today=new Date().toDateString();
+    const todIn=ptx.filter(t=>new Date(t.date).toDateString()===today).reduce((s,t)=>s+(t.receipt||0),0);
+    const cc=pcolors[name];
+    return`<div class="stat" style="border-color:rgba(${cc},.2)"><div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem"><div style="width:40px;height:40px;border-radius:50%;background:rgba(${cc},.8);display:flex;align-items:center;justify-content:center;font-weight:700;color:#000;font-size:.9rem;flex-shrink:0">${name[0]}</div><div><div style="font-weight:700;font-size:.9rem;color:rgba(${cc},1)">${name}</div><div style="font-size:.6rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em">${pnames[name]}</div></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem"><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Today</div><div class="mn" style="color:var(--green);font-weight:700;font-size:.9rem">TSh ${todIn.toLocaleString()}</div></div><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">All-Time In</div><div class="mn" style="color:var(--txt);font-weight:700;font-size:.9rem">TSh ${tin.toLocaleString()}</div></div><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Expenses</div><div class="mn" style="color:var(--red);font-weight:700;font-size:.9rem">TSh ${tout.toLocaleString()}</div></div><div><div style="font-size:.55rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem">Procurement</div><div class="mn" style="color:var(--blue);font-weight:700;font-size:.9rem">TSh ${psp.toLocaleString()}</div></div></div></div>`;
+  }).join('');
+
+  const atb=document.getElementById('atbl');document.getElementById('aemp').style.display=TX.length?'none':'block';
+  atb.innerHTML=TX.map(t=>`<tr><td style="padding:.5rem .5rem">${pb(t.user)}</td><td style="padding:.5rem .5rem;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt2);font-size:.72rem">${t.desc}</td><td class="r mn" style="padding:.5rem .5rem;color:var(--green);font-size:.72rem">${t.receipt>0?t.receipt.toLocaleString():'—'}</td><td class="r mn" style="padding:.5rem .5rem;color:var(--red);font-size:.72rem">${t.payment>0?t.payment.toLocaleString():'—'}</td><td class="r" style="padding:.5rem .5rem"><button class="bdel" onclick="delTx('${t.id}')">del</button></td></tr>`).join('');
+
   const cptb=document.getElementById('cptbl');
-  document.getElementById('cpemp').style.display=PR.length?'none':'block';
+  let ps=0;PR.forEach(p=>ps+=p.total||0);
   document.getElementById('pspend').textContent='TSh '+ps.toLocaleString();
-  cptb.innerHTML=PR.map(p=>`<tr>
-    <td class="dim mn" style="white-space:nowrap;font-size:.69rem">${fd(p.date)}</td>
-    <td style="font-weight:500">${p.item}${p.supplier?`<div style="font-size:.65rem;color:var(--txt3)">${p.supplier}</div>`:''}</td>
-    <td class="c mn">${p.qty} ${p.unit}</td>
-    <td class="r mn">TSh ${p.unitPrice.toLocaleString()}</td>
-    <td class="r mn" style="color:var(--red);font-weight:700">TSh ${p.total.toLocaleString()}</td>
-    <td class="r"><button class="btn-del" onclick="delPr('${p.id}')">del</button></td>
-  </tr>`).join('');
-  // Feedback
-  const fl=document.getElementById('fblist');
-  document.getElementById('fbemp').style.display=FB.length?'none':'block';
-  fl.innerHTML=FB.map(f=>`
-    <div class="fbcard">
-      <div class="fbmeta"><span class="tag ta">${f.user}</span><span style="font-size:.6rem;color:var(--txt3)">${f.time}</span></div>
-      <div class="fbtext">${f.text}</div>
-    </div>`).join('');
+  document.getElementById('cpemp').style.display=PR.length?'none':'block';
+  cptb.innerHTML=PR.map(p=>`<tr><td class="dim mn" style="white-space:nowrap;font-size:.68rem">${fd(p.date)}</td><td style="font-weight:500">${p.item}${p.supplier?`<div style="font-size:.64rem;color:var(--txt3)">${p.supplier}</div>`:''}</td><td class="c mn">${p.qty} ${p.unit}</td><td class="r mn">TSh ${(p.unitPrice||0).toLocaleString()}</td><td class="r mn" style="color:var(--red);font-weight:700">TSh ${(p.total||0).toLocaleString()}</td><td class="r">${pb(p.user)}</td><td class="r"><button class="bdel" onclick="delPr('${p.id}')">del</button></td></tr>`).join('');
+
+  const fl=document.getElementById('fblist');document.getElementById('fbemp').style.display=FB.length?'none':'block';
+  fl.innerHTML=FB.map(f=>`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:.9rem;padding:.85rem 1rem"><div style="display:flex;justify-content:space-between;margin-bottom:.35rem">${pb(f.user)}<span style="font-size:.58rem;color:var(--txt3)">${f.time}</span></div><div style="font-size:.76rem;color:var(--txt2);line-height:1.5">${f.text}</div></div>`).join('');
 }
 </script>
 </body>
